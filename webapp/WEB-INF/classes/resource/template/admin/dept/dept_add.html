@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增部门</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+	<div class="content-tab-wrap">
+		<div id="floatHead" class="content-tab">
+			<div class="content-tab-ul-wrap">
+				<ul>
+					<li><a href="javascript:;" onclick="tabs(this);" class="selected">部门基本信息</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>部门名称</dt>
+				<dd>
+					<input name="dept_name" type="text" id="dept_name" class="input normal" maxlength="32"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>所属部门</dt>
+				<dd>
+					<div class="rule-single-select">
+						<select id="sup_dept_id" name="sup_dept_id">
+						   <option value="">请选择所属部门</option>
+						   <option value="1">公司</option><!-- default -->
+						   <%for(dept in deptList!){%>
+						      <option value="${dept.id}">${dept.dept_name}</option>	
+						   <%}%>
+						</select>
+					</div>
+					<input type="hidden" id="sup_dept_id_hidden" name="sup_dept_id_hidden"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>部门类型</dt>   
+				<dd>				    
+				    <div class="rule-single-select">
+						<select id="dept_type" name="dept_type" >
+							<#dictforEach key="dept_type";dept_type>
+							   <option value=${dept_type.value} >${dept_type.name}</option>					
+							</#dictforEach>
+						</select>
+					</div>
+					<input type="hidden" id="dept_type_hidden" name="dept_type_hidden"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>部门描述</dt>
+				<dd>
+                    <textarea name="dept_description" rows="3" cols="20" id="dept_description" class="input" style="width: 300px;height: 120px;"></textarea>
+                    <span id="Validform_checktip"></span>
+                </dd>
+			</dl>
+			<dl>
+				<dt>角色</dt>
+				<dd>
+					<div class="rule-multi-porp">
+						<span id="cblActionType">
+							<%for(role in roleList){%>
+								<input id="${role.id }" type="checkbox" name="roles" value="${role.id}" />
+								<label for="${role.id }">${role.name}</label>
+							<%}%>
+						</span>
+					</div>
+					<input type="hidden" id="role"/>
+					<span id="Validform_checktip">*角色</span>
+				</dd>
+			</dl>
+		</div>
+	</form>
+	<div class="page-footer">
+		<div class="btn-list">
+			<#permission url="/admin/sys/dept/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/sys/dept/insert')"/>
+			</#permission>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();"/>
+		</div>
+		<div class="clear"></div>
+	</div>
+</body>
+</html>

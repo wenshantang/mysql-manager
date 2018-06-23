@@ -1,0 +1,40 @@
+ <!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>文章详情页</title>
+<%include("/pc/common/meta.html"){}%>
+<%include("/pc/common/resource.html"){}%>
+ </head>
+ <style>
+ table {
+    margin-right: auto;
+    margin-left: auto;
+ }
+ </style>
+  <%include("/pc/common/top.html",{flag:"service"}){}%>
+    <%include("/pc/include/index/big_banner.html"){}%>
+    <div class="wrap m-g-content">
+  <div class="left">
+    <div id="articleInfo">
+    <h1 class="title g-center">${article.title}</h1>
+    <p class="info g-center"><span>来源：${article.author}</span><span>时间：${ strutil.subStringTo(article.publish_time,0,10)}</span></p>
+   
+    <div class="content"> 
+     <#article_content id='${article.id}';content>
+			${content}
+		</#article_content>
+      <div class="g-content-page"> 
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="right"> 
+    <div class="m-g-contentImg"><img src="${ctxPath}/portal/pc/images/mdfhs_07.jpg" /></div>
+  </div>
+</div>
+    <%include("/pc/common/footer.html"){}%>
+   <%include("/pc/common/bottom.html"){}%> 
+   </body>
+</html>

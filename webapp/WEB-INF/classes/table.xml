@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<table name="SYS_USER_1">
+	<mysql>
+		CREATE TABLE SYS_USER_1 (
+		ID char(18) NOT NULL COMMENT 'id',
+		LOGIN_NAME varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '登录名',
+		NAME varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '真实名字',
+		PWD varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '密码',
+		PHONE char(11) COLLATE utf8_bin DEFAULT NULL COMMENT '手机号码',
+		EMAIL varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'Email地址',
+		STATUS char(1) COLLATE utf8_bin DEFAULT NULL COMMENT '用户状态 0锁定 1正常',
+		PRIMARY KEY (ID)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+		ROW_FORMAT=COMPACT COMMENT='系统用户表'
+	</mysql>
+	<oracle>
+		xxxxxxxxxxxxxx
+	</oracle>
+</table>
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>产品信息修改</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js&version=2015120313"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js&version=2015120313"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js&version=2015120313"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css&version=2015120313" />
+<script type="text/javascript">
+var CTX = '${ctx}';
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">招聘详细信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input  type="hidden" id="id"  name="id"  value="${r.id}" />
+		<input  type="hidden" id="update_time"  name="update_time"  value="${r.update_time}" />
+		<input  type="hidden" id="sex"  name="sex"  value="${r.sex}" />
+		<div class="tab-content">
+		    <dl>
+				<dt>应聘人</dt>
+				<dd>
+                  <input  name="author" type="text" id="author" class="input normal" readonly="readonly" value="${r.author}"/>	
+				</dd>
+			</dl>
+			<dl>
+				<dt>联系电话</dt>
+				<dd>
+                  <input   name="phone" type="text" id="phone" class="input normal" readonly="readonly" value="${r.phone}" />	
+				</dd>
+			</dl>
+			<dl>
+				<dt>应聘岗位</dt>
+				<dd>
+                  <input   name="messagesTitle" type="text" id="messagesTitle" class="input normal" readonly="readonly" value="${r.messagesTitle}" />	
+				</dd>
+			</dl>
+			<dl>
+				<dt>性别</dt>
+				<dd>
+                  <select  style="width: 133px"  class="js-example-basic-single" disabled="disabled">
+					<option value="0" ${r.sex=='0'?'selected':''} >男</option>
+					<option value="1" ${r.sex=='1'?'selected':''} >女</option>
+   		      	  </select>		
+				</dd>
+			</dl>
+			<dl>
+				<dt>应聘描述</dt>
+				<dd>
+				<textarea name="content" rows="3" cols="20" id="content" class="input" readonly="readonly">${r.content}</textarea>
+				</dd>
+			</dl>
+			<dl>
+				<dt>联系地址</dt>
+				<dd>
+				 <textarea name="address" rows="3" cols="20" id="address" class="input" readonly="readonly">${r.address}</textarea>
+				</dd>
+			</dl>	
+			<dl>
+				<dt>简历附件</dt>
+				<dd>
+					<a target="_blank" href="${r.file_url}" >查看简历</a>
+				   <input  name="file_url" type="hidden" id="file_url" class="input normal" value="${r.file_url}" />	
+				</dd>
+			</dl>
+			<dl>
+				<dt>申请时间</dt>
+				<dd>
+				 <input  name="create_time" type="text" id="create_time" class="input normal"  value="${r.create_time}" 
+						readonly="readonly" />	
+				</dd>
+			</dl>
+			<dl>
+				<dt>是否有意向</dt>
+				<dd>
+				  <select  style="width: 133px" id="status" name="status" class="js-example-basic-single">
+				  	<option value="" >请选择</option>
+					<option value="0" ${r.status=='0'?'selected':''} >有意向</option>
+					<option value="1" ${r.status=='1'?'selected':''} >无意向</option>
+   		      	  </select>	
+				</dd>
+			</dl>
+			<dl>
+				<dt>备注</dt>
+				<dd>
+				  <textarea name="remark" rows="3" cols="20" id="remark" class="input" >${r.remark}</textarea>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/recruit/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/recruit/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

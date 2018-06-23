@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>人保基金首页</title>
+<%include("/pc/common/meta.html"){}%>
+<%include("/pc/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+function IsPC() {
+    var userAgentInfo = navigator.userAgent;
+    var Agents = ["Android", "iPhone",
+                "SymbianOS", "Windows Phone",
+                "iPad", "iPod"];
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}
+var flag = IsPC(); //true为PC端，false为手机端
+function goto404(){
+	if(!flag){
+		window.location.href="${ctxPath}/h5/404";
+	}
+}
+window.onload=goto404();
+</script>
+<body>
+   <%include("/pc/common/top.html",{flag:"index"}){}%>
+   <div class="p-wrong"><img src="${ctxPath}/portal/pc/images/404_01.jpg" /></div>
+   <%include("/pc/common/footer.html"){}%>
+   <%include("/pc/common/bottom.html"){}%> 
+</body>
+</html>

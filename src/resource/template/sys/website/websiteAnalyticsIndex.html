@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>网站统计分析</title>
+<%include("resource/template/common/resource.html"){}%>
+<script>
+var nojm="${baidutongjiNoPassword!0}";//[0:需要密码，1：不需要密码]
+function dlhidden(){
+	nojm="1";
+	$("#pasd_dl").hide();
+}
+function dlshow(){
+	nojm="0";
+	$("#pasd_dl").show();
+}
+
+function openBaidutongji(){
+	var url="http://tongji.baidu.com/web/welcome/ico?s=8fceb6a147831f2a28f752bc95200869";//根据不同的网站进行切换
+	var password=$("#baidutongjiPassword").val();
+	if(nojm=="0"){
+		url+="&passwd="+password;
+	}
+	window.open(url);
+}
+
+function updateTJpsd(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				popStatus(1, '修改成功！！！', 1);
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		},error:function(){
+			popStatus(4, "系统异常", 2);
+		}
+	});
+}
+</script>
+</head>
+<body class="mainbody">
+ 		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">百度网站统计分析</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>		
+				<dt>是否免密登录</dt>
+				<dd>
+					<div class="rule-multi-radio">
+					    <input name="baidutongjiNoPassword" type="radio" value="0" ${baidutongjiNoPassword!0 == '0' ?'checked':''} onclick="dlshow()"/><label for="">否</label>
+				      	<input name="baidutongjiNoPassword" type="radio" value="1" ${baidutongjiNoPassword!0 == '1' ?'checked':''} onclick="dlhidden()"/><label for="">是</label>
+				    </div>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl id="pasd_dl">
+				<dt>密码</dt>
+				<dd>
+					<input name="baidutongjiPassword" type="text" id="baidutongjiPassword" maxlength="50" value="${baidutongjiPassword}" class="input normal" />
+					<span id="Validform_checktip">*</span>					
+				</dd>
+				<dt></dt>
+				<dd><input type="button" name="btnSubmit" value="确 认修改" id="btnSubmit" class="btn" onclick="updateTJpsd('${ctx}/admin/sys/websiteAnlytics/updateTjPassword')"/>
+			    </dd>
+			</dl>
+			<dl>		
+				<dt></dt>
+				<dd>
+					<input type="button" name="btnSubmit" value="跳转至百度统计" id="btnSubmit2" class="btn" onclick="openBaidutongji();"/>
+				</dd>
+			</dl>
+        </div>
+				  
+        </form>
+
+		
+	</body>
+</html>

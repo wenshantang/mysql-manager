@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑配置</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">配置信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input type="hidden" name="id" id="id" value="${dict.id}" />
+		<div class="tab-content">
+		
+			<dl>
+				<dt>是否启用</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="status" type="checkbox" name="status" value="1" ${dict.status == '1'?'checked="checked"':''}  />
+					</div>
+					<span id="Validform_checktip">*不启用则无法使用</span>
+				</dd>
+			</dl>
+		
+			<dl>
+				<dt>配置项分类</dt>
+				<dd>
+				<%if(dictTypes!=null){%>
+				<div class="rule-single-select">
+			          	<select onchange="javascript:document.getElementById('type').value=(this.value);">
+							<%for(d in dictTypes){%>
+								<option value="${d}" ${d == dict.type ?'selected':''}>${d}</option>
+							<%}%>
+						</select>
+				</div>
+				<%}%>
+				    <input name="type" type="text" id="type" value="${dict.type}" class="input normal" style="width:150px;"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>配置名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" value="${dict.name}" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>配置值</dt>
+				<dd>
+					<input name="value" type="text" id="value" value="${dict.value}" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>索引</dt>
+				<dd>
+					<input name="idx" type="text" id="idx" value="${dict.idx}" class="input normal" style="width:60px;"/>
+					<span id="Validform_checktip">*数字、越小越靠前</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>配置说明</dt>
+				<dd>
+                    <textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 300px;height: 120px;">${dict.memo}</textarea>
+                    <span id="Validform_checktip"></span>
+                </dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+				<#permission url="/admin/cms/properties/update">
+					<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/cms/properties/update')"/> 
+				</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

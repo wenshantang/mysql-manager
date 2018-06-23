@@ -1,0 +1,304 @@
+/*container*/
+#container {
+	width: 100%;
+	margin: 0 auto;
+	overflow: hidden;
+}
+/*col-side*/
+#col-side {
+	float: left;
+	margin-top: 42px;
+	width: 180px;
+	_margin-right: -3px;
+	z-index: 1000;
+	z-index: 1000;
+}
+
+#col-side .side-fold, #nav .main-nav {
+	display: block;
+	text-indent: -9999px;
+	overflow: hidden;
+	background-repeat: no-repeat;
+}
+
+#nav {
+	zoom: 1;
+}
+
+#col-side .side-fold {
+	font-size: 15px;
+	color: #b8d2e1;
+	height: 45px;
+	background-position: -588px 0;
+	border-top: 1px solid #5595b8;
+	border-color: rgba(255, 255, 255, 0.2);
+}
+/*col_main*/
+#col-main {
+	overflow: hidden;
+	zoom: 1;
+}
+
+#main-hd {
+/* 	position: relative; */
+	z-index: 101;
+	height: 42px;
+	padding: 0 18px 0;
+}
+
+#main-bd {
+	overflow: hidden;
+	zoom: 1;
+}
+
+#page-tab {
+	zoom: 1;
+}
+/* -----------------------
+   * tab *
+* ----------------------- */
+.l-tab-loading {
+	position: absolute;
+	z-index: 999;
+	top: 0;
+	left: 0;
+	background: white url('${ctx}/resource-injar/image?t=/ligerui/bigloading.gif') no-repeat
+		center 40%;
+	width: 100%;
+	height: 100%;
+	_height: 800px;
+	display: none;
+}
+
+.l-tab-links {
+	position: relative;
+	height: 32px;
+	overflow: hidden;
+	z-index: 1;
+	background: url("${ctx}/resource-injar/image?t=/tabs-header-bg.gif") repeat-x scroll center
+		bottom rgba(0, 0, 0, 0);
+}
+
+.l-tab-links-left, .l-tab-links-right {
+	position: absolute;
+	width: 16px;
+	z-index: 13;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.l-tab-links-left {
+	left: 0;
+	border-top-left-radius: 2px;
+}
+
+.l-tab-links-right {
+	right: 0;
+	border-top-right-radius: 2px;
+}
+
+.l-tab-links-left i, .l-tab-links-right i {
+	border-style: solid;
+	border-width: 5px;
+	font-size: 0;
+	height: 0;
+	margin: 10px 0 0 0;
+	display: block;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+.l-tab-links-right i {
+	background-position: -16px -16px;
+}
+
+.l-tab-links-left-over, .l-tab-links-right-over {
+	background: #f4f4f4;
+}
+
+.l-tab-links-left-over i {
+	background-position: 0 -16px;
+}
+
+.l-tab-links-right-over i {
+	background-position: -16px -16px;
+}
+
+.l-tab-links-left-invalid {
+	background-position: 0 0;
+}
+
+.l-tab-links-right-invalid {
+	background-position: -16px 0;
+}
+
+.l-tab-links ul {
+	list-style: none;
+	width: 9999px;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	zoom: 1;
+}
+
+.l-tab-links li.l-selected {
+	border-top: 2px solid #ff9c97;
+	background: none repeat scroll 0 0 #ebebeb;
+	color: #495056;
+	height: 32px;
+	margin: 0 5px 0 0;
+}
+
+.l-tab-links li.l-selected a {
+	color: #495056;
+	height: 30px;
+	outline: medium none;
+}
+
+.l-tab-links li a {
+	border-color: #00c0ff #c7c7c7 #c7c7c7;
+	border-image: none;
+	border-right: 1px solid #c7c7c7;
+	border-style: solid;
+	border-width: 0 1px 0;
+	display: inline-block;
+	padding: 0 13px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 12px;
+	color: #999999;
+}
+
+.l-tab-links-item-left, .l-tab-links-item-right {
+	display: none;
+}
+
+.l-tab-links .l-tab-links-item-close-over {
+	background-position: 0 -12px;
+	border-radius: 1px;
+	color: #c5160b;
+}
+
+.l-tab-content {
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+}
+
+.l-tab-content-item {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+.l-tab-content-item iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+#tabManage {
+	background: url("${ctx}/resource-injar/image?t=/downArrow.png") repeat scroll 0 0
+		rgba(0, 0, 0, 0);
+	float: left;
+	height: 30px;
+	width: 23px;
+}
+
+#tabManage:hover {
+	cursor: pointer;
+}
+
+.l-tab-menu {
+	background: none repeat scroll 0 0 #fff;
+	border: 1px solid #eeeeee;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+	position: absolute;
+	white-space: nowrap;
+	z-index: 100;
+	line-height: 180%;
+	font-size: 12px;
+}
+
+.l-tab-menu p {
+	border-bottom: 1px solid #eee;
+	clear: both;
+	float: left;
+	padding: 3px 10px;
+	width: 68px;
+}
+
+.l-tab-menu p:hover {
+	background: #F8F8F8;
+	cursor: pointer;
+}
+
+#main-hd {
+	color: #f2f2f2;
+}
+
+.l-tab-links-item {
+	margin: 0 18px;
+}
+
+.l-tab-links li {
+	border-top: 2px solid #16b5bc;
+	margin-right: 1px;
+	height: 35px;
+	line-height: 31px;
+	color: #495056;
+	margin: 0 3px 0 0;
+	float: left;
+	padding: 0;
+	display: inline;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.l-tab-links li:hover {
+	border-top: 2px solid #6cbe4a;
+	color: #495056;
+}
+
+.l-tab-links-left, .l-tab-links-right {
+	height: 35px;
+	background: #6183b1;
+}
+
+.l-tab-links-left {
+	border-right: 1px solid #456da3;
+}
+
+.l-tab-links-left i {
+	border-color: #6183b1 #bbcfeb #6183b1 #6183b1;
+}
+
+.l-tab-links-right i {
+	border-color: #6183b1 #6183b1 #6183b1 #bbcfeb;
+	margin: 10px 0 0 5px;
+}
+
+.l-tab-links-item-close {
+	background: url(${ctx}/resource-injar/image?t=/tab_close.png) no-repeat;
+	background-position: 0 -12px;
+	top: 10px;
+	width: 12px;
+	height: 12px;
+	overflow: hidden;
+	position: absolute;
+	right: 2px;
+	z-index: 12;
+	cursor: pointer;
+}
+
+.l-selected .l-tab-links-item-close {
+	background: url("${ctx}/resource-injar/image?t=/closeSN.gif") no-repeat scroll 0 0
+		rgba(0, 0, 0, 0);
+}
+
+.l-tab-links .l-tab-links-item-close-over {
+	background-color: #E3E9F0;
+}

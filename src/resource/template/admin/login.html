@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>管理平台登陆</title>
+<link rel="shortcut icon" href="${config.full_icon}" type="image/x-icon" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/poptip/poptip.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/skin/default/style.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/layer-v1.8.5/skin/layer.css" type="text/css" />
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/poptip/poptip.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/layer-v1.8.5/layer.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/particles.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/enc.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/md5.js"></script>
+<script type="text/javascript">
+$(function(){
+	try{
+		var browser=navigator.appName 
+		var b_version=navigator.appVersion 
+		var version=b_version.split(";"); 
+		var trim_Version=version[1].replace(/[ ]/g,""); 
+		if(browser=="Microsoft Internet Explorer" && trim_Version=="MSIE6.0"){ 
+			window.location.href = '${ctx}/admin/ieupdate';
+		} else if(browser=="Microsoft Internet Explorer" && trim_Version=="MSIE7.0") { 
+			window.location.href = '${ctx}/admin/ieupdate';
+		} else if(browser=="Microsoft Internet Explorer" && trim_Version=="MSIE8.0") { 
+			window.location.href = '${ctx}/admin/ieupdate';
+		} 
+		if ('undefined' == typeof (document.body.style.maxHeight)) {
+			window.location.href = '${ctx}/admin/ieupdate';
+		}
+	}catch(e){
+		
+	}
+	
+	if(self!=top){
+		top.location.href = location.href;
+	}
+	
+	$("#auth_code").hide();
+	
+	$("#authcode").focus(function(){
+		var src = $("#auth_code").attr("src");
+		if(src == null|| src ==''){
+			$("#auth_code").click();
+		}
+		$("#auth_code").show();
+	});
+	
+   	$("#btn_login").click(function(){
+   		var idx = loading('登录中。');
+       var pd=enc(hex_md5($("#password").val()));
+       $("#password").val(pd);
+		jQuery.ajax({
+			url : "${ctx}/admin/login",
+			data : $('#login_form').serialize(),
+			type : "POST",
+			success : function(result) {
+				layer.close(idx);
+				if (result.code == '0000') {
+					popStatus(1, '登录成功！！！ ', 1, '${ctx}/admin/console', true);
+				}else{
+                  $("#password").val("");
+					$("#auth_code").click();
+					$("#authcode").blur();
+					popStatus(4, result.msg, 2);
+				}
+			}
+		});
+	});
+   	document.onkeydown = function (e) {
+        var ev = document.all ? window.event : e;
+        if (ev.keyCode == 13) {
+        	$("#btn_login").click();
+        }
+    }
+   	
+   //背景粒子效果
+    particlesJS('loginbody', {
+        particles: {
+            color: '#46BCF3',
+            shape: 'circle', // "circle", "edge" or "triangle"
+            opacity: 1,
+            size: 2,
+            size_random: true,
+            nb: 200,
+            line_linked: {
+                enable_auto: true,
+                distance: 100,
+                color: '#46BCF3',
+                opacity: .8,
+                width: 1,
+                condensed_mode: {
+                    enable: false,
+                    rotateX: 600,
+                    rotateY: 600
+                }
+            },
+            anim: {
+                enable: true,
+                speed: 1
+            }
+        },
+        interactivity: {
+            enable: true,
+            mouse: {
+                distance: 250
+            },
+            detect_on: 'canvas', // "canvas" or "window"
+            mode: 'grab',
+            line_linked: {
+                opacity: .5
+            },
+            events: {
+                onclick: {
+                    enable: true,
+                    mode: 'push', // "push" or "remove" (particles)
+                    nb: 4
+                }
+            }
+        },
+        retina_detect: true
+    });
+   	
+});
+</script>
+</head>
+
+<body class="loginbody" id="loginbody">
+<div class="login-wrap">
+  <div class="login-logo" style="background:url(${config.full_logo}) no-repeat">LOGO</div>
+  <form id="login_form">
+  <div class="login-form">
+    <div class="col">
+      <input name="username" type="text" id="username" class="login-input" placeholder="账号" value=""/>
+      <label class="icon user" for="username"></label>
+    </div>
+    <div class="col">
+      <input name="password" type="password" id="password" class="login-input" placeholder="密码" value=""/>
+      <label class="icon pwd" for="password"></label>
+    </div>
+    <%if(config.authcode_format!='0'){%>
+    	<div class="col">
+	      <input name="authcode" type="text" id="authcode" class="login-input" placeholder="验证码"/>
+	      <label class="icon authcode" for="authcode"><img id="auth_code" style="cursor: pointer;" src="" onclick="javascript:document.getElementById('authcode').value='';javascript:src='${ctx}/admin/authcode?'+(Math.random());"></label>
+	    </div>
+    <%}%>
+    <div class="col">
+      <input type="button" name="btnSubmit" value="登 录" id="btn_login" class="login-btn" />
+    </div>
+  </div>
+  </form>
+</div>
+
+<div class="copy-right">
+  <p>版权所有 上海鑫铭网络科技有限公司 Copyright © 2017 shineming.cn Inc. All Rights Reserved.</p>
+</div>
+</body>
+</html>

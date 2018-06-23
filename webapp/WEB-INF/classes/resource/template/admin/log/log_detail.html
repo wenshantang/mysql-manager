@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>日志详情</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">日志详情</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input type="hidden" name="id" id="id" value="${vo.id}" />
+		<div class="tab-content">
+			<dl>
+				<dt>用户浏览器</dt>
+				<dd>
+					${vo.browser}
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>操作内容</dt>
+				<dd>
+                    <textarea name="opt_content" rows="3" cols="20" id="opt_content" class="input" style="width: 300px;height: 120px;">${vo.opt_content}</textarea>
+                    <span id="Validform_checktip"></span>
+                </dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+				<input name="btnReturn" type="button" value="确定" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

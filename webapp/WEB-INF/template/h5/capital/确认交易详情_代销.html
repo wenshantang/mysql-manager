@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>交易确认详情</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">交易确认详情</span></h1>
+  </div>
+</header>
+<#tradeaccountinfo  acco_no='${session.customer.data.cust_no}' acco_type='1'  agency_type="1"  trade_acco='${trade_acco}' fund_code="${fund_code!}" allot_no='${allot_no!}';tradeaccountinfo>
+<%if(tradeaccountinfo.ReturnCode=="0000"){%>
+<%for(trade in  tradeaccountinfo.data){%>
+<div class="main wrap nofooter">
+	  <ul class="g-list-li nobg">
+	     <!-- 申购、认购 -->
+	  	<%if(trade.busin_flag=='01'||trade.busin_flag=='02'){%>
+	    <li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">申请日期</span><span class="info">${strutil.subStringTo(trade.apply_date,0,4)}-${strutil.subStringTo(trade.apply_date,4,6)}-${strutil.subStringTo(trade.apply_date,6,8)}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">申请金额/份额</span><span class="info">${StringToNumber(trade.apply_sum!'')}元</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_type!'')}份</span></li>
+	  	<%if(trade.busin_flag=='02'){%>
+	  	<li><span class="name">分红方式</span><span class="info">${trade.auto_buy_name!''}</span></li>
+	  	<%}%>
+	  	<li><span class="name">支付方式</span><span class="info">${trade.bank_name!''}****${IdCard4Function(trade.bank_account!'')}</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 赎回 --> 
+	  	<%if(trade.busin_flag=='03'){%>
+	  <li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">申请日期</span><span class="info">${strutil.subStringTo(trade.apply_date,0,4)}-${strutil.subStringTo(trade.apply_date,4,6)}-${strutil.subStringTo(trade.apply_date,6,8)}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">申请金额/份额</span><span class="info">${StringToNumber(trade.apply_share!'')}份</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_balance!'')}元</span></li>
+	  	<li><span class="name">赎回至</span><span class="info">${trade.bank_name!''}****${IdCard4Function(trade.bank_account!'')}</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 定投-->
+	  	<%if(trade.busin_flag=='39'){%>
+	  	<li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">申请日期</span><span class="info">${strutil.subStringTo(trade.apply_date,0,4)}-${strutil.subStringTo(trade.apply_date,4,6)}-${strutil.subStringTo(trade.apply_date,6,8)}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<!-- <li><span class="name">扣款周期</span><span class="info">${fund_name!''}</span></li>
+	  	<li><span class="name">扣款日期</span><span class="info">${fund_name!''}</span></li> -->
+	  	<li><span class="name">申请金额/份额</span><span class="info">${StringToNumber(trade.apply_sum!'')}元</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_type!'')}份</span></li>
+	  	<li><span class="name">支付方式</span><span class="info">${trade.bank_name!''}****${IdCard4Function(trade.bank_account!'')}</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 转换 -->
+	  	<%if(trade.busin_flag=='13'){%>
+	  	<li><span class="name">转出基金名称</span><span class="info">${from_fund_name!''}</span></li>
+	  	<li><span class="name">转出基金代码</span><span class="info">${from_fund_code!''}</span></li>
+	  	<li><span class="name">转入基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">转入基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">申请日期</span><span class="info">${strutil.subStringTo(trade.apply_date,0,4)}-${strutil.subStringTo(trade.apply_date,4,6)}-${strutil.subStringTo(trade.apply_date,6,8)}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">申请金额/份额</span><span class="info">${StringToNumber(trade.apply_sum!'')}份</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_type!'')}份</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 修改分红方式 -->
+	  	<%if(trade.busin_flag=='07'){%>
+	  	<li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">申请日期</span><span class="info">${strutil.subStringTo(trade.apply_date,0,4)}-${strutil.subStringTo(trade.apply_date,4,6)}-${strutil.subStringTo(trade.apply_date,6,8)}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">分红方式</span><span class="info">${trade.auto_buy_name!''}</span></li>
+	  	<li><span class="name">支付方式</span><span class="info">${trade.bank_name!''}****${IdCard4Function(trade.bank_account!'')}</span></li>
+	  	<%}%>
+	  	<!-- 基金分红 -->
+	  	<%if(trade.busin_flag=='74'){%>
+	  	<li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">红利发放日</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">分红注册份额</span><span class="info">${StringToNumber(trade.apply_share!'')}份</span></li>
+	  	<li><span class="name">现金红利/红利再投资</span><span class="info"><%if(trade.auto_buy=='1'){%>${StringToNumber(trade.trade_confirm_balance!'')}<%}else{%>${StringToNumber(trade.trade_confirm_type!'')}<%}%>份</span></li>
+	  	<li><span class="name">分红方式</span><span class="info">${trade.auto_buy_name!''}</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 基金成立 -->
+	  	<%if(trade.busin_flag=='50'){%>
+	  	<li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_type!'')}份</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	<%}%>
+	  	<!-- 强制赎回 -->
+	  	<%if(trade.busin_flag=='53'){%>
+	  	<li><span class="name">基金名称</span><span class="info">${trade.fund_name!''}</span></li>
+	  	<li><span class="name">基金代码</span><span class="info">${trade.fund_code!''}</span></li>
+	  	<li><span class="name">确认日期</span><span class="info">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</span></li>
+	  	<li><span class="name">交易类型</span><span class="info">${trade.busin_name!''}</span></li>
+	  	<li><span class="name">确认金额/份额</span><span class="info">${StringToNumber(trade.trade_confirm_type!'')}份</span></li>
+	  	<li><span class="name">赎回至</span><span class="info">${trade.bank_name!''}****${IdCard4Function(trade.bank_account!'')}</span></li>
+	  	<li><span class="name">手续费</span><span class="info">${StringToNumber(trade.trade_fee!'')}元</span></li>
+	  	
+	  	<%}%>
+	  	<li><span class="name">状态</span><span class="info">${trade.trade_status_name!''}</span></li>
+	  	<li><span class="name">代销机构</span><span class="info">${trade.agency_name!''}</span></li>
+	  	
+	  </ul>
+  <p style="height:4rem"></p>
+</div>
+<%}%>
+<%}%>
+</#tradeaccountinfo>
+<!-- <div class="g-bottom-fixed yl-zhuan3">
+  <div class="wrap">
+    <div class="btn"> <a href="${ctxPath}/h5/capital/buy?fundcode=${fund_code}" class="btn1">再次购买</a> <a href="${ctxPath}/h5/capital/invest?fundcode=${fund_code}" class="btn2">发起定投</a> </div>
+  </div>
+</div> -->
+</body>
+</html>

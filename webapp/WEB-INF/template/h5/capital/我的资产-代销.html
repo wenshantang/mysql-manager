@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-代销</title>
+<%include("/h5/common/assets.html"){}%>
+<style>
+.main.isTop:before {
+    height: 15.95rem;
+}
+</style>
+</head>
+<script type="text/javascript">
+function gotomyassets(){
+	var logintype="${session.customer.data.logintype!}"
+		 if(logintype=='0'){
+			 window.location.href="${ctxPath}/h5/capital/mycapital";
+		 }else  if(logintype=='1'){
+			// window.location.href="${ctxPath}/h5/capital/mycapitalcs";
+		 }
+}
+window.onload=gotomyassets();
+</script>
+<body>
+<#mycapitalsell querytype="1"  client_id='${session.customer.data.cust_no}'  page_size="999"  page_no="1" group_list='1111111' ;mycapitalsell>
+<%if(mycapitalsell.ReturnCode=='0000'){%>
+<header class="header" m-main="MyAssets">
+  <div class="wrap">
+    <h1 class="title"><span class="txt">代销资产</span></h1>
+    <div class="f-topBox f-topBox1123">
+      <time class="time">资产日期：${mycapitalsell.asset_date!'--'}</time>
+      <div class="pBox">
+       <%if(!strutil.contain(mycapitalsell.gain_balance!+"","-")){%>
+       <p class="p1">${StringToNumber(mycapitalsell.gain_balance!'')}</p> 
+      <%}else{%> 
+       <p class="p1" style="color:#008000;">${StringToNumber(mycapitalsell.gain_balance!'')}</p>
+      <%}%>	
+        <p class="p2">浮动收益（元）</p> 
+      </div>
+      <div class="m-msgBox">
+        <p class="msg">当前持有基金的累计收益</p>
+      </div>
+      <div class="gt-Box3">
+        <div class="list">
+          <p class="l1">${StringToNumber(mycapitalsell.total_share_assets!'')}</p>
+          <p class="l2">总资产（元）</p>
+        </div>
+        <div class="list">
+          <p class="l1">--</p>
+          <p class="l2">人保宝（元）</p>
+        </div>
+        <div class="list">
+          <p class="l1">${StringToNumber(mycapitalsell.total_share!'')}</p>
+          <p class="l2">总份额(份)</p> 
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="main isTop wrap">
+  <ul class="g-list-li5">
+  <%if(mycapitalsell.data!=''){%>
+  <%for(myassert in  mycapitalsell.data){%>
+    <li class="on">
+      <h6 class="title"><span class="name">${myassert.fundtypename}</span>
+        <p class="vBox"><span class="s s1">${StringToNumber(myassert.total_share_assets!)}</span><span class="s s2">总资产（元）</span></p>
+      </h6>
+      <div class="tableBox">
+        <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">基金名称/代码</th>
+              <th scope="col">总份额(份)</th>
+              <th scope="col">冻结份额(份)</th>
+              <th scope="col">总资产(元)</th>
+            </tr>
+          </thead> 
+          <tbody>
+          <%for(fund in myassert.dataList){%>
+            <tr>
+              <td>${fund.fund_name}<br><span style="margin-left: 14px;">(${fund.fund_code})</span></td>
+              <td>${StringToNumber(fund.total_share!)}</td> 
+              <td>${StringToNumber(fund.frozen_shares!)}</td>
+              <td>${StringToNumber(fund.total_asset!)}</td>
+              <!-- <td>${StringToNumber(fund.balance!)}</td> -->
+            </tr> 
+            <%}%>
+        <!--     <tr> 
+              <td>人保资产债券</td>
+              <td><span class="c-54b988">-40.00</span></td>
+              <td>300.00</td>
+              <td>300.00</td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </li>
+   <%}%>
+   <%}%>
+<!--     <li>
+      <h6 class="title"><span class="name">代销机构名称</span>
+        <p class="vBox"><span class="s s1">12,000.00</span><span class="s s2">总资产（元）</span></p>
+      </h6>
+      <div class="tableBox">
+        <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">基金名称</th>
+              <th scope="col">浮动收益（元）</th>
+              <th scope="col">总资产（元）</th>
+              <th scope="col">在途资产（元）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>人保资产货币</td>
+              <td><span class="c-f25050">300.00</span></td>
+              <td>300.00</td>
+              <td>300.00</td>
+            </tr>
+            <tr>
+              <td>人保资产债券</td>
+              <td><span class="c-54b988">-40.00</span></td>
+              <td>300.00</td>
+              <td>300.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </li> -->
+  </ul>
+  <ul class="g-list-li m-t20">
+    <li><a href="${ctxPath}/h5/capital/cstrade"><span class="name">代销交易查询</span></a></li>
+  </ul>
+</div>
+<%}%>
+</#mycapitalsell>
+<%include("/h5/common/foot.html",{nav:'myassets'}){}%>
+</body>
+</html>

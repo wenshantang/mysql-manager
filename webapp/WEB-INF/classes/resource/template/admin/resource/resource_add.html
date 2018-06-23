@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增资源</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+$(function(){
+	$("#itemAddButton").click(function(){
+		var nodeId = Math.ceil(Math.random()*10000000);
+		var content = "<dl id="+nodeId+"><dt></dt><dd><input name=\"dep_urls\" type=\"text\" class=\"input normal\"/><span class=\"Validform_checktip\"><a title=\"删除\" class=\"img-btn del operator\" onclick=\"delNode('"+nodeId+"');\">删除</a></span></dd></dl>";
+		$("#other").append(content);
+	});
+});
+
+function delNode(id){
+	var text = $("#"+id).remove();
+	text.appendTo("other");
+}
+
+
+function ajaxInsert(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				parent.success('新增成功！！！');
+				Public.closeDialog();
+			}else if (result.errMsg) {
+				$("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+
+
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">资源基本信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input type="hidden" name="parent_id" value="${parent.id!'888888888888888888'}"/>
+		<div class="tab-content">
+			<dl>
+				<dt>上级资源</dt>
+				<dd>
+					<div class="rule-single-select">
+			          	<select disabled="disabled">
+			          	<option value="${parent.id!'888888888888888888'}">${parent.name!'无父级资源'}</option>
+						</select>
+				    </div>
+				    <span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>资源名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>URL</dt>
+				<dd>
+					<input name="url" id="url" type="text" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt></dt>
+				<dd>
+					<a id="itemAddButton" class="icon-btn add"><i></i><span>依赖URL</span></a>
+					<span class="Validform_checktip">*添加的url代表必须有此权限</span>
+				</dd>
+			</dl>
+			<div id="other">
+				
+			</div>
+			<dl>
+				<dt>备注</dt>
+				<dd>
+                    <textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 300px;height: 100px;"></textarea>
+                    <span id="Validform_checktip">*</span>
+                </dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/sys/resource/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="ajaxInsert('${ctx}/admin/sys/resource/insert')"/>
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

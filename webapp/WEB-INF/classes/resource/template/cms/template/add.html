@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增CMS模板</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">新增模板</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>模板类型</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="type" type="radio" value="1"/><label for="">大模版</label>
+			      		<input name="type" type="radio" value="2"/><label for="">小模块</label>
+				    </div>
+				    <span id="Validform_checktip">*大模版被栏目引用，小模块被大模版引用</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>当前路径</dt>
+				<dd>
+					<span>${parentDir}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>模板名称</dt>
+				<dd>
+					<input name="parentDir" type="hidden" value="${parentDir}" />
+					<input name="name" type="text" id="name" class="input normal" />.html
+					<span id="Validform_checktip">*唯一</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>模板内容</dt>
+				<dd>
+                    <textarea name="content" rows="3" cols="20" id="content" class="input" style="width: 800px;height: 420px;"></textarea>
+                    <span id="Validform_checktip">*</span>
+                </dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/template/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.optionIFrameFlush('${ctx}/admin/cms/template/insert/${parent_id}')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

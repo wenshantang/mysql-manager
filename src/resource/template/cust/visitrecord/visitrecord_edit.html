@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>修改拜访信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+<script type="text/javascript">
+function changecust(){
+	var cust_id = $("#cust_name").find("option:selected").attr('code');
+	$("#cust_id").val(cust_id);
+}
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/upload.js"></script>
+<script>
+$(function(){
+	$("#visit_attachment_upload-img").InitUploader({btntext:'选择文件...',sendurl: "${ctx}/admin/sys/file/upload", swf: "${ctx}/resource-injar/swf?t=/plugin/webuploader/Uploader.swf"});
+});
+function uploadError(data){
+	popStatus(2, data.message, 2);
+}
+
+function uploadSuccess(data){
+	$("#visit_attachment").val(data.http_url);
+	$("#visit_attachment_preview").show();
+	$("#visit_attachment_preview").attr('href',data.http_url); 
+}
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">修改拜访信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		
+		<div class="tab-content">
+		<input type="hidden" name="id" id="id" value="${ap.id}" />
+		<input type="hidden" name="create_user" id="create_user" value="${ap.create_user}" />
+		<input type="hidden" name="create_time" id="create_time" value="${ap.create_time}" />
+		<input type="hidden" name="isdelete" id="isdelete" value="${ap.isdelete}" />
+		<dl>
+				<dt>拜访主题</dt>
+				<dd>
+					<input name="visitsubject" type="text" id="visitsubject" maxlength="100" value="${ap.visitsubject}"  class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+ 			<dl>
+				<dt>客户名称</dt>
+				<dd>
+                 <select  style="width: 300px" id="cust_name" name="cust_name" class="js-example-basic-single" onchange="changecust(this)" >
+   		      	    <option value="" code="">请选择</option>
+				<%for(list in customer_list!){%>
+					<option  value="${list.short_name}" code="${list.cust_id}" ${list.short_name == ap.cust_name ?'selected':''}>${list.short_name}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="fund_name_tip"/><span id="Validform_checktip">*</span>
+   		      	  <input   name="cust_id" type="hidden" id="cust_id" value="${ap.cust_id}"  class="input middle"/>	
+				</dd>
+			</dl> 
+			<dl>
+				<dt>拜访对象</dt>
+				<dd>
+					<input name="visitobject" type="text" id="visitobject" value="${ap.visitobject}" maxlength="100"  class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>拜访方式</dt>
+				<dd>
+                 <select  style="width: 300px" id="visitmethods" name="visitmethods" class="js-example-basic-single" >
+   		      	    <option class="visitmethods" value="" >请选择</option>
+				<%for(list in visitmethods_list!){%>
+					<option class="cust_type" value="${list.name}" ${list.name == ap.visitmethods ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="visitmethods_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>拜访地点</dt>
+				<dd>
+					<input name="visitaddress" type="text" id="visitaddress" value="${ap.visitaddress}" maxlength="200"  class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>拜访内容</dt>
+				<dd>
+					<textarea name="visitcontent" rows="3" cols="20" id="visitcontent" class="input" >${ap.visitcontent}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>开始时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" value="${ap.startdate}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input" id="startdate" name="startdate"/>
+					</div>
+					<input type="hidden" id="startdate_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>结束时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" value="${ap.enddate}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input" id="enddate" name="enddate"/>
+					</div>
+					<input type="hidden" id="enddate_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>备注</dt>
+				<dd>
+					<input name="memo" type="text" id="memo" value="${ap.memo}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>附件</dt>
+				<dd>
+					<div id="visit_attachment_upload-img" class="upload-box upload-img" ></div>
+					<input type="text" name="visit_attachment" id="visit_attachment" value="${ap.visit_attachment}" class="input normal" style="width: 300px;"/>
+					<a href="${ap.visit_attachment}" id="visit_attachment_preview" target="_blank" ${ap.visit_attachment !=null ?'':'hidden'} >预览</a>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cust/visitrecord/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/cust/visitrecord/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

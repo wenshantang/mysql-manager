@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<title>popTip</title>
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="poptip.js"></script>
+<link href="poptip.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	
+	<span class="span" onclick="popStatus(1, '非常好，你很棒', 2)">正确提示</span>
+	<span class="span" onclick="popStatus(2, '你这么叼，你家人知道吗？', 5)">提醒抖动</span>
+	<span class="span" onclick="popStatus(3, '玩命加载中，请稍后......', 5,'')">正在加载</span>
+	<span class="span" onclick="popStatus(4, '为何你点它会错误？给我个理由~！', 5)">错误提示抖动</span>
+	<span class="span" onclick="popStatus(2, '我遮住，不让你看其它的', 4, '', true)">带遮罩提示</span>
+	<span class="span" onclick="popStatus(4, 'TMD,怎么搞的，出错误了', 4, '', true)">错误（遮罩）</span>
+	<span class="span" onclick="popStatus(1, '客官稍等，马上到百度', 4, 'http://www.baidu.com', true)">到百度</span>
+	<span class="span" onclick="popStatus(3, '请等待20秒看效果', 20)">请求超时提示</span>
+	
+</body>
+</html>

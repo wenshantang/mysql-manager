@@ -1,0 +1,57 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/select2/js/select2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/layer-v1.8.5/layer.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/template/template.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/layout.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/ajaxPage.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/data.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/HashMap.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/poptip/poptip.js"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/poptip/poptip.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/skin/default/style.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/layer-v1.8.5/skin/layer.css" type="text/css" />
+<link href="${ctx}/resource-injar/css?t=/plugin/select2/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/skin/default/CSS.css" type="text/css" />
+<script type="text/javascript">
+var dictConfig = ${dict!''};
+var propertiesConfig = ${properties!''};
+template.helper('decode', function () {
+	for(var i=1;i<arguments.length;i++){
+		if(arguments[0]==arguments[i])
+			return arguments[i+1];
+	}
+	return "--";
+});
+template.helper('subStr', function (value,len) {
+	if (value == undefined || value == null){
+		return "";
+	}
+	if (value.length <= len){
+		return value;
+	} else{
+		return value.substr(0, len) + '...';
+	}
+});
+template.helper('dictVal', function (key,type) {
+	var result = "";
+	$(dictConfig[type]).each(function(){
+		 if(this.name == key){
+			 result = this.value;
+			 return false;
+		 }
+	});
+	return result;
+});
+template.helper('propertiesVal', function (key,type) {
+	var result = "";
+	$(propertiesConfig[type]).each(function(){
+		 if(this.name == key){
+			 result = this.value;
+			 return false;
+		 }
+	});
+	return result;
+});
+</script>

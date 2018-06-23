@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>绑卡</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+<script type="text/javascript">
+var wait =60; 
+function time() {
+	if (wait == 0) {
+		$("#send_authcode").attr("onclick","sendcode();");
+		$("#send_authcode").text("发送手机验证码");
+		$("#send_authcode").css("background","#f25050");
+        wait = 60;
+    } else {
+    	$("#send_authcode").removeAttr("onclick");
+    	$("#send_authcode").css("background","#dcdcdc");
+    	$("#send_authcode").text("重新发送("+wait+")");
+        wait--;
+        setTimeout(function() {
+            time()
+    	}, 1000)
+ 	}
+ }
+ 
+//发送手机验证码
+function sendcode() {
+	$(".top-e-msg").text("");
+	var mobile = $("#mobile_tel").val();
+		$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"template_id":"1",
+				"sms_channel_id":"3"
+			},
+			url : "${ctxPath}/send/sendcode",
+			success : function(result) {
+				if (result.code == "0000") {
+					time();
+					$(".top-e-msg").text('验证码发送成功!');
+				} else {
+					$(".top-e-msg").text("验证码发送失败!");
+				}
+			}
+		});
+}
+ 
+function bindcard(password){	
+	var detail_fund_way=$("#detail_fund_way").val();
+	var fund_interface_type=$("#fund_interface_type").val();
+	var bank_account=$("#bank_account").val();
+	var bank_account_name=$("#bank_account_name").val();
+	var bank_name=$("#bank_name").val();
+	var bank_no=$("#bank_no").val();
+	var capital_mode=$("#capital_mode").val();
+	var trade_acco=$("#trade_acco").val();
+	var authcode=$("#authcode").val();
+	if (bank_account == "" || bank_account == null) {
+		$(".top-e-msg").text("银行账号不能为空")
+		return false;
+	}
+	if (bank_account_name == "" || bank_account_name == null) {
+		$(".top-e-msg").text("银行户名不能为空")
+		return false;
+	}
+	if (bank_name == "" || bank_name == null) {
+		$(".top-e-msg").text("银行名称不能为空")
+		return false;
+	}
+	if (bank_no == "" || bank_no == null) {
+		$(".top-e-msg").text("银行代码不能为空")
+		return false;
+	}
+	$.ajax({
+		type : "post",
+		data : {
+			"detail_fund_way" : detail_fund_way,
+			"fund_interface_type" : fund_interface_type,
+			"bank_account" : bank_account,
+			"bank_account_name" : bank_account_name,
+			"bank_name" : bank_name,
+			"bank_no" : bank_no,
+			"capital_mode" : capital_mode,
+			"password" : password,
+			"trade_acco" : trade_acco,
+			"authcode": authcode
+		},
+		url : "${ctxPath}/user/bindbank", 
+		success : function(result) {
+			if (result.code == "0000") {
+				 <%if(strutil.length(goto!"")<1){%>
+				  window.location.href="${ctxPath}/h5/account/addbanksuccess";
+				  <%}else{%>
+                  window.location='${goto!}'; 
+                <%}%> 
+			} else {
+				$(".top-e-msg").text(result.msg);
+			} 
+		}
+	});
+}
+</script>
+<body>
+<m m-main="bind_m_number_password"></m>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">绑卡</span></h1>
+		</div>
+</header>
+<#token/>
+<div class="main wrap nofooter">
+		<div class="m50 g-input40">
+				<div class="top-e-msg yl-f m-t185 m-b70">
+						手机短信验证：${strutil.subStringTo(session.customer.data.mobile_tel,0,3)}****${strutil.subStringTo(session.customer.data.mobile_tel,7,11)}
+				</div>
+				<div class="g-inputVeri">
+						<div class="g-inputDiv">
+								<span class="g-input-span">
+								<input class="g-input" type="text" placeholder="" id="authcode" maxlength="6">
+								</span>
+						</div>
+						<a class="veri-btn veri-btn-icon" style="background-color: #f25050" href="javascript:void(0);"  id="send_authcode" onclick="sendcode()">获取验证码</a>
+				</div>
+					  <input type="hidden"   name="bank_account"      id="bank_account"       value="${bank_account}">
+			       	  <input type="hidden"   name="bank_account_name" id="bank_account_name"  value="${bank_account_name}">
+			       	  <input type="hidden"   name="bank_name"         id="bank_name"          value="${bank_name}">
+			       	  <input type="hidden"   name="bank_no"           id="bank_no"            value="${bank_no}">
+			       	  <input type="hidden"   name="detail_fund_way"   id="detail_fund_way"    value="${detail_fund_way}">
+			       	  <input type="hidden"   name="fund_interface_type" id="fund_interface_type"   value="${fund_interface_type}">
+			       	  <input type="hidden"   name="capital_mode"      id="capital_mode"       value="${capital_mode}">
+			       	  <input type="hidden"   name="mobile_tel"        id="mobile_tel"         value="${mobile_tel}"> 
+			       	  <#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}" ;mybanks>
+						<%if(mybanks!=null||mybanks!=""){%>
+						<%for(bank in mybanks){ if(bank.is_main_trade_acco=='1'){%>
+						<input type="hidden" id="trade_acco" value="${bank.trade_acco}">
+						<%}}}%>
+					  </#mybanks>
+				<a class="g-btns g-submit g-m-t70" href="javascript:void(0);"  onclick="checkauthcode()">确 定</a>
+				<a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+				<p style="height:1rem"></p>
+		</div>
+</div>
+</body>
+<script type="text/javascript">
+	function checkauthcode(){
+		var mobile =$("#mobile_tel").val();
+		var authcode=$("#authcode").val();
+		if(authcode==""||authcode==null){
+			$(".top-e-msg").text("请输入验证码");
+			return false;
+		}
+		$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"authcode" : authcode
+			},
+			url : "${ctxPath}/send/checkmobilecode",
+			success : function(result) {
+				console.log(result);
+				if (result.code == "0000") {
+					$('#MumberPassword').click();
+				} else {
+					$(".top-e-msg").text(result.msg);
+				}
+			}
+		});
+	}
+</script>
+</html>

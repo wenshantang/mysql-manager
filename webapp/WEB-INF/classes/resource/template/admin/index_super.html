@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>系统管理中心</title>
+<link rel="shortcut icon" href="${config.full_icon}" type="image/x-icon" />
+<link href="${ctx}/resource-injar/css?t=/skin/default/style.css" rel="stylesheet" type="text/css"/>
+<link href="${ctx}/resource-injar/css?t=/styles/base.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+	var CTX = '${ctx}';
+	var index_url = '${config.full_index_url}';
+</script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/layer-v1.8.5/layer.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/tabs.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/layout.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/index.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+</head>
+<body class="indexbody">
+  <div class="main-top">
+    <h1 class="logo" style="background: url(${config.full_logo}) no-repeat center;"></h1>
+    <div class="nav-right">
+      <div class="info">
+        <i></i>
+        <span>
+          您好，${session.user.name}<br>
+          欢迎您！ 
+        </span>
+      </div>
+      <div class="option">
+        <i></i>
+        <div class="drop-wrap">
+          <div class="arrow"></div>
+          <ul class="item">
+            <li><a id="lbtnExit" href="${ctx}/admin/quit">注销登录</a> </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="main-left">
+    <div class="sidebar-nav" id="sidebar-nav">
+	<div name="系统设置" class="list-group">
+  		<h1 title="系统设置"></h1>
+  		<div class="list-wrap">
+  		<ul>
+			<li>
+				<a><span>系统管理</span></a>
+					<ul>
+	  					<li><a rel="${ctx}/admin/sys/manager/config" id="633189888482312356"><span>管理系统设置</span> </a></li>
+	  					<li><a rel="${ctx}/admin/sys/role" id="633189888482340864"><span>角色管理</span> </a></li>
+	  					<li><a rel="${ctx}/admin/sys/user" id="633190065947537408"><span>用户管理</span> </a></li>
+	  					<li><a rel="${ctx}/admin/sys/resource" id="633190344206053376"><span>资源管理</span> </a></li>
+	  					<li><a rel="${ctx}/admin/sys/dict" id="633190448132517888"><span>字典管理</span> </a></li>
+	  					<li><a rel="${ctx}/admin/sys/leftmenu" id="633191360532049920"><span>菜单管理</span> </a></li>
+					</ul>
+			</li>
+			<li>
+				<a><span>系统监控</span></a>
+					<ul>
+	  					<li><a rel="${ctx}/puff/owm/monitor/server/status" id="633190923238109184"><span>服务器信息</span> </a></li>
+	  					<li><a rel="${ctx}/puff/owm/monitor/druid" id="633191025251971072"><span>数据源信息</span> </a></li>
+	  					<li><a rel="${ctx}/puff/owm/url-mapping" id="633191202100604928"><span>系统URL</span> </a></li>
+					</ul>
+			</li>
+		</ul>
+  		</div>
+    </div>
+	</div>
+  </div>
+  
+  <div class="main-container" id="main-bd">
+    <div class="page-tab" id="page-tab"> 
+	</div>
+  </div>
+</body>
+</html>

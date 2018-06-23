@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>任务管理</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.scheduleName}}</td>
+            <td>{{row.startTime}}</td>
+            <td>{{row.endTime}}</td>
+			<td>{{row.isRun | decode: '0','停用','1','启用'}}</td>
+			<td>{{row.status | decode: '0','等待运行','1','运行中'}}</td>
+            <td>{{row.periodsType | decode: '0','每日','1','每周','2','每月','3','特定日期'}}</td>
+            <td>{{row.workDay}}</td>
+            <td>{{row.retryCount}}</td>
+            <td>{{row.retryTime}}</td>
+            <td>{{row.createTime}}</td>
+            <td>
+				<a href="javascript:;" class="img-btn edit operator" onclick="edit('${ctx}/admin/sys/task/edit/{{row.id}}')">修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+       <div id="floatHead" class="toolbar">
+        <div class="box-wrap">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    	<#permission url="/admin/sys/task/insert">
+	                        <li><a class="add" onclick="add('${ctx}/admin/sys/task/add')" href="javascript:;"><i></i><span>新增</span></a></li>
+						</#permission>
+                        <#permission url="/admin/sys/task/delete">
+                        <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a></li>
+                        <li><a onclick="del('${ctx}/admin/sys/task/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a></li>
+                        </#permission>
+                    </ul>
+                </div>
+                
+                <div class="r-list">
+                <form id="search_form">
+		        	<input type="text" class="keyword" id="scheduleName" name="scheduleName">
+		        	<a href="javascript:;" class="btn-search" id="searchBtn">查询</a>
+                </form>
+                
+            </div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/sys/task/json">
+            <tr>
+                <th>选择</th>
+                <th sort="schedule_name">任务名称</th>
+				<th sort="start_time">启动时间</th>
+				<th sort="end_time">结束时间</th>
+				<th sort="is_run">启动状态</th>
+                <th sort="status">任务状态</th>
+				<th sort="periods_type">运行周期</th>
+				<th sort="work_day">工作日</th>
+				<th sort="retry_count">重试次数</th>
+				<th sort="retry_time">重试间隔</th>
+				<th sort="create_time">创建时间</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<#publicFundInfo fund_code="${fund_code!}";pageRecord>
+<%if(pageRecord!=null && pageRecord.~size>0){%>
+<%
+  var fundInfo = pageRecord.list;
+%>
+    <div class="cc-con">
+      <div class="g-table-conBox">
+        <table class="g-table-con" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <th scope="row" width="120">基金管理人：</th> 
+            <td><p class="t-p">
+            <%if(fundInfo.pro_fundmanager==null || fundInfo.pro_fundmanager==''){%>
+              --&nbsp;--
+            <%}else{%>
+              ${fundInfo.pro_fundmanager}
+            <%}%>
+            </p></td>
+          </tr>
+          <tr>
+            <th scope="row">基金托管人：</th>
+            <td><p class="t-p">
+            <%if(fundInfo.pro_deposit==null || fundInfo.pro_deposit==''){%>
+              --&nbsp;--
+            <%}else{%>
+              ${fundInfo.pro_deposit}
+            <%}%>
+            </p></td>
+          </tr>
+          <#manager fund_code="${fund_code!}";manager>
+          <tr>
+            <th scope="row">基金经理：</th>
+            <td>
+             <p class="t-p">
+             <%if(manager!=null && manager.~size>0){%>
+              <%for(man in manager){%>
+                ${man.name}&nbsp;&nbsp;&nbsp;&nbsp;
+              <%}%>
+             <%}else{%>
+              --&nbsp;--
+             <%}%>
+             </p>
+            </td>
+          </tr>
+          </#manager>
+          <tr>
+            <th scope="row">投资目标：</th>
+            <td><p class="t-p">
+              <%if(fundInfo.investment==null || fundInfo.investment==''){%>
+                 --&nbsp;--
+              <%}else{%>
+                 ${fundInfo.investment}
+              <%}%>
+            </p></td>
+          </tr>
+          <tr>
+            <th scope="row">投资策略：</th>
+            <td><p class="t-p">
+            <%if(fundInfo.investment_strategy==null || fundInfo.investment_strategy==''){%>
+              --&nbsp;--
+            <%}else{%>
+              ${fundInfo.investment_strategy}
+            <%}%>
+            </p></td>
+          </tr>
+          <tr>
+            <th scope="row">投资范围：</th>
+            <td><p class="t-p">
+            <%if(fundInfo.investment_range==null || fundInfo.investment_range==''){%>
+              --&nbsp;--
+            <%}else{%>
+              ${fundInfo.investment_range}
+            <%}%>
+            </p></td>
+          </tr>
+          <tr> 
+            <th scope="row">风险收益特征：</th>
+            <td><p class="t-p">
+            <%if(fundInfo.risk_return==null || fundInfo.risk_return==''){%>
+              --&nbsp;--
+            <%}else{%>
+              ${fundInfo.risk_return}
+            <%}%>
+            </p></td>
+          </tr>
+          <#publicFundAsset fund_code='${fund_code!}';fundasset>
+           <tr>
+            <th scope="row"><p class="g-top34">投资组合：</p></th>
+            <td><div class="table-r-conBox g-borders bottom-p25">
+                <ul class="maa-ul maa-ul-2">
+                  <li>
+                    <p id="assetSum" class="number c-f22c2c"></p>
+                    <p class="txt">资产总额</p>
+                  </li>
+                  <li>
+                    <%
+                       var date = date();
+                    %>
+                    <p class="number">
+                     <%if(fundasset.~size>0){%>
+                       ${date,dateFormat="yyyy-MM-dd"}
+                     <%}else{%>
+                       --&nbsp;--
+                     <%}%>
+                    </p>
+                    <p class="txt">资产日期</p>
+                  </li>
+                </ul>
+                <div class="g-rrrrBox">
+                  <div class="f-l g-w325">
+                    <h6 class="title-center">资产分布表</h6>
+                    <table class="g-table-con2" width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <thead>
+                        <tr>
+                          <th scope="col">资产类型</th>
+                          <th scope="col">金额（元）</th>
+                          <th scope="col">占比</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <%if(fundasset.~size>0){%>
+                       <%for(fa in fundasset){%>
+                        <tr>
+                          <td>${fa.vc_xm}</td>
+                          <td>${fa.i_je}</td>
+                          <td>${fa.i_bl}%</td>
+                        </tr>
+                       <%}%>
+                      <%}else{%>
+                        <tr>
+                         <td colspan="3"><center>...暂无更新数据...</center></td>
+                        </tr>
+                      <%}%>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="f-l g-w336">
+                    <h6 class="title-center">资产分布图</h6>
+                      <div id="container1" style="min-width:325px;height:250px"></div>
+                  </div>
+                  <#fundSummary fund_code="${fund_code!}" c_type="0" ;shares>
+                  <%if(shares!=null && shares.~size>0){%>
+                  <div class="f-l g-w325">
+                    <h6 class="title-center">重仓持股表</h6>
+                    <table class="g-table-con2" width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <thead>
+                        <tr>
+                          <th scope="col">序号</th>
+                          <th scope="col">股票名称</th>
+                          <th scope="col">占比</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%for(share in shares){%>
+                        <tr>
+                            <td>${share.vc_xh}</td>
+                            <td>${share.vc_gpmc}</td>
+                          <%if(share.i_bl!=null){%>
+                            <td>${share.i_bl!,numberFormat="###,###,##0.00"}%</td>
+                          <%}%>
+                        </tr>
+                        <%}%>
+                      </tbody>
+                    </table>
+                  </div>
+                  <%}%>
+                  </#fundSummary>
+                  <#fundSummary fund_code="${fund_code!}" c_type="1" ;shares>
+                  <%if(shares!=null && shares.~size>0){%>
+                  <div class="f-l g-w325">
+                    <h6 class="title-center">重仓债券表</h6>
+                    <table class="g-table-con2" width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <thead>
+                        <tr>
+                          <th scope="col">序号</th>
+                          <th scope="col">债券名称</th>
+                          <th scope="col">占比</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%for(share in shares){%>
+                        <tr>
+                            <td>${share.vc_xh}</td>
+                            <td>${share.vc_gpmc}</td>
+                          <%if(share.i_bl!=null){%>
+                            <td>${share.i_bl!,numberFormat="###,###,##0.00"}%</td>
+                          <%}%>
+                        </tr>
+                        <%}%>
+                      </tbody>
+                    </table>
+                  </div>
+                  <%}%>
+                  </#fundSummary>
+                </div>
+              </div></td>
+            </tr>
+          </#publicFundAsset>
+        </table>
+      </div>
+    </div>
+  <%}%>
+</#publicFundInfo>

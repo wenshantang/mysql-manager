@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-修改分红</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<m m-main="fh_m_number_password"></m>
+<#sharedetail client_id="${session.customer.data.client_id}" fund_code="${fundcode!}" trade_acco="${trade_acco!}" cust_no="${session.customer.data.cust_no}";sharedetail>
+<%if(sharedetail[0].dataList.~size>0){%>
+<%for(myshare in sharedetail[0].dataList){%>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">修改分红</span></h1>
+    <div class="f-topBox2 f-topBox3">
+      <p class="p p1">基金简称：${myshare.fund_name}</p>
+      <p class="p p2" id="fh_fundcode" name="${myshare.fund_code}">基金代码：${myshare.fund_code}</p>
+    </div>
+  </div>
+</header>
+<input type="hidden" value="${myshare.share_type}" id="share_type">
+<input type="hidden" value="${myshare.trade_acco}" id="trade_acco">
+<%}}%>
+</#sharedetail>
+<div class="main isTop2 wrap nofooter">
+	<div class="yl-fenhong">
+		<div class="g-checkbox2 g-m-t70 yl-t-center">
+			<h6 class="title yl-f48">请选择分红方式</h6>
+			<div class="list g-m-t70">
+				<p class="p yl-f40"><label><input class="m-checkbox" name="fhredio" type="checkbox" value="0" checked="">现金红利</label></p>
+				<p class="p yl-f40"><label><input class="m-checkbox" name="fhredio" type="checkbox" value="1" checked="">红利再投资</label></p>
+				<input type="hidden" id="fh_hidden">
+			</div>
+		</div>  
+		<a m-number-password="MumberPassword" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+		<div class="bottom-e-msg"></div>
+	</div>
+</div>
+
+
+</body>
+</html>

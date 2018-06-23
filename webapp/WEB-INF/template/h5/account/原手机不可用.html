@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>手机号变更</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">手机号变更</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <div class="m50 g-input40">
+    <h6 class="g-listTitle2 title">证件类型</h6>
+    <div class="g-inputBox">
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="" id="id_kind_gb">
+              <#cms_properties type="certificationtype_list" ; dicts>
+           <%for(dict in dicts){%>
+           			<%if(dict.name!='4'){%>
+            		<option  value="${dict.name}">${dict.value}</option>
+            		<%}%>
+		    <%}%>
+         </#cms_properties>
+          </select>
+        </div>
+      </div>
+    </div>
+    <h6 class="g-listTitle2 title">证件号码</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input"  type="tel" id="id_no"  placeholder="请输入证件号码">
+      </span> </div>
+    <h6 class="g-listTitle2 title">银行卡</h6>
+    <div class="g-inputBox">
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="" id="trade_acco">
+           <#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+           <%for(bank in mybanks){%> 
+            <option value="${bank.trade_acco}">${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+            <%}%>
+           </#mybanks>
+          </select>
+        </div>
+      </div>
+    </div>
+    <h6 class="g-listTitle2 title">银行卡号</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input" type="tel" id="bankno" placeholder="请输入银行卡号">
+      </span> </div>
+    <a class="g-btns g-submit g-m-t70"  onclick="checkinfo()" >下一步</a>
+    <p style="height:1rem"></p>
+  </div>
+</div>
+<script type="text/javascript">
+	function checkinfo(){
+		var id_kind_gb=$("#id_kind_gb").val();//证件类型
+		var id_no=$("#id_no").val();//证件号码
+		var bankno=$("#bankno").val();//银行卡号
+		var trade_acco=$("#trade_acco").val();
+		if (id_kind_gb == "" || id_kind_gb == null) {//证件类型
+			Popbox.sureWithBtn("请选择证件类型!");
+			return false;
+	    }
+		if (id_no == "" || id_no == null) {//证件号码
+			Popbox.sureWithBtn("请填写证件号码!");
+			return false;
+	    }
+		if (bankno == "" || bankno == null) {//银行卡号!
+			Popbox.sureWithBtn("请填写银行卡号!");
+			return false;
+	    }
+		if(id_kind_gb=="0"){
+			if (!Regular.REG(id_no, RegexEnum.idcard)) {//证件号码
+				Popbox.sureWithBtn("证件号码格式错误!");
+				return false;
+		    }
+		}
+		$.ajax({
+			type : "post",
+			data : {
+				"id_kind_gb" : id_kind_gb,
+				"id_no" : id_no,
+				"bankno":bankno,
+				"trade_acco":trade_acco
+				
+			},
+			url : "${ctxPath}/user/checkperson",
+			success : function(result) {
+				console.log(result);
+				if (result.code == "0000") {
+					window.location.href="${ctxPath}/h5/account/authphone";
+				} else {
+					Popbox.sureWithBtn(result.msg);
+				}
+			}
+		});
+	}
+</script>
+</body>
+</html>

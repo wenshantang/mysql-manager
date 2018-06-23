@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>关于我们</title>
+<%include("/pc/common/meta.html"){}%>
+<%include("/pc/common/resource.html"){}%>
+</head>
+<body>
+	<input type="hidden" id="topicCode" value="zxdt"/>
+  <%include("/pc/common/top.html",{flag:"abouts"}){}%>
+  <%include("/pc/include/index/big_banner.html"){}%>
+  <div class="wrap bosom">
+     <%include("/pc/include/about/left_about.html",{about:"rysj"}){}%>
+     <%include("/pc/include/about/最新动态2.html"){}%>
+  </div>
+  <%include("/pc/common/footer.html"){}%>
+  <%include("/pc/common/bottom.html"){}%> 
+</body>
+</html>

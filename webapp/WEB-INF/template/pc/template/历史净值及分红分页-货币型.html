@@ -1,0 +1,69 @@
+         <#productFundNav fundcode="${fund_code!}" page="${p!}" pagesize="10" ;fundnav>
+           <%if(fundnav!=null && fundnav.data.dataList.~size>0){%>
+            <div class="title">历史收益表</div>
+            <div class="md-biao-g">
+            	<table width="465" class="table" border="0" cellspacing="0" cellpadding="0">
+                	<thead>
+                    	<tr>
+                        	<th>日期</th>
+                            <th>万份收益（元）</th>
+                            <th>七日年化</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%for(nav in fundnav.data.dataList){%>
+                    	<tr>
+                          <td>${nav.c_funddate}</td>
+                          <%if(nav.i_dividendamount!=null){%>
+                            <td>${nav.i_dividendamount!,numberFormat="###,###,##0.0000"}</td>
+                          <%}else{%>
+                            <td>0.0000</td>
+                          <%}%>
+                          <%if(nav.i_incomdepercent!=null){%>
+                            <td><span class="c-f22c2c">${nav.i_incomdepercent!,numberFormat="###,###,##0.00"}%</span></td>
+                          <%}else{%>
+                            <td>0.00%</td>
+                          <%}%>
+                        </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+            </div>
+            <%
+              var p = fundnav.data.page;   // 当前页
+              var totalPage = fundnav.data.totalPage;     // 总页数
+	        %>
+            <div class="m-g-pageBox md-page-box">
+      			<div class="m-g-page">
+      			  <span>
+      			    <a id="a1" class="item" href="javascript:void(0);" onclick="nextPage(1,${totalPage});">首页</a>
+      			  </span>
+      			  <span>          
+      			    <a id="a2" class="item" href="javascript:void(0);" onclick="nextPage(${p-1},${totalPage});">上一页</a>
+                  </span>
+      			    <a id="a3"class="item" href="javascript:void(0);" onclick="nextPage(${p+1},${totalPage});">下一页</a>
+                    <a id="a4" class="item" href="javascript:void(0);" onclick="nextPage(${totalPage},${totalPage});">尾页</a>
+      			  <span class="info">共${totalPage}页 当前为第<input class="thisnumber" value="${p}" type="text">页</span>
+      			</div>
+    		</div>
+    		<script type="text/javascript">    
+              function setCss(){
+    	        if(${p}>1){
+    		      $("#a1").addClass("on");
+    		      $("#a2").addClass("on");
+    	        }
+    	        if(${totalPage}>${p}){
+    		      $("#a3").addClass("on");
+    		      $("#a4").addClass("on");
+    	        }
+             }
+             $(function(){
+    	       setCss();
+             });
+           </script>
+          <%}else{%>
+            .....暂无更新数据.....
+          <%}%>
+       </#productFundNav>
+       
+       

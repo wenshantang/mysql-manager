@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>文件上传设置</title>
+<%include("resource/template/common/resource.html"){}%>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+</head>
+<script type="text/javascript">
+
+$(function(){
+	$(".js-example-basic-multiple").select2();
+});
+
+function submit_form(form_id,url){
+	jQuery.ajax({
+		url  : url,
+		data : $('#'+form_id).serialize(),
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				var url ='${ctx}/admin/sys/manager/config/upload/setting';
+				popStatus(1, result.msg, 1, url, true);
+			}else if (result.errMsg) {
+				$('#'+form_id).children("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" class="selected">文件上传设置</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="uploadConfig">
+		<input type="hidden" name="company_name" value="${company_name}"/>
+		<div class="tab-content">
+	  <dl>
+	    <dt>允许文件上传</dt>
+	    <dd>
+		  <div class="rule-single-checkbox">
+		  	<input id="allow_upload" type="checkbox" name="allow_upload" value="1" ${uploadConfig.allow_upload==1?'checked':''} />
+		  </div>
+	      <span id="Validform_checktip">*是否允许前台上传</span>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件上传目录</dt>
+	    <dd>
+		  <input name="save_dir" type="text" id="save_dir" value="${uploadConfig.save_dir}" class="input normal"/>
+	      <span id="Validform_checktip">*文件保存的目录名，自动创建在WebRoot目录下</span>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件保存方式</dt>
+	    <dd>
+	      <div class="rule-single-select">
+	        <select id="save_type" name="save_type">
+	          <option value="1" ${uploadConfig.save_type=='1'?'selected':''}>按年月日每天一个目录</option>
+	          <option value="2" ${uploadConfig.save_type=='2'?'selected':''}>按年月/日/存入不同目录</option>
+	        </select>
+	      </div>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件上传类型</dt>
+		    <dd>
+		    	<span style="color: red">文件后缀(允许上传文件的类型，多个用,分隔，例如'jpg,bmp,jpeg,gif')   大小限制(允许上传的文件最大容量，单位KB,0代表不限制)</span>
+		    </dd>
+	    <dd>
+		  <table width="100%" cellspacing="0" cellpadding="0" border="0" class="border-table">
+	        <thead>
+	          <tr>
+	            <th width="6%">文件类型</th>
+	            <th width="6%">文件代码</th>
+	            <th>文件后缀</th>
+	            <th width="8%">大小限制</th>
+	            <%if(ftp_support){%>
+	            	<th width="40%">同步到FTP服务器</th>
+	            <%}%>
+	          </tr>
+	        </thead>
+	    	<tbody>
+				<tr>
+					<td align="center">图片</td>
+					<td align="center">image</td>
+					<td align="center"><input name="image_suffix" type="text" id="image_suffix" value="${image_suffix!}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="image_max" type="text" id="image_max" value="${image_max!}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					 <%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="image_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(image_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">音频</td>
+					<td align="center">music</td>
+					<td align="center"><input name="music_suffix" type="text" id="music_suffix" value="${music_suffix!}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="music_max" type="text" id="music_max" value="${music_max!}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="music_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(music_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">多媒体</td>
+					<td align="center">media</td>
+					<td align="center"><input name="media_suffix" type="text" id="media_suffix" value="${media_suffix!}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="media_max" type="text" id="media_max" value="${media_max!}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="media_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(media_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">文件</td>
+					<td align="center">file</td>
+					<td align="center"><input name="file_suffix" type="text" id="file_suffix" value="${file_suffix!}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="file_max" type="text" id="file_max" value="${file_max!}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="file_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(file_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+			</tbody>       			
+		  </table>
+		  
+	    </dd>
+	  </dl>
+  <dl>
+	<dt></dt>
+	<dd>
+		<div class="btn-list">
+		<#permission url="/admin/sys/manager/config/update/upload">
+			<input type="button" name="btnSubmit" value="确 认 修 改" id="btnSubmit" class="btn" onclick="submit_form('uploadConfig','${ctx}/admin/sys/manager/config/update/upload')"/> 
+		</#permission>
+		</div>
+	</dd>
+  </dl>
+  </div>
+  </form>
+</body>
+</html>

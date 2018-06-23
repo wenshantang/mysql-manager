@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>购买</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<#QuerSuperFundList fundcode="${fundcode!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+<body>
+<script type="text/javascript">
+function gotologin(){ 
+	var customer="${session.customer.data.logintype!}"
+			 if(customer=="1"){
+				  layer.open({
+					    content: "请先注册或登录直销系统!",
+					    btn: ['确认', '取消'],
+					    yes: function(){
+					    	window.location.href="${ctxPath}/h5/login?type=coin&goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+					    }, no: function(){
+					    	window.location.href="javascript:history.back(-1);"; 
+					    }
+				});
+			 }
+}
+window.onload=gotologin();
+</script> 
+<m m-main="buy_m_number_password"></m>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">购买</span></h1>
+    <div class="f-topBox2">
+      <p class="p p1">基金简称：${fund.pro_shortname!"--"}</p>
+      <p class="p p2">基金代码：${fund.fundcode!"--"}</p>
+      <input type="hidden" id="fund_code" value="${fund.fundcode}" >
+       <input type="hidden" id="pro_shortname" value="${fund.pro_shortname}" >
+    </div>
+  </div>
+</header>
+<div class="main isTop2 wrap nofooter">
+  <div class="g-box54">
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">购买金额（元）</span><span class="info" id="feeandrate">手续费0.00元，费率0.00%</span></h6>
+      <div class="g-inputDiv"> <span class="g-input-span">
+        <input type="hidden" id="minimum_purchase_amount" value="${fund.minimum_purchase_amount}" >
+        <input class="g-input"  onkeyup='this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/gi,"")' id="balance" type="text"  placeholder="最低${fund.minimum_purchase_amount}元" onblur="getfeeandrate()" >
+        </span> </div>
+    </div>
+    <div class="g-checkbox2 g-m-t70">
+      <h6 class="title">分红方式</h6>
+      <div class="list g-m-t70">
+        <p class="p">
+          <label>
+            <input class="m-checkbox" name="auto_buy" type="radio" value="1" >
+            现金红利</label>
+        </p>
+        <p class="p">
+          <label>
+            <input class="m-checkbox" name="auto_buy" type="radio" value="0" >
+            红利再投资</label>
+        </p>
+      </div>
+    </div>
+    <div class="g-inputBox g-m-t110">
+      <h6 class="title"><span class="name">支付方式</span>
+      <%if(session.customer.data.logintype=='0'){%>
+      <%if(session.customer.data.real_name_flag=="1"){%>
+      <a href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/buy%3Ffundcode=${fundcode!}" class="btn info"><img class="icon" src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a>
+      <%}else{%>
+      <a href="${ctxPath}/h5/account/bindbank?goto=${ctxPath}/h5/capital/buy%3Ffundcode=${fundcode!}" class="btn info"><img class="icon" src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a>
+      <%}%>
+      <%}%>
+      </h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" id="trade_acco"  onchange="getfee();">
+          <#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+          	<%if(mybanks!=""&&mybanks!=null){%>
+           <%for(bank in mybanks){%>
+            <option value="${bank.trade_acco}" name="${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}(${bank.capital_mode_name})">${bank.bank_name}****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+            <%}}%>
+           </#mybanks>
+          </select>
+        </div>
+      </div>
+    </div>
+  <!--   <p class="mmm-info">人保宝可用余额300.00元</p> -->
+      <#riskinfo id_kind_gb="${session.customer.data.id_kind_gb}" full_name="${session.customer.data.client_name}" id_no="${session.customer.data.id_no}" query_type="2";riskinfo>
+    	<%if(riskinfo!=""&&riskinfo!=null){%>
+    	<input type="hidden" id="invest_risk_tolerance" value="${riskinfo.invest_risk_tolerance!}" >
+    <%}else{%><input type="hidden" id="invest_risk_tolerance" value="" ><%}%>
+     </#riskinfo>
+      <#canpurchase fund_code="${fundcode!}";canpurchase>
+      <%if(canpurchase!=null&&canpurchase!=""){%>
+      	<%if(canpurchase.~size>0){%>
+      	<input type="hidden" id="share_type" value="${canpurchase[0].share_type!}" >
+      	<input type="hidden" id="ofund_risklevel" value="${canpurchase[0].ofund_risklevel!}" >
+      	<%if(session.customer.data.logintype=='0'){%>
+      	<a class="g-btns g-submit g-m-t70" href="javascript:void(0);"  onclick="checkbuy()"> 确 定</a> 
+      	<%}else{%>
+      	<a class="g-btns g-submit g-m-t70"  style="background:#acacac;border-bottom-color: #9b9b9b;"  href="javascript:void(0);"  >不可购买</a>
+      	<%}%>
+      	<%}else{%>
+      	     <input type="hidden" id="share_type" value="A"  name="share_type">
+      		 <a class="g-btns g-submit g-m-t70"  style="background:#acacac;border-bottom-color: #9b9b9b;"  href="javascript:void(0);"  >不可购买</a>
+      	<%}%>
+      	<%}else{%>
+      	    <input type="hidden" id="share_type" value="A"  name="share_type">
+      	    <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可购买</a>
+      	<%}%> 
+      </#canpurchase>
+  
+        <div class="bottom-e-msg"></div>
+        <a id="MumberPassword" m-number-password="MumberPassword" style="display:none;" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+       	  <input type="hidden"   name="fund_code" value="${fund.fundcode}">
+       	  
+       	  <%if(fund.pro_status=='9'){%>
+       	   <input type="hidden"  id="fund_busin_code" value="020"  name="fund_busin_code">
+       	  <%}else if(fund.pro_status=='1'||fund.pro_status=='7'){%>
+       	  	 <input type="hidden"  id="fund_busin_code" value="022"  name="fund_busin_code">
+       	  <%}else{%>
+       	  	<input type="hidden"  id="fund_busin_code" value="022"  name="fund_busin_code">
+       	  <%}%>
+       	  <input type="hidden" id="trade_acco_hidden"  name="trade_acco">
+       	  <input type="hidden" id="balance_hidden"  name="balance">
+       	  <input type="hidden" id="auto_buy_hidden"  name="auto_buy"> 
+  </div>
+</div>
+<%}}%>
+</#QuerSuperFundList>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+var fee="";
+var rate="";
+var fund_busin_code=$("#fund_busin_code").val();
+var fund_code=$("#fund_code").val();
+//fund_code="3Q0108";
+var share_type=$("#share_type").val();
+var trade_acco=$("#trade_acco").val();
+var balance=$("#balance").val();
+//查询手续费
+function getfee(){
+	$(".bottom-e-msg").text("");
+	balance=$("#balance").val();
+	if (!Regular.REG(balance, RegexEnum.decmal)) {//金额
+		$(".bottom-e-msg").text("金额格式不正确!");
+		return false;
+    }
+	trade_acco=$("#trade_acco").val();
+	var minimum_purchase_amount=$("#minimum_purchase_amount").val();
+	if(minimum_purchase_amount-balance>0){
+		$(".bottom-e-msg").text("购买金额要高于最低购买金额!");
+		return false;
+	}
+	$.ajax({
+		type : "post",
+		//async:false,
+		data : { 
+			"fund_busin_code" : fund_busin_code,
+			"fund_code":fund_code,
+			"share_type":share_type,
+			"trade_acco":trade_acco,
+			"apply_sum":balance
+		},
+		url : "${ctxPath}/trade/fee",
+		success : function(result) {
+			console.log(result);
+			fee="--";
+		}
+	}); 
+}
+//查询购买的费率
+function getrate(){
+	$.ajax({
+		type : "post",
+		data : {
+			"fund_busin_code" : fund_busin_code,
+			"fund_code" : fund_code,
+			"share_type":share_type
+		},
+		url : "${ctxPath}/trade/rate",
+		async : false,
+		success : function(result) {
+			var result=eval(result);
+			    if(result!=""&&result!=null){ 
+			    	//if(result.code=='0000'){
+			    		rate=result[0].discount_rate;
+						rate=parseFloat(rate);
+			    	/* }else{
+			    		rate="获取失败";
+			    	} */
+			    }else{
+			    	rate="获取失败";
+			    }
+			
+		}
+	});
+}
+$(function(){
+	var real_name_flag="${session.customer.data.real_name_flag!}";
+	if(real_name_flag=='1'){
+	     layer.open({
+		    content: "请先进行开户操作!",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+		    }, no: function(){
+		    }
+		  });
+	return false;
+	 }
+	   var invest_risk_tolerance=$("#invest_risk_tolerance").val();
+	   var ofund_risklevel=$("#ofund_risklevel").val();
+	   if (invest_risk_tolerance == "" || invest_risk_tolerance == null) {//风险等级
+			layer.open({
+			    content: "请先进行风险评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false;
+		}
+	   
+	   if (ofund_risklevel -invest_risk_tolerance>0) { 
+		   Popbox.sureWithBtn("您所要购买的基金，高出您的风险承受等级!");
+		   $(".bottom-e-msg").text("您所要购买的基金，高出您的风险承受等级!");
+		/* 	layer.open({
+			    content: "该产品风险等级较高,请重新评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false; */
+		}
+	getrate();
+	$("#feeandrate").text("手续费0.00元，费率"+rate+"%");
+})
+
+function getfeeandrate(){
+	getfee();
+	$("#feeandrate").text("手续费"+fee+"元，费率"+rate+"%");
+}
+ 
+function checkbuy(){
+	$(".bottom-e-msg").text("");
+	var real_name_flag="${session.customer.data.real_name_flag!}";
+	if(real_name_flag=='1'){
+	     layer.open({
+		    content: "请先进行开户操作!",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+		    }, no: function(){
+		    }
+		  });
+	return false;
+	 }
+	   balance=$("#balance").val();
+	   var invest_risk_tolerance=$("#invest_risk_tolerance").val();
+	   var ofund_risklevel=$("#ofund_risklevel").val();
+	   if (invest_risk_tolerance == "" || invest_risk_tolerance == null) {//风险等级
+			layer.open({
+			    content: "请先进行风险评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false;
+		}
+	   
+	   if (ofund_risklevel -invest_risk_tolerance>0) {//
+		   Popbox.sureWithBtn("您所要购买的基金，高出您的风险承受等级!");
+		/* 	layer.open({
+			    content: "该产品风险等级较高,请重新评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false; */
+		}
+	   if (balance == "" || balance == null) {//购买金额
+			$(".bottom-e-msg").text("请输入购买金额!");
+			return false;
+		}
+	   var minimum_purchase_amount=$("#minimum_purchase_amount").val();
+		if(minimum_purchase_amount-balance>0){
+			$(".bottom-e-msg").text("购买金额要高于最低购买金额!");
+			return false;
+		}
+		if (!Regular.REG(balance, RegexEnum.decmal)) {//购买金额
+			$(".bottom-e-msg").text("金额格式不正确!");
+			return false;
+	    }
+	   var val=$('input:radio[name="auto_buy"]:checked').val();//分红方式
+       if(val==null){
+    	   $(".bottom-e-msg").text("请选择分红方式");
+           return false;
+       }
+       trade_acco=$("#trade_acco").val();//交易账号
+       if (trade_acco == "" || trade_acco == null) {
+			$(".bottom-e-msg").text("请选择支付方式!");
+			return false;
+	   }
+       $("#auto_buy_hidden").val(val);
+       $("#trade_acco_hidden").val(trade_acco);
+       $("#balance_hidden").val(balance);
+       $('#MumberPassword').click();
+}
+
+
+function buyfund(tradepassword){
+	 $(".bottom-e-msg").text("");
+	fund_code=$("#fund_code").val();//基金代码
+	//var fund_code="3Q0108";//基金代码
+	share_type=$("#share_type").val();//付款方式
+	fund_busin_code=$("#fund_busin_code").val();//业务代码
+	trade_acco=$("#trade_acco_hidden").val();//交易账号
+	balance=$("#balance_hidden").val();//购买金额
+	var auto_buy=$("#auto_buy_hidden").val();//分红方式
+	if (fund_code == "" || fund_code == null) {
+		$(".bottom-e-msg").text("基金代码为空!");
+		return false;
+	}
+	if (share_type == "" || share_type == null) {
+		$(".bottom-e-msg").text("请选择银行卡!");
+		return false;
+	}
+	if (fund_busin_code == "" || fund_busin_code == null) {
+		$(".bottom-e-msg").text("请选择业务方式!");
+		return false;
+	}
+	if (trade_acco == "" || trade_acco == null) {
+		$(".bottom-e-msg").text("请选择银行卡!");
+		return false;
+	}
+	
+	if (balance == "" || balance == null) {
+		$(".bottom-e-msg").text("请填写购买金额!");
+		return false;
+	}
+	if (!Regular.REG(balance, RegexEnum.decmal)) {//购买金额
+		$(".bottom-e-msg").text("金额格式不正确!");
+		return false;
+    }
+	if (auto_buy == "" || auto_buy == null) {
+		$(".bottom-e-msg").text("请选择分红方式!");
+		return false;
+	}
+	if (tradepassword == "" || tradepassword == null) {
+		$(".bottom-e-msg").text("请输入交易密码!");
+		return false;
+	}
+	var capital_way=$("#trade_acco").find("option:selected").attr("name");
+	if(fund_busin_code=='020'){ 
+		$.ajax({
+			type : "post",
+			data : {
+				"balance" : balance,
+				"fund_code" : fund_code,
+				"password":tradepassword,
+				"share_type" : share_type,
+				"trade_acco" : trade_acco,
+				"pro_shortname" : $("#pro_shortname").val(),
+				"capital_way" : capital_way
+			},
+			url : "${ctxPath}/trade/subscribeapply",
+			async : false,
+			success : function(result) {
+				if("0000"==result.code){
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					window.location.href="${ctxPath}/h5/capital/buysuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+				}else{
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+		
+	}else if(fund_busin_code=='022'){
+		$.ajax({
+			type : "post",
+			data : {
+				"balance" : balance,
+				"fund_code" : fund_code,
+				"password":tradepassword,
+				"share_type" : share_type,
+				"trade_acco" : trade_acco,
+				"auto_buy" : auto_buy,
+				"pro_shortname" : $("#pro_shortname").val(),
+				"capital_way" : capital_way
+			},
+			url : "${ctxPath}/trade/buy",
+			success : function(result) {  
+				if("0000"==result.code){
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					window.location.href="${ctxPath}/h5/capital/buysuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+				}else{
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+	}else{ 
+		$(".bottom-e-msg").text("该基金不可购买");
+	}
+}
+</script>
+</body>
+</html>

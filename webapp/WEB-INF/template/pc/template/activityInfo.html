@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>PC新闻资讯</title>
+<%include("/pc/common/meta.html"){}%>
+<%include("/pc/common/resource.html"){}%>
+</head>
+<body>
+  <input type="hidden" id="topicCode" value="activitiesList"/>
+  <%include("/pc/common/top.html",{flag:"news"}){}%>
+  <%include("/pc/include/index/big_banner.html"){}%>
+  <div class="wrap bosom">
+    <%include("/pc/include/news/leftBar.html",{flag:"1"}){}%>
+    <%include("/pc/include/news/newsInfoList.html"){}%>
+  </div>
+  <%include("/pc/common/footer.html"){}%>
+  <%include("/pc/common/bottom.html"){}%> 
+</body>
+</html>

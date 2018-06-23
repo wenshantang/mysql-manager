@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>应聘者列表</title>
+<%include("resource/template/common/resource.html"){}%> 
+</head>
+<script type="text/javascript">
+</script>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+            <td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+			<td>{{row.author}}</td>
+			<td>{{row.phone}}</td>
+			<td>{{row.messagesTitle}}</td>
+			<td>{{row.sex | decode:'0','男','1','女'}}</td>
+			<td>{{row.content}}</td>
+			<td>{{row.address}}</td>
+			<td><a target="_blank" href="{{row.file_url}}" >查看简历</a></td>
+			<td>{{row.create_time}}</td>
+			<td>{{row.status | decode:'0','有意向','1','无意向'}}</td>
+			<td>
+				<a id="edit{{row.id}}" href="javascript:;" class="img-btn edit operator"  onclick="edit('${ctx}/admin/recruit/edit/{{row.id}}')">编辑</a>				
+			</td>
+		</tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+	<div class="toolbar-wrap">
+		<div id="floatHead" class="toolbar">
+			<div class="l-list">
+				<ul class="icon-list">
+					 <#permission url="/admin/recruit/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/recruit/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="searchbar">
+		<div class="searchForm">
+			<form id="search_form">
+				<dl>
+					<dt>岗位：</dt>
+					<dd>
+						<input class="input middle" type="text" name="messagesTitle" id="messagesTitle"/>
+					</dd>
+				</dl>
+				<dl>
+					<dt>联系地址：</dt>
+					<dd>
+						<input class="input middle" type="text" name="address" id="address"/>
+					</dd>
+				</dl>
+				<dl>
+					<dt style="width: 80px;">性别：</dt>
+					<dd style="margin-left: 100px;">
+						<select name="sex" id="sex" class="js-example-basic-single"  style="width: 80px;">
+							<option value="">请选择</option>
+							<option value="0">男</option>
+							<option value="1">女</option>
+						</select>
+					</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="searchButton">
+			<input id="searchBtn" class="btn" type="button" value="搜索"/>
+			<input id="clearBtn" class="btn yellow" type="button" value="重置"/>
+		</div>
+	</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/recruit/json">
+		<tr>
+		    <th>选择</th>
+			<th>应聘人</th>
+			<th>联系电话</th>
+			<th>应聘岗位</th>
+			<th>性别</th>
+			<th>应聘描述</th>
+			<th>联系地址</th>
+			<th>简历附件</th>
+			<th>申请时间</th>
+			<th>是否有意向</th>
+			<th>操作</th>
+		</tr>
+		<tbody id="tablelist"></tbody>
+	</table>
+	<div class="pagelist"></div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>系统缓存管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<style>
+  .divShow{
+    display:none;
+  }
+</style>
+<script>
+function clearCache(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				popStatus(1, '清理成功！！！', 1);
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		},error:function(){
+			popStatus(4, "系统异常", 2);
+		}
+	});
+}
+
+//显示div块
+function showDiv(){
+	var index=$("#cacheType").val();
+	$(".divShow").hide();
+	$("#div"+index).show();
+}
+
+</script>
+</head>
+<body class="mainbody">
+ 		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">系统缓存管理</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl id="pasd_dl">
+				<dt>缓存类型</dt>
+				<dd>
+                 <select  style="width: 300px" id="cacheType" name="cacheType" class="js-example-basic-single" onchange="showDiv();">
+   		      	    <option  value="" >请选择</option>
+					<option  value="1">文章</option>
+					<option  value="2">栏目</option>
+					<option  value="3">模板</option>
+					<option  value="4">后台数据字典（sysDict）</option>
+					<option  value="5">通用配置数据字典（cmsProperties）</option>
+					<option  value="6">广告位（banner）</option>
+   		      	  </select>
+				</dd>				
+			</dl>
+			<!-- 文章缓存清理区域div1 -->
+			<div id="div1" class="divShow">
+			   <dl>
+				<dt>文章编号</dt>
+				<dd>
+				  <input name="article_id" type="text" id="article_id" maxlength="50" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/1')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据文章编号清理，如果未输入文章编号，清理所有文章缓存）
+			    </dd>	
+			   </dl>			   
+			</div>
+			<!-- 文章缓存清理区域div1 -->
+			
+			<!-- 栏目缓存清理区域div2 -->
+			<div id="div2" class="divShow">
+			   <dl>
+				<dt>栏目url</dt>
+				<dd>
+				  <input name="topic_url" type="text" id="topic_url" maxlength="100" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/2')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据栏目url清理，如果未输入栏目url，清理所有栏目以及栏目文章）
+			    </dd>	
+			   </dl>			    
+			</div>
+			<!-- 栏目缓存清理区域div2 -->
+			
+			<!-- 模板缓存清理区域div3 -->
+			<div id="div3" class="divShow">
+			   <dl>
+				<dt>模板id</dt>
+				<dd>
+				  <input name="template_id" type="text" id="template_id" maxlength="100" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/3')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据模板id清理，如果未输入模板id，清理所有模板）
+			    </dd>	
+			   </dl>			    
+			</div>
+			<!-- 模板缓存清理区域div3 -->		
+			
+           <!-- 后台数据字典（sysDict）缓存清理区域div4 -->
+			<div id="div4" class="divShow">
+			   <dl>
+				<dt>字典类型type</dt>
+				<dd>
+				  <input name="sys_dict_type" type="text" id="sys_dict_type" maxlength="100" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/4')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据字典类型type清理，如果未输入字典类型type，清理所有模板）
+			    </dd>	
+			   </dl>				    
+			</div>
+			<!-- 后台数据字典（sysDict）缓存清理区域div4-->		
+           
+           <!-- 通用配置数据字典（cmsProperties）缓存清理区域div5 -->
+			<div id="div5" class="divShow">
+			   <dl>
+				<dt>字典类型type</dt>
+				<dd>
+				  <input name="cms_properties_type" type="text" id="cms_properties_type" maxlength="100" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/5')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据字典类型type清理，如果未输入字典类型type，清理所有模板）
+			    </dd>	
+			   </dl>			    
+			</div>
+			<!-- 通用配置数据字典（cmsProperties）缓存清理区域div5-->	
+			
+           <!-- 广告位（banner）缓存清理区域div6 -->
+			<div id="div6" class="divShow">
+			   <dl>
+				<dt>banner-type</dt>
+				<dd>
+				  <input name="banner_type" type="text" id="banner_type" maxlength="100" class="input normal" />
+				  <span style="width: 15px;">&nbsp;</span><input type="button" name="btnSubmit" value="缓存清理" id="btnSubmit" class="btn" onclick="clearCache('${ctx}/admin/sys/cacheManager/clearSysCache/6')"/>
+				</dd>
+			   </dl>
+			   <dl>
+				<dt>备注：</dt>
+				<dd>
+				    （根据banner所属的type清理，如果未输入banner所属的type，清理所有模板）
+			    </dd>	
+			   </dl>				    
+			</div>
+			<!-- 广告位（banner）缓存清理区域div6-->							
+        </div>
+				  
+        </form>
+
+		
+	</body>
+</html>

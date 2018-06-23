@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link href="${ctx}/resource-injar/css?t=/skin/default/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+<style type="text/css">
+.we-txt {
+	background: url('${ctx}/resource-injar/image?t=/cms.png') no-repeat 0px -80px;
+}
+.we-txt p {
+	font-size: 13px;
+	line-height: 35px;
+	padding-left: 128px;
+	margin-top: 20px;
+}
+.tab-content {
+	padding: 0 15px;
+}
+.tab-content dl dt {
+    width: 130px;
+}
+.tab-content dl dd {
+    margin-left: 150px;
+}
+.tab-content dl, .div-content dl {
+	padding: 3px 0;
+    line-height: 25px;
+}
+</style>
+</head>
+<body class="mainbody">
+        <!--内容-->
+        <div class="line10"></div>
+        <div class="nlist-3" style="width: 400px;">
+        	<div class="we-txt" style="margin-left: 30px">
+             	  <p>
+                  ${sys.greetings}！${session.user.name}。<br>
+                  欢迎使用鑫铭管理平台！<br>
+                  IP：${sys.ip}<br>
+                  </p>
+             </div>
+             
+             
+            <ul style="margin-left: 50px;margin-top: 100px;">
+                <li>
+                    <a href="javascript:;" class="icon-setting" onclick="Public.addTab('1000000001','管理台设置','${ctx}/admin/sys${ctx}/config');"></a>
+                    <span>管理台设置</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-user" onclick="Public.addTab('1000000006','用户管理','${ctx}/admin/sys/user');"></a>
+                    <span>用户管理</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-manaer" onclick="Public.addTab('1000000007','角色管理', '${ctx}/admin/sys/role');"></a>
+                    <span>角色管理</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-channel" onclick="Public.addTab('1000000002','菜单管理','${ctx}/admin/sys/leftmenu');"></a>
+                    <span>菜单管理</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-templet" onclick="Public.addTab('1000000003','资源管理','${ctx}/admin/sys/resource');"></a>
+                    <span>资源管理</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-mark" onclick="Public.addTab('1000000004','URL列表','${ctx}/puff/owm/url-mapping');"></a>
+                    <span>URL列表</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-plugin" onclick="Public.addTab('1000000005','数据源监控', '${ctx}/puff/owm/monitor/druid');"></a>
+                    <span>数据源监控</span>
+                </li>
+                <li>
+                    <a href="javascript:;" class="icon-log" onclick="javascript:;"></a>
+                    <span>任务管理</span>
+                </li>
+            </ul>
+	  	</div>
+	  	
+	  	
+	  	
+	  	<div class="nlist-4" style="border: 0;height: 100%;">
+	  		<h3 style="margin-left: 60px"><i></i>系统信息</h3>
+	  		<div class="tab-content" style="border: 0">
+			<dl>
+				<dt>系统启动时间</dt>
+				<dd>
+					<span>${sys.serverStartTime}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统运行时间</dt>
+				<dd>
+					<span>${sys.serverRunTime}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器信息</dt>
+				<dd>
+					<span>${sys.osName }(内核${sys.osVersion }) ${sys.osArch }&nbsp;&nbsp;${sys.availableProcessors }核</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统健康状况</dt>
+				<dd>
+					<span>很健康</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器用户</dt>
+				<dd>
+					<span>${sys.userName } (${sys.userHome})</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统安装目录</dt>
+				<dd>
+					<span>${sys.userDir}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Java版本</dt>
+				<dd>
+					<span>${sys.javaVersion}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Java安装目录</dt>
+				<dd>
+					<span>${sys.javaHome}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统临时目录</dt>
+				<dd>
+					<span>${sys.javaIoTmpdir}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Servlet容器</dt>
+				<dd>
+					<span>${sys.servletEngine!}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM内存总量</dt>
+				<dd>
+					<span>${sys.totalMemory}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM空闲内存量</dt>
+				<dd>
+					<span>${sys.freeMemory}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM最大内存量</dt>
+				<dd>
+					<span>${sys.maxMemory}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器端口</dt>
+				<dd>
+					<span>${sys.port!}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统版本</dt>
+				<dd>
+					<span>beta1.0</span>
+				</dd>
+			</dl>
+          </div>
+        </div>
+</body>
+</html>

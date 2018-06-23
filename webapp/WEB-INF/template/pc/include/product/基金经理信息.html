@@ -1,0 +1,23 @@
+<#manager fund_code="${fund_code!}";manager>
+   <div class="cc-con">
+        <div class="md-list-g">
+          <%if(manager.~size>0){%>
+          <%for(man in manager){%>
+        	<div class="md-ren-box">
+            	<div class="t-fl md-pic">
+                	<p class="img"><img id="managerPhoto" style="width:140px;height:170px;" src="${man.photo}" /></p>
+                    <p class="name">${man.name}</p>
+                </div>
+                <div class="t-fl md-txt">
+               	  <p class="text">
+               	    ${man.investidea}
+               	  </p>
+                </div>
+            </div>
+           <%}%>
+           <%}else{%>
+            ...暂无更新数据...
+           <%}%>
+        </div>
+    </div>
+  </#manager>

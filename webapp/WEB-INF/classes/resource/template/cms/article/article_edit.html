@@ -1,0 +1,573 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑增文章</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+</head>
+<script type="text/javascript">
+$(function(){
+	$(".js-example-basic-multiple").select2();
+});
+function dlhidden(){
+    $("input[name='pro_idsarr']").prop("checked",true);
+	$("#artedipro").hide();
+}
+function dlshow(){
+	$("input[name='pro_idsarr']").prop("checked",true);
+	$("#artedipro").show();
+}
+//取消关联所有的产品
+function dlshow2(){
+   $("input[name='pro_idsarr']").prop("checked",false);
+   $("#artedipro").show();
+}
+
+//根据输入的产品名称动态查询产品列表
+function showProTables(){
+	$("#pro_tables").empty();
+	var url="${ctx}/admin/cms/article/queryProByName";
+	$("#pro_name").val($("#pro_name_base").val());
+	var idx = loading('操作中。。。');
+	var tr;//创建tr节点
+	jQuery.ajax({
+		url  : url,
+		data : $('#pro_name_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				//popStatus(1, '清理成功！！！', 1);
+				var data=result.data;
+				for(var i=0;i<data.length;i++){
+					var record=data[i];
+					var td='<td><input name="pro_idsarr" type="checkbox" value="'+record.pro_id+'" />&nbsp;'+record.pro_shortname+'&nbsp;&nbsp;</td>';
+					if(i%3==0){//new tr include 3 td
+						tr = document.createElement('tr');//创建tr节点
+						$("#pro_tables").append(tr);
+					}
+					$(tr).append(td);
+				}
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		},error:function(){
+			popStatus(4, "查询异常", 2);
+		}
+	});
+}
+
+var CTX = '${ctx}';
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+KindEditor.ready(function(K) {
+	var editor1 = K.create('textarea[name="content"]', {
+		allowFileManager : true,
+		allowFlashUpload : true,
+		allowMediaUpload : true,
+		allowFileUpload : true,
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list',
+		afterBlur: function(){this.sync();}
+	});
+	
+	var editor = K.editor({
+		allowFileManager : true,
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list'
+	});
+	
+	K('#select_big_image').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					if (K('#image_show_big')) {
+						if(url.startWith("http://")||url.startWith("https://")){
+							 K('#image_show_big').attr('src', url);
+							 K('#big_picurl').val(url);
+						}else{
+							 K('#image_show_big').attr('src', CTX+url);
+							 K('#big_picurl').val(CTX+url);
+						}
+						 K('#image_show_big').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	K('#select_small_image').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					if (K('#image_show_small')) {
+						if(url.startWith("http://")||url.startWith("https://")){
+							 K('#image_show_small').attr('src', url);
+							 K('#small_picurl').val(url);
+						}else{
+							 K('#image_show_small').attr('src', CTX+url);
+							 K('#small_picurl').val(CTX+url);
+						}
+						 K('#image_show_small').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+});
+</script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/upload.js"></script>
+<script>
+function loadimg(paramkey){
+	var imgid = "#"+paramkey+"_upload-img";
+	$(imgid).InitUploader({btntext:'选择文件...',sendurl: "${ctx}/admin/sys/file/upload", swf: "${ctx}/resource-injar/swf?t=/plugin/webuploader/Uploader.swf",paramkeyname:paramkey});
+}
+function uploadError(data){
+	popStatus(2, data.message, 2);
+}
+function uploadSuccess(data,paramkey){
+	$("#"+paramkey).html(data.http_url);
+	//$("#"+paramkey+"_http_url").attr('src',"${ctx}"+data.http_url); 
+}
+</script>
+ <script type="text/javascript">
+     function addDateDay(days){ 
+       var d=new Date(); 
+	   var seperator1 = "-";
+       var seperator2 = ":";
+       //var strDate=d.getDate()+days; 
+	   d.setDate(d.getDate()+days); 
+	   var strDate = d.getDate();
+       var m=d.getMonth()+1; 
+	   if (m >= 1 && m <= 9) {
+				m = "0" + m;
+		}
+		if (strDate >= 0 && strDate <= 9) {
+			strDate = "0" + strDate;
+		}
+       return d.getFullYear()+seperator1+m+seperator1+strDate+" "+getFormatDate(d.getHours())+seperator2+ getFormatDate(d.getMinutes())
+            + seperator2 + getFormatDate(d.getSeconds()); 
+     } 
+
+	  function addDateMonth(months){ 
+       var d=new Date(); 
+	   var seperator1 = "-";
+       var seperator2 = ":";
+	   d.setMonth(d.getMonth() + months);
+       var strDate=d.getDate(); 
+       var m=d.getMonth()+1; 
+	  
+	   if (m >= 1 && m <= 9) {
+				m = "0" + m;
+		}
+		if (strDate >= 0 && strDate <= 9) {
+			strDate = "0" + strDate;
+		}
+       return d.getFullYear()+seperator1+m+seperator1+strDate+" "+getFormatDate(d.getHours())+seperator2+ getFormatDate(d.getMinutes())
+            + seperator2 + getFormatDate(d.getSeconds()); 
+     } 
+
+ // 日期月份/天的显示，如果是1位数，则在前面加上'0'
+        function getFormatDate(arg) {
+            if (arg == undefined || arg == '') {
+                return '00';
+            }
+
+            var re = arg + '';
+            if (re.length < 2) {
+                re = '0' + re;
+            }
+
+            return re;
+        }
+     
+      function addDate(val){
+    	  var endtime="";
+    	  if(val=="1"){
+    		  endtime=addDateMonth(1);
+    	  }else if(val=="2"){
+    		  endtime=addDateMonth(3);
+    	  }else if(val=="3"){
+    		  endtime=addDateMonth(12);
+    	  }
+    	  $("#endtime").val(endtime);
+      }
+      
+      //判断日期，时间大小 [startDate>=endDate return false] 
+      function compareTime(startDate, endDate) {
+      	 if (startDate.length > 0 && endDate.length > 0) {   
+      		var startDateTemp = startDate.split(" ");   
+      		
+      		var endDateTemp = endDate.split(" ");   
+
+      		var arrStartDate = startDateTemp[0].split("-");   
+      		var arrEndDate = endDateTemp[0].split("-");   
+
+      		var arrStartTime = startDateTemp[1].split(":");   
+      		var arrEndTime = endDateTemp[1].split(":");   
+
+      		var allStartDate = new Date(arrStartDate[0], arrStartDate[1], arrStartDate[2], arrStartTime[0], arrStartTime[1], arrStartTime[2]);   
+      		var allEndDate = new Date(arrEndDate[0], arrEndDate[1], arrEndDate[2], arrEndTime[0], arrEndTime[1], arrEndTime[2]);   
+
+      		if (allStartDate.getTime() >= allEndDate.getTime()) {   
+      				//alert("startTime不能大于endTime，不能通过");   
+      				return false;   
+      		} else {   
+      			//alert("startTime小于endTime，所以通过了");   
+      			return true;   
+      		}   
+      	} else {  
+      		popStatus(4, "时间不能为空", 2);
+      		return false;   
+      	}   
+      }  
+      
+      function checkEndTime(flag){
+    	  var startDate=$("#endtime").val();
+    	  /**if(startDate==""){
+    		  startDate="9999-12-31 23:59:59";
+    	  }*/
+    	  var endDate=$("#publish_time").val();
+   		  if(endDate!=""&&startDate!=""){
+   			  var compare=compareTime(startDate,endDate);
+   	    	  if(compare){
+   	    		  popStatus(4, "发布时间不能大于文章到期时间", 2);
+   	    		  $("#publish_time").val("");
+   	    	  } 
+   		  }
+    	
+      }
+      
+  </script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">文章基本信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">文章内容</a></li>
+						<%if(permissions!=null&&permissions.~size>0){%>
+							<li><a href="javascript:;" onclick="tabs(this);">文章访问控制</a></li>
+						<%}%>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input type="hidden" name="id" value="${article.id}"/>
+		<input type="hidden" name="status" value="${article.status}"/>
+		<input type="hidden" name="create_user" value="${article.create_user}"/>
+		<input type="hidden" name="create_time" value="${article.create_time}"/>
+		<input type="hidden" name="audit_user" value="${article.audit_user}"/>
+		<input type="hidden" name="old_topic" value="${article.topic_id}"/>
+		<input type="hidden" name="old_top" value="${article.i_top}"/>
+		<div class="tab-content">
+			<dl>
+				<dt>是否首页展示</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="is_index" type="checkbox" name="is_index" value="1" ${article.is_index!='0'?'checked':''}/>
+					</div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>			
+			<dl>
+				<dt>是否置顶</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="isTop" type="checkbox" name="isTop" value="1" ${article.i_top!=0?'checked':''}
+							onclick="javascript:if(this.checked){$('#dl_top').css('display','block')}else{$('#dl_top').css('display','none')}" />
+					</div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl id="dl_top" ${article.i_top!=0?'':'style="display: none"'}>
+				<dt>置顶排序</dt>
+				<dd>
+					<input name="i_top" type="text" id="i_top" class="input small" value="${article.i_top}" style="text-align: center"/>
+					<span id="Validform_checktip">*数字（大于0，越大越靠前）</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>文章类型</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="type_id" type="radio" value="1" ${article.type_id! == '1' ?'checked':''} 
+				      	onclick="javascript:if(this.checked){$('#dl_out').css('display','none')}else{$('#dl_out').css('display','block')}" /><label for="">普通文章</label>
+			      		<input name="type_id" type="radio" value="2" ${article.type_id! == '2' ?'checked':''} 
+			      		onclick="javascript:if(this.checked){$('#dl_out').css('display','block')}else{$('#dl_out').css('display','none')}" /><label for="">内部链接</label>
+			      		<input name="type_id" type="radio" value="3" ${article.type_id! == '3' ?'checked':''} 
+			      		onclick="javascript:if(this.checked){$('#dl_out').css('display','block')}else{$('#dl_out').css('display','none')}" /><label for="">外部链接</label>
+				    </div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+					
+			<dl id="dl_out" ${article.type_id! =='2' || article.type_id! =='3' ?'':'style="display: none"'}>
+				<dt>链接URL</dt>
+				<dd>
+					<textarea name="article_location" rows="3" cols="20" id="article_location" class="input" style="width: 500px;height: 30px;">${article.article_location}</textarea>
+					<div id="article_location_upload-img" class="upload-box upload-img" ></div><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<script>
+				$(function () {
+					loadimg("article_location");
+				});
+			</script>
+			
+			<dl>
+				<dt>文章模型</dt>
+				<dd>
+					<select class="js-example-basic-single" style="width: 47%" name="model_id">
+				  	  <option value="">请选择模型</option>
+					  <%for(model in models){%>
+					  	<option value="${model.code}" ${article.model_id==model.code?'selected':''}>${model.name}</option>
+					  <%}%>
+					</select>
+					<input type="hidden" id="model_id_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+
+			<dl>
+				<dt>所属栏目</dt>
+				<dd>
+					<!-- <select class="js-example-basic-single" style="width: 47%" name="topic_id">
+				  	  <option value="">请选择栏目</option>
+					  <%for(topic in topics){%>
+					  	<option value="${topic.id}" ${article.topic_id==topic.id?'selected':''}>${topic.name}${topic.location}</option>
+					  <%}%>
+					</select> -->
+					<select class="js-example-basic-multiple" multiple="multiple" style="width: 70%" name="topicIds">
+				  	  <option value="" disabled="disabled" >请选择栏目</option>
+					  <%for(topic in topics){%>
+					  	<option value="${topic.id}" ${article.topic_id==topic.id?'selected':''}>${topic.name}-->${topic.location}</option>
+					  <%}%>
+					</select><input type="hidden" name="topic_id" id="topic_id" value="${article.topic_id}"/>
+					<input type="hidden" id="topic_id_tip"/><span id="Validform_checktip"></span>
+					<input type="hidden" id="article_resource_id" name="article_resource_id" value="${article.article_resource_id}"/>
+				</dd>
+			</dl>
+
+			<dl>
+				<dt>文章标题</dt>
+				<dd>
+					<textarea name="title" rows="3" cols="20" id="title" class="input" style="width: 600px;height: 40px;">${article.title}</textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		    <dl>
+				<dt>文章小标题</dt>
+				<dd>
+					<textarea name="short_title" rows="3" cols="20" id="short_title" class="input" style="width: 600px;height: 30px;">${article.short_title}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		   <!--  <dl>
+				<dt>html meta title</dt>
+				<dd>
+					<textarea name="meta_title" rows="3" cols="20" id="meta_title" class="input" style="width: 600px;height: 40px;">${article.meta_title}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		    <dl>
+				<dt>html meta keywords</dt>
+				<dd>
+					<textarea name="meta_keywords" rows="3" cols="20" id="meta_keywords" class="input" style="width: 600px;height: 50px;">${article.meta_keywords}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		    <dl>
+				<dt>html meta description</dt>
+				<dd>
+					<textarea name="meta_desc" rows="3" cols="20" id="meta_desc" class="input" style="width: 600px;height: 50px;">${article.meta_desc}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl> -->
+		    <dl>
+				<dt>简短摘要</dt>
+				<dd>
+					<textarea name="digest" rows="3" cols="20" id="digest" class="input" style="width: 600px;height: 88px;">${article.digest}</textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		    <!-- <dl>
+				<dt>核心提示</dt>
+				<dd>
+					<textarea name="centre_tip" rows="3" cols="20" id="centre_tip" class="input" style="width: 600px;height: 30px;">${article.centre_tip}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl> -->
+			
+		    <dl>
+				<dt>文章作者</dt>
+				<dd>
+					<input name="author" type="text" id="author" class="input normal" value="${article.author}"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+		    <dl>
+				<dt>发布时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" value="${article.publish_time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" 
+						   class="input rule-date-input" id="publish_time" name="publish_time"  onblur="checkEndTime(1);"/>
+					</div>
+					<input type="hidden" id="publish_time_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		    <dl>
+				<dt>文章到期时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" value="${article.endtime}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate: '#F{$dp.$D(\'publish_time\');}'})" 
+						  class="input rule-date-input" id="endtime" name="endtime" title="不填则永不到期" onblur="checkEndTime(2);" />
+					</div>
+					<div class="rule-multi-radio">
+				      	<input name="endtime_flag" type="radio" value="1" onclick="addDate(this.value);"/><label for="">一月后</label>
+			      		<input name="endtime_flag" type="radio" value="2" onclick="addDate(this.value);"/><label for="">三月后</label>
+			      		<input name="endtime_flag" type="radio" value="3" onclick="addDate(this.value);"/><label for="">一年后</label>
+				    </div>
+				    <span>如您选择了快捷标签，之后将按您的选择初始化到期时间</span>
+					<input type="hidden" id="endtime_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>				
+			<dl>
+				<dt>预览大图片</dt>
+					<dd>
+						<img id="image_show_big" src="${article.big_picurl}" style="max-height:100px;"/>
+						<input id="big_picurl" type="hidden" name="big_picurl" value="${article.big_picurl}"/>
+	                    <span class="help-inline"><a id="select_big_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="big_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			<dl>
+				<dt>预览小图片</dt>
+					<dd>
+						<img id="image_show_small" src="${article.small_picurl}" style="max-height:100px;" />
+						<input id="small_picurl" type="hidden" name="small_picurl" value="${article.small_picurl}"/>
+	                    <span class="help-inline"><a id="select_small_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="small_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			
+			<dl>
+				<dt>权限设置</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="article_auth" type="radio" value="1" ${article.article_auth! == '1' ?'checked':''}/><label for="">所有人可见</label>
+			      		<input name="article_auth" type="radio" value="2" ${article.article_auth! == '2' ?'checked':''}/><label for="">会员可见</label>
+			      		<input name="article_auth" type="radio" value="3" ${article.article_auth! == '3' ?'checked':''}/><label for="">持有人可见</label>
+				    </div>
+				</dd>
+			</dl>
+			<dl>
+			<dt>是否关联所有产品</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<!-- <input name="allpro_ids" type="radio" onclick="dlshow()" value="0" ${article.allpro_ids! == '0' ?'checked':''}/><label for="">关联部分产品</label> -->
+			      		<input name="allpro_ids" type="radio" onclick="dlshow()" value="1" ${article.allpro_ids! == '1' ?'checked':''}/><label for="">关联所有产品</label>
+						<input name="allpro_ids" type="radio" onclick="dlshow2()"  value="2" ${article.allpro_ids! == '2' ?'checked':''}/><label for="">取消关联所有产品</label>
+				    </div>
+				</dd>
+			</dl>
+			<dl  id="artedipro" ${article.allpro_ids! == '1' ?'hidden':''}>
+				<dt>关联产品</dt>
+				<dd>
+					产品名称:
+					<input type="text" name="pro_name_base" id="pro_name_base" class="input normal"/>
+					<input name="btnReturn" type="button" value="查询" class="btn yellow" onclick="showProTables();" />
+					<br/>
+					<span>(支持多个关键词查询，使用@分隔，例如：1@2，则查询产品名称中包含1或者包含2的产品)</span>					
+					<br/>				
+				<table id="pro_tables">
+					<tr>
+					<% i=0; %>
+					<%for(list in plist!){i++;%>
+						<td>
+							<input name="pro_idsarr" type="checkbox" value="${list.pro_id}" ${strutil.contain(article.pro_ids,list.pro_id)?'checked':''}/>&nbsp;${list.pro_shortname}&nbsp;&nbsp;
+						</td>
+					<% if(i%6==0){ %>
+					</tr>
+					<tr>
+					<%}%>
+					<%}%>
+					</tr>
+				</table>
+				</dd>
+			</dl>
+			
+		</div>
+		<div class="tab-content" style="display: none">
+			<dl>
+				<dt>文章内容</dt>
+				<dd>
+                    <textarea name="content" rows="3" cols="20" id="content" class="input" style="width: 700px;height: 500px;">${content!}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		<div class="tab-content" style="display: none">
+			<dl>
+				<dd style="margin-left: 20px;">
+					<span>拦截顺序(<span style="color: red">只能为数字</span>)，越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dd style="margin-left: 20px;">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" class="border-table">
+				        <thead>
+				          <tr>
+				            <th width="5%">选择</th>
+				            <th>拦截说明</th>
+				            <th>完整类名</th>
+				            <th width="11%">拦截顺序</th>
+				          </tr>
+				        </thead>
+	       				<tbody>
+	       				<%for(per in permissions!){%>
+							<tr>
+								<td align="center"><input id="${per.id }" type="checkbox" name="permissions" value="${per.id}" ${array.contain(article.access_permission!,per.id)?'checked':''}/></td>
+								<td align="center">${per.name}</td>
+								<td align="center">${per.class_name}</td>
+								<td>
+									<input name="idx_${per.id}" value='${access_permission[per.id]!}' type="text" id="idx_${per.id}" class="input small" style="text-align: center;margin-left: 30px"/>
+								</td>
+							</tr>
+						<%}%>
+	        			</tbody>
+	      				</table>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<form id="pro_name_form" name="pro_name_form">
+		   <input type="hidden" name="pro_name" id="pro_name" />
+		</form>		
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/article/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/cms/article/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>基金俱乐部-基金详情</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/highcharts.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/trade.fundnav.js"></script>
+<style >
+#leijijingzhi .m-ui-checkbox-box.m-on b {
+    background-image: url(${ctxPath}/portal/h5/images/taaaaaa_003.png);
+}
+</style>
+</head>
+<body>
+<script type="text/javascript">
+$(function(){
+	 gethighcharts('1');
+});
+</script>
+<#QuerSuperFundList fundcode="${fundcode!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">${fund.pro_name}<b>（${fund.fundcode}）</b></span>
+      <time class="time">${fund.c_funddate!"--"}</time>
+    </h1>
+  </div>
+</header>
+<div class="main wrap">
+    <input type="hidden" value="${fundcode!}" id="fundcode">
+    <input type="hidden" value="1" id="fundtype">
+  <div class="g-topBox">
+    <div class="left">
+    <%if(strutil.contain(fund.i_fluctuateper+"","-")){%>
+      <p class="p1" style="color:#008000;"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+   <%}else{%>   
+      <p class="p1 c-f25050" ><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+   <%}%>
+      <p class="p2 c-f36868">日涨幅</p>
+    </div>
+    <div class="mid">
+      <p class="p1">${NumberFunction(fund.i_fundvalue!,"###0.0000")}</p>
+      <p class="p2">单位净值</p>
+    </div>
+    <div class="right">
+      <p class="p1">${fund.pro_type_name!"--"}</p>
+      <p class="p2">基金类型</p>
+    </div>
+  </div> 
+  <div class="g-btnBox2 g-m-b54"> <a class="g-btns g-btn2" href="${ctxPath}/h5/capital/buy?fundcode=${fundcode!}">购  买</a> <a class="g-btns g-btn2" href="${ctxPath}/h5/capital/invest?fundcode=${fundcode!}">定  投</a> </div>
+  <nav class="sonNav2" m-switch-tab="tab"><a class="m-on" href="javascript:void(0);">收益走势图</a><a href="javascript:void(0);">历史明细</a></nav>
+  <div class="m-tabBox" m-switch-con="tab">
+    <div class="list">
+      <div class="m-duduBox">
+      	  <div id="container" class="g-imgatuo" style="height:155px;"></div>
+		   <div style="height:20px;position: relative;"> 
+		         <div id="showdate1" style="font-size:9px;position:absolute;top:3px;left:3%;width:25%;"></div>
+		        <div id="showdate2" style="font-size:9px;position:absolute;top:3px;left:29%;width:25%;"></div>
+		        <div id="showdate3" style="font-size:9px;position:absolute;top:3px;left:54%;width:25%;"></div>
+		        <div id="showdate4" style="font-size:9px;position:absolute;top:3px;left:79%;width:25%;"></div>
+		    </div> 
+     </div>
+      <div class="m-duduBtns">
+        <div class="date">
+        <a href="javascript:void(0);" id="1" onclick="gethighcharts('1')" class="m-on">一月</a> 
+        <a href="javascript:void(0);" id="2" onclick="gethighcharts('2')" >三月</a>
+        <a href="javascript:void(0);" id="3" onclick="gethighcharts('3')" >一年</a> 
+        <a href="javascript:void(0);" id="4" onclick="gethighcharts('4')" >今年来</a></div>
+        <div class="type">
+          <label>
+            <input class="m-checkbox" onclick="serieshideorshow('1');" type="checkbox"  checked>单位净值</label>
+          <label id="leijijingzhi">
+            <input class="m-checkbox"  onclick="serieshideorshow('2');"  type="checkbox" checked >累计净值</label>
+        </div>
+      </div>
+    </div>
+    <div class="list">
+      <#fundnav fundcode="${fundcode!}" page="1" pagesize="7" ;fundnav>
+      <div class="m-tableBox no-top-border">
+        <table class="m-table" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">净值日期</th>
+              <th scope="col">单位净值</th>
+              <th scope="col">累计净值</th>
+              <th scope="col">日涨幅</th>
+            </tr> 
+          </thead>
+          <tbody>
+          <%if(fundnav.code=='0000'){%>
+          <%if(fundnav.data.dataList.~size>0){for(nav in fundnav.data.dataList){%>
+          <%if(navLP.index<=6){%>
+            <tr>
+              <td>${nav.c_funddate}</td> 
+               <td>${NumberFunction(nav.i_fundvalue!,"###0.0000")}</td>
+               <td>${NumberFunction(nav.i_fundtotalnetval!,"###0.0000")}</td>
+              <td>
+               <%if(strutil.contain(nav.i_fluctuateper+"","-")){%>
+               <span style="color:#008000;" ><%if(nav.i_fluctuateper!=null){%>${NumberFunction(nav.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></span>
+               <%}else{%>
+               <span  class="c-f25050" ><%if(nav.i_fluctuateper!=null){%>${NumberFunction(nav.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></span>
+               <%}%>
+              </td>
+            </tr>
+            <%}%> 
+            <%}}else{%> 
+              <tr><td colspan="4" style="text-align: center;">暂无相关信息</td></tr>
+            <%}%>
+         <%}else{%>
+           <tr><td colspan="4"  style="text-align: center;" >暂无相关信息</td></tr>
+         <%}%>
+          </tbody>
+        </table> 
+         <%if(fundnav.code=='0000'){%>
+		    <%if(fundnav.data.dataList.~size>6){%>
+		    <a class="g-more-btn" href="${ctxPath}/h5/product/historynav?fundcode=${fundcode!}">查看更多</a>
+		    <%}%>
+        <%}%>
+      </div>
+       </#fundnav>
+    </div>
+  </div>
+  <ul class="g-list-li">
+  <#reason fund_code="${fundcode}";reason>
+    <li><a href="${ctxPath}/h5/product/reason?fundcode=${fund.fundcode}"><span class="name">推荐理由</span><span class="info"><%if(reason.~size>0){%>${reason[0].title!}<%}%></span></a></li>
+  </#reason>
+    <li><a href="${ctxPath}/h5/product/fundinfo?fundcode=${fund.fundcode}"><span class="name">基本信息</span></a></li>
+    <li><a href="${ctxPath}/h5/product/fundmanager?fundcode=${fund.fundcode}"><span class="name">基金经理</span></a></li>
+    <li><a href="${ctxPath}/h5/product/rate?fundcode=${fund.fundcode}"><span class="name">费率结构</span></a></li>
+  </ul>
+</div>
+<%}}%>
+</#QuerSuperFundList>
+<%include("/h5/common/foot.html",{nav:'fund'}){}%>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增招聘信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+	function checkByte(val,num){
+		var str=val.value;
+		var bytesCount = 0;
+		for (var i = 0; i < str.length; i++)
+		{
+		  var c = str.charAt(i);
+		  if (/^[\u0000-\u00ff]$/.test(c)) //匹配双字节
+		  {
+		  bytesCount += 1;
+		  }
+		  else
+		  {
+		  bytesCount += 2;
+		  }
+		}
+		if(bytesCount > num){
+			alert("超出");
+		}
+}
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">招聘信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+		    <dl>
+				<dt>岗位名称</dt>
+				<dd>
+					<input name="post_name" type="text" id="post_name" class="input normal" maxlength="50" onblur="checkByte(this,50)"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>岗位职称</dt>
+				<dd>
+					<input name="job_name" type="text" id="job_name" class="input normal" maxlength="50"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>工作地点</dt>
+				<dd>
+					<input name="post_city" type="text" id="post_city" class="input normal" maxlength="200"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>学历要求</dt>
+				<dd>
+					<input name="degree" type="text" id="degree" class="input normal" maxlength="200"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>经验要求</dt>
+				<dd>
+					<input name="experience" type="text" id="experience" class="input normal" maxlength="200"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+ 			<dl>
+				<dt>招聘类型</dt>
+				<dd>	
+				    <td>
+                          <select name="recruit_type" id="recruit_type" class="input middle" style="width: 100px;height:34px;">
+                    <%for(list in recruit!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+                          </select>						   
+                        </td>				
+				</dd>
+			</dl>
+			<dl>
+				<dt>招聘标题</dt>
+				<dd>	
+				    <td>
+                          <select name="recruit_title" id="recruit_title" class="input middle" style="width: 100px;height:34px;">
+                         
+		                    <%for(list in tittletype!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+                          </select>						   
+                        </td>				
+				</dd>
+			</dl>
+			<dl>
+				<dt>部门</dt>
+				<dd>	
+				    <td>
+                          <select name="dep_type" id="dep_type" class="input middle" style="width: 100px;height:34px;">
+                             <%for(list in department!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+                          </select>						   
+                        </td>				
+				</dd>
+			</dl>
+			<dl>
+				<dt>索引</dt>
+				<dd>
+					<input name="show_index" type="text" id="show_index" class="input normal" maxlength="20"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>需求人数</dt>
+				<dd>
+					<input name="req_num" type="text" id="req_num" class="input normal" maxlength="20"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+ 			<dl>
+				<dt>岗位职责</dt>
+				<dd>
+					<textarea name="description" id="description" class="input normal"></textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>任职资格</dt>
+				<dd>
+					<textarea name="post_request" id="post_request" class="input normal"></textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/position/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/position/insert')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

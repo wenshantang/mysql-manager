@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增CMS栏目</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  $("#parent_topic").select2({
+		  language: "zh-CN"
+	  });
+	  $("#template_id").select2({
+		  language: "zh-CN"
+	  });
+	  $("#code").on('input',function(e){
+		   var parent_url = $("#parent_location").val();
+		   var code = $(this).val();
+		   if(parent_url=='/') parent_url ='';
+		   $("#location").val(parent_url +'/'+ code);
+	  }); 
+	});
+	function show_editTemplate(obj){
+		if(obj.value != ''){
+			$('#itemAddButton').css("display","");
+			$('#itemAddButton').click(function(){
+				fullWithBar('${ctx}/admin/cms/template/edit/'+obj.value);
+			});
+		}else{
+			$('#itemAddButton').css("display","none");
+		}
+	}
+	
+	function changeTopTopic(){
+		var location = $("#parent_topic").find("option:selected").attr("location");
+		$("#parent_location").val(location);
+		if(location=='/'){
+			location ='';
+		}
+		$("#location").val(location+'/'+$("#code").val());
+	}
+	
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">栏目基本信息</a></li>
+						<%if(permissions!=null&&permissions.~size>0){%>
+							<li><a href="javascript:;" onclick="tabs(this);">栏目访问控制</a></li>
+						<%}%>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>菜单显示名称</dt>
+				<dd>
+					<input name="menu_name" type="text" id="menu_name" class="input max" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		
+			<dl>
+				<dt>上级栏目</dt>
+				<dd>
+					<input type="hidden" id="parent_location" value="${parent.location}"/>
+					<select id="parent_topic" name="parent_id" class="js-example-basic-single" style="width: 50%" onchange="changeTopTopic()">
+					  <option value="${topTopic.id}" ${parent.id == topTopic.id?'selected':''} location="${topTopic.location}">${topTopic.name}</option>
+					  <%for(t in topics!){%>
+				  	  	<option value="${t.id}" ${parent.id == t.id?'selected':''} location="${t.location}">${t.name}</option>
+					  <%}%>
+					  </c:forEach>
+					</select>
+                  <input type="hidden" id="parent_id_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>是否启用</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="is_show" type="checkbox" name="is_show" value="1" checked="checked" />
+					</div>
+					<span id="Validform_checktip">*不启用则无法访问</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>新窗口打开</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="target" type="checkbox" name="target" value="_blank" checked="checked" />
+					</div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目排序</dt>
+				<dd>
+					<input name="idx" type="text" id="idx" class="input small" style="text-align: center"/>
+					<span id="Validform_checktip">*数字，越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目代码</dt>
+				<dd>
+					<input name="code" type="text" id="code" class="input normal" />
+					<span id="Validform_checktip">*唯一，不能修改</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>访问路径</dt>
+				<dd>
+					<input name="location" type="text" id="location" class="input max"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input max" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目简称</dt>
+				<dd>
+					<input name="simple_name" type="text" id="simple_name" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目标题</dt>
+				<dd>
+                    <textarea name="meta_title" rows="3" cols="20" id="meta_title" class="input" style="width: 600px;height: 30px;"></textarea>
+					<span id="Validform_checktip">*html title</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目关键字</dt>
+				<dd>
+					<textarea name="meta_keywords" rows="3" cols="20" id="meta_keywords" class="input" style="width: 600px;height: 40px;"></textarea>
+					<span id="Validform_checktip">*html meta keywords</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目描述</dt>
+				<dd>
+					<textarea name="meta_desc" rows="3" cols="20" id="meta_desc" class="input" style="width: 600px;height: 50px;"></textarea>
+					<span id="Validform_checktip">*html meta description</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目模板</dt>
+				<dd>
+                    <select id="template_id" class="js-example-basic-single" style="width: 58%" onchange="show_editTemplate(this);" name="template_id">
+				  	  <option value="">请选择模板</option>
+					  <%for(template in templates){%>
+					  	<option value="${template.id}">${template.name}-->${template.path}</option>
+					  <%}%>
+					</select>
+                    <input type="hidden" id="template_id_tip"/><span id="Validform_checktip">*</span>
+					<a id="itemAddButton" class="icon-btn edit" style="display: none"><i></i><span>修改模板</span></a>
+                </dd>
+			</dl>
+			
+			<dl>
+				<dt>每页显示数量</dt>
+				<dd>
+					<input name="page_size" type=text id="page_size" class="input small" value="20" style="text-align: center"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>是否为文章栏目</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="article_column" type="checkbox" name="article_column" value="1"/>
+					</div>
+					<span id="Validform_checktip">*只有是才能在文章栏目中显示</span>
+				</dd>
+			</dl>
+		</div>
+		
+		<div class="tab-content" style="display: none">
+			<dl>
+				<dd style="margin-left: 20px;">
+					<span>拦截顺序(<span style="color: red">只能为数字</span>)，越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dd style="margin-left: 20px;">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" class="border-table">
+				        <thead>
+				          <tr>
+				            <th width="5%">选择</th>
+				            <th>拦截说明</th>
+				            <th>完整类名</th>
+				            <th width="11%">拦截顺序</th>
+				          </tr>
+				        </thead>
+	       				<tbody>
+	       				<%for(per in permissions!){%>
+							<tr>
+								<td align="center"><input id="${per.id }" type="checkbox" name="permissions" value="${per.id}" /></td>
+								<td align="center">${per.name}</td>
+								<td align="center">${per.class_name}</td>
+								<td>
+									<input name="idx_${per.id}" type="text" id="idx_${per.id}" class="input small" style="text-align: center;margin-left: 30px"/>
+								</td>
+							</tr>
+						<%}%>
+	        			</tbody>
+	      				</table>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/topic/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/cms/topic/insert')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

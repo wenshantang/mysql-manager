@@ -1,0 +1,42 @@
+<div class="wrap"> 
+    <!--登陆框-->
+    <div class="yl-absolute">
+      <p class="logo2"><img src="${ctxPath}/portal/pc/images/logo2.png" /></p>
+      <h3 class="title">推荐使用直销网上交易，0元购基</h3>
+      <p class="btn btn1"><a href="https://e.piccamc.com/etrading/account/openacco/registerinit"><img class="img-l" src="${ctxPath}/portal/pc/images/yl_28.png" />免费注册<img class="img-r" src="${ctxPath}/portal/pc/images/btn_03.png" /></a></p>
+      <p class="btn btn2"><a href="https://e.piccamc.com"><img class="img-l" src="${ctxPath}/portal/pc/images/yl_36.png" />账号登录<img class="img-r" src="${ctxPath}/portal/pc/images/btn_03.png" /></a></p>
+      <p class="btn btn3"><a href="https://e.piccamc.com/etrading/account/proxylogin/init"><img class="img-l" src="${ctxPath}/portal/pc/images/yl_40.png" />代销查询<img class="img-r" src="${ctxPath}/portal/pc/images/btn_03.png" /></a></p>
+     <!-- <p class="icon"> <span class="icon1 on"> <img class="img1" src="${ctxPath}/portal/pc/images/yl_43.png" /> <span class="img2_box"><img class="img2" style="width:106px;height:110px;"src="${ctxPath}/portal/pc/images/erweim_03_03_03.png" /></span> </span> <span class="icon1"> <img class="img1" src="${ctxPath}/portal/pc/images/yl_45.png" /> <span class="img2_box"><img class="img2" style="width:106px;height:110px;" src="${ctxPath}/portal/pc/images/erweim_03_03_03.png" /></span> </span> <span class="icon1"> <img class="img1" src="${ctxPath}/portal/pc/images/yl_47.png" /> <span class="img2_box"><img class="img2"  style="width:106px;height:110px;"src="${ctxPath}/portal/pc/images/erweim_03_03_03.png" /></span> </span> </p>-->
+      <div class="bg"> </div>
+    </div> 
+    <!--登陆框--> 
+</div>
+<div class="bannerBox">
+    <div class="yl-ui-banner">
+    <div class="wrap" style="width: 100%;height: 268px">
+      <ul class="yl-ui-blist" style="width:100%;height:268px;">
+       <#cms_banner type="indexBanner" rows="3";bans>
+       <script type="text/javascript">
+       showtimes=${bans[0].stop_time}*1000;
+       </script>
+			<%for(ban in bans){
+				var pic=strutil.replace(ban.big_picurl,'\\','/');%>
+				  
+      <li><a href="${ban.href_url}" target="${ban.open_type!}"><img style="width: 100%;height: 268px"  class="yl-ui-pic" src="${pic!}" /> </a></li>		
+              
+							
+			<%}%>
+	
+      </ul>
+      <div class="btn btn1" style="left:50px;"></div>
+      <div class="btn btn2" style="right:50px;"></div>
+      <ul class="yl-ui-btn-list" >
+      	<%for(ban in bans){%>
+         <li class="yl-ui-btn"></li>
+        <%}%>
+       <!--  <li class="yl-ui-btn"></li> -->
+      </ul>
+        </#cms_banner>
+    </div>
+  </div>
+</div>

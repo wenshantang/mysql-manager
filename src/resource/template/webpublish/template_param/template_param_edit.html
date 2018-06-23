@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>修改页面参数</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">修改页面参数</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input type="hidden" name="id" id="id" value="${ap.id}" />
+		<input type="hidden" name="create_user" id="create_user" value="${ap.create_user}" />
+		<input type="hidden" name="create_time" id="create_time" value="${ap.create_time}" />
+		<input type="hidden" name="isdelete" id="isdelete" value="${ap.isdelete}" />
+		<div class="tab-content">
+			<dl>
+				<dt>模板名称</dt>
+				<dd>
+				<%if(flist!=null){%>
+				<div class="rule-single-select">
+					<select  style="width: 300px" name="template_name" id="template_name" >
+					<option value="base" ${'base' == ap.template_name ?'selected':''}>基本信息</option>
+					<%for(list in flist!){%>
+						<option value="${list.template_name}" ${list.template_name == ap.template_name ?'selected':''}>${list.show_name}</option>
+						<%for(son in list.sons!){%>
+						<option value="${son.template_name}" ${son.template_name == ap.template_name ?'selected':''}>&nbsp;&nbsp;${son.show_name}</option>
+						<%}%>
+					<%}%>
+	   		      	</select>
+	   		     </div>
+	   		     <%}%>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>显示名字</dt>
+				<dd>
+					<input name="display_name" type="text" id="display_name" class="input normal" value="${ap.display_name}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>参数类型</dt>
+				<dd>
+				  <div class="rule-single-select">
+				   <select   id="param_type" name="param_type"  >
+						<option ${ap.param_type == 'label' ?'selected':''} value="label">label</option>
+						<option ${ap.param_type == 'textarea' ?'selected':''} value="textarea">textarea</option>
+						<option ${ap.param_type == 'image' ?'selected':''} value="image">image</option>
+						<option ${ap.param_type == 'article' ?'selected':''} value="article">article</option>
+						<option ${ap.param_type == 'bean' ?'selected':''} value="bean">bean</option>
+					</select>
+					</div>
+				</dd>
+			</dl>
+			<dl>
+				<dt>参数名</dt>
+				<dd>
+					<input name="param_key" type="text" id="param_key" class="input normal" value="${ap.param_key}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>参数值</dt>
+				<dd>
+					<input name="param_value" type="text" id="param_value" class="input normal" value="${ap.param_value}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>链接</dt>
+				<dd>
+					<input name="param_link" type="text" id="param_link" class="input normal" value="${ap.param_link}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>备注</dt>
+				<dd>
+					<input name="memo" type="text" id="memo" class="input normal" value="${ap.memo}"/>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/webpublish/template_param/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/webpublish/template_param/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

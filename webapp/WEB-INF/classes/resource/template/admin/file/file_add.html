@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增资源信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/upload.js"></script>
+<script>
+$(function(){
+	$("#upload-img").InitUploader({btntext:'选择文件...',sendurl: "${ctx}/admin/sys/file/upload", swf: "${ctx}/resource-injar/swf?t=/plugin/webuploader/Uploader.swf"});
+});
+
+function uploadError(data){
+	popStatus(2, data.message, 2);
+}
+
+function uploadSuccess(data){
+	$("#name").val(data.name);
+	$("#save_name").val(data.save_name);
+	$("#type").val(data.type);
+	$("#path").val(data.path);
+	$("#file_size").val(data.file_size);
+	$("#http_url").val(data.http_url);
+}
+
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">资源信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<input type="hidden" name="id" id="id" />
+			<input type="hidden" name="name" id="name" />
+			<input type="hidden" name="save_name" id="save_name" />
+			<input type="hidden" name="type" id="type" />
+			<input type="hidden" name="path" id="path" />
+			<input type="hidden" name="file_size" id="file_size" />
+			<dl>
+				<dt>资源目录</dt>
+				<dd>
+				<%if(flist!=null){%>
+				<div class="rule-single-select">
+					<select  style="width: 150px" onchange="javascript:document.getElementById('file_menu').value=(this.value);">
+					<%for(list in flist!){%>
+						<option class="channel_type" value="${list.file_menu}">${list.file_menu}</option>
+					<%}%>
+	   		      	</select>
+	   		     </div>
+	   		     <%}%>
+					<input name="file_menu" type="text" id="file_menu" class="input normal" style="width:200px;"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>资源说明</dt>
+				<dd>
+					<input name="file_describe" type="text" id="file_describe" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>权限设置</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="file_auth" type="radio" value="1" checked="checked"/><label for="">所有人可见</label>
+			      		<input name="file_auth" type="radio" value="2"/><label for="">会员可见</label>
+			      		<input name="file_auth" type="radio" value="3"/><label for="">持有人可见</label>
+				    </div>
+				</dd>
+			</dl>
+			<dl>
+				<dt>关联产品</dt>
+				<dd>
+				<table>
+					<tr>
+					<% i=0; %>
+					<%for(list in plist!){i++;%>
+						<td>
+							<input name="pro_idsarr" type="checkbox" value="${list.pro_id}"/>&nbsp;${list.pro_shortname}&nbsp;&nbsp;
+						</td>
+					<% if(i%3==0){ %>
+					</tr>
+					<tr>
+					<%}%>
+					<%}%>
+					</tr>
+				</table>
+				</dd>
+			</dl>
+			<dl>
+				<dt>上传资源</dt>
+				<dd>
+		            <#permission url="/admin/sys/file/upload">
+		            	<div id="upload-img" class="upload-box upload-img" ></div>
+		            </#permission>
+				</dd>
+			</dl>
+			<dl>
+				<dt>已上传资源路径</dt>
+				<dd>
+		           	<input name="http_url" type="text" id="http_url" readonly="readonly" class="input normal" /><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+            
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/product/channel/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/sys/file/insert')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

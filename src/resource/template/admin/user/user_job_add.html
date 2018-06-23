@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>用户部门岗位设定</title>
+<%include("resource/template/common/resource.html"){}%>
+<script>
+</script>
+</head>
+<body class="mainbody">
+	<div class="content-tab-wrap">
+		<div id="floatHead" class="content-tab">
+			<div class="content-tab-ul-wrap">
+				<ul>
+					<li><a href="javascript:;" onclick="tabs(this);" class="selected">岗位设定</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<form id="data_form">
+		<div class="tab-content">
+		   <dl>
+				<dt>人员列表</dt>
+				<dd>
+					<div class="rule-multi-porp">
+						<span id="cblActionType">
+							<%for(user in userList){%>
+								<input id="${user.id}" type="checkbox" name="users" value="${user.id}" checked="checked"/>
+								<label for="${user.id }">${user.name}</label>
+							<%}%>
+						</span>
+					</div>
+					<input type="hidden" id="role"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>设置岗位</dt>
+				<dd>
+						<select id="jobid" name="jobid" class="js-example-basic-single" style="background-color:#f3d8d8;color:#2e2e2e;width: 300px;" >
+						   <option value="">--请选择岗位----</option>
+						   <%for(dept in deptJobOptionList!){%>
+						      <%if("1"==dept.isJob!){%>
+						          <option value="${dept.id}">${dept.name}</option>	
+						      <%}else{%>
+						           <option value="${dept.id}" style="background-color:#CAE1FF" disabled="disabled" >${dept.name}</option>	
+						      <%}%>
+						   <%}%>
+						</select>
+					<input type="hidden" id="jobid_hidden" name="jobid_hidden"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+
+		</div>
+			
+	</form>
+	<div class="page-footer">
+		<div class="btn-list">
+			<#permission url="/admin/sys/user/jobSetInsert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/sys/user/jobSetInsert')"/>
+			</#permission>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();"/>
+		</div>
+		<div class="clear"></div>
+	</div>
+</body>
+</html>

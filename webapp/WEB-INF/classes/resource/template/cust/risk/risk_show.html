@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>风险评测信息</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">风险评测信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>客户名称</dt>
+				<dd>
+					${ap.short_name}
+				</dd>
+			</dl>
+		    <dl>
+				<dt>评测时间</dt>
+				<dd>
+					${ap.create_time}
+				</dd>
+			</dl>
+			<dl>
+				<dt>评测分数</dt>
+				<dd>
+					${ap.totalscore}
+				</dd>
+			</dl>
+			<dl>
+				<dt>评测结果</dt>
+				<dd>
+					${ap.risk_level}
+				</dd>
+			</dl>
+			 
+			<dl>
+				<dt>评测明细</dt>
+				<dd>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+						<thead>
+						<tr>
+							<th>题目序号</th><th>答案</th><th>分数</th>
+						</tr>
+						</thead>
+						<%for(record in ap.listRecord!){%>
+						<tr>
+							<td>${record.tm_code}</td><td>${record.tm_answer}</td><td>${record.tm_score}</td>
+						</tr>
+						<%}%>
+					</table>
+				</dd>
+			</dl>
+			
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+				<input name="btnReturn" type="button" value="关闭" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

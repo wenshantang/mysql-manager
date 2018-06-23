@@ -1,0 +1,493 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<title>定投</title> 
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+function gotologin(){ 
+	var customer="${session.customer.data.logintype!}"
+			 if(customer=="1"){
+				  layer.open({
+					    content: "请先注册或登录直销系统!",
+					    btn: ['确认', '取消'],
+					    yes: function(){
+					    	window.location.href="${ctxPath}/h5/login?type=coin&goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+					    }, no: function(){
+					    	window.location.href="javascript:history.back(-1);"; 
+					    }
+				});
+			 }
+}
+window.onload=gotologin();
+</script> 
+	<m m-main="invest_m_number_password"></m>
+<#QuerSuperFundList fundcode="${fundcode!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+	<header class="header">
+		<div class="wrap">
+			<h1 class="title">
+				<a class="t-left" href="javascript:history.back(-1);"><img
+					src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span
+					class="txt">定投</span>
+			</h1>
+			<div class="f-topBox2">
+				<p class="p p1">基金简称：${fund.pro_shortname!"--"}</p>
+				<p class="p p2">基金代码：${fund.fundcode!"--"}</p>
+				<input type="hidden" id="fund_code" value="${fund.fundcode}">
+				<input type="hidden" id="pro_shortname" value="${fund.pro_shortname}" >
+				<input type="hidden" id="fund_busin_code" value="039"
+					name="fund_busin_code">
+			</div>
+		</div>
+	</header>
+	<div class="main isTop2 wrap nofooter">
+		<div class="g-box54">
+			<div class="g-inputBox g-m-t60">
+				<h6 class="title">
+					<span class="name">支付方式</span>
+					<%if(session.customer.data.logintype=='0'){%>
+					<%if(session.customer.data.real_name_flag=="1"){%>
+					<a href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/invest%3Ffundcode=${fundcode!}" class="btn info"><img
+						class="icon" src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a>
+					<%}else{%> <a href="${ctxPath}/h5/account/bindbank?goto=${ctxPath}/h5/capital/invest%3Ffundcode=${fundcode!}"
+						class="btn info"><img class="icon"
+						src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a> <%}%>
+					<%}%>
+				</h6>
+				<div class="g-inputDiv">
+					<div class="g-input-span m-selectBox">
+						<select m-select="m" class="m-select" name="trade_acco"
+							id="trade_acco"> <#mybanks
+							client_id="${session.customer.data.client_id}"  customerId="${session.customer.data.mobile_tel!}";mybanks>
+							<%if(mybanks!=""&&mybanks!=null){%>
+							<%for(bank in mybanks){%>
+							<option value="${bank.trade_acco}" name="${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}(${bank.capital_mode_name})" >${bank.bank_name}****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+							<%}}%> </#mybanks>
+						</select>
+					</div>
+				</div>
+			</div>
+			<p class="mmm-info">
+				<!-- 人保宝可用余额300.00元 -->
+			</p>
+			<div class="g-checkbox2 g-m-t70">
+				<h6 class="title">扣款周期</h6>
+				<div class="list g-m-t70" m-switch-tab="t1">
+					<p class="p m-on">
+						<label> <input class="m-checkbox" name="f" type="radio"
+							value="0" checked> 月
+						</label>
+					</p>
+					<p class="p">
+						<label> <input class="m-checkbox" name="f" type="radio"
+							value="1"> 周
+						</label>
+					</p>
+				</div>
+			</div>
+			<input type="hidden" id="first_trade_month">
+			<div class="g-inputBox g-m-t60">
+				<h6 class="title">
+					<span class="name">扣款日期</span><span class="info" id="firstdate">下一扣款日：2012-12-16</span>
+				</h6>
+				<div class="g-inputDiv" m-switch-con="t1">
+					<div class="g-input-span m-selectBox">
+						<select m-select="m" class="m-select" name="" id="selectdate_2">
+			          <%for(var i=1;i<=28;i++){%>
+						 <%if(i<=9){%>
+						 	<option value="0${i}">${i}号</option>
+						 <%}else{%>
+						    <option value="${i}">${i}号</option>
+						 <%}%>
+						 <%}%>
+						</select>
+					</div>
+					<div class="g-input-span m-selectBox">
+						<select m-select="m" class="m-select" name="" id="selectdate_3">
+							<option value="02">周一</option>
+							<option value="03">周二</option>
+							<option value="04">周三</option>
+							<option value="05">周四</option>
+							<option value="06">周五</option>
+						</select>
+					</div> 
+				</div>
+			</div>
+			<div class="g-inputBox g-m-t60">
+				<h6 class="title">
+					<span class="name">定投金额（元）</span><span class="info" id="fundrate">费率0.00%</span>
+				</h6>
+				<div class="g-inputDiv">
+			    	<input type="hidden" id="minimum_purchase_amount" value="${fund.minimum_purchase_amount}" >
+					<span class="g-input-span"> <input class="g-input" type="text" placeholder="最低${fund.minimum_purchase_amount}元"  onkeyup='this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/gi,"")' id="investmoney">
+					</span>
+				</div>
+			</div>
+			 
+		<#riskinfo id_kind_gb="${session.customer.data.id_kind_gb}" full_name="${session.customer.data.client_name}" id_no="${session.customer.data.id_no}" query_type="2";riskinfo>
+    	  <%if(riskinfo!=""&&riskinfo!=null){%>
+    	     <input type="hidden" id="invest_risk_tolerance" value="${riskinfo.invest_risk_tolerance!}" >
+           <%}else{%><input type="hidden" id="invest_risk_tolerance" value="" ><%}%>
+        </#riskinfo>
+			<#fundmarketinfo fund_code="${fundcode!}";fundmarketinfo>
+			<%if(fundmarketinfo.ReturnCode=='0000'){%>
+			<%if(fundmarketinfo.data!=""){%>
+				<%if(fundmarketinfo.data[0].valuagr_state=='1'){%>
+				<%if(session.customer.data.logintype=='0'){%>
+				<a class="g-btns g-submit g-m-t70"  href="javascript:void(0);" onclick="checkinvest()">确定</a>
+				<input type="hidden" id="ofund_risklevel" value="${fundmarketinfo.data[0].ofund_risklevel!}" >
+				<input type="hidden" id="share_type" value="${fundmarketinfo.data[0].share_type!}" name="share_type">
+				<%}else{%>
+				<a class="g-btns g-submit g-m-t70"  style="background:#acacac;border-bottom-color: #9b9b9b;"  href="javascript:void(0);" >不可定投</a>
+				<%}%>
+				<%}else{%>
+				<input type="hidden" id="share_type" value="A" name="share_type">
+				<a class="g-btns g-submit g-m-t70"  style="background:#acacac;border-bottom-color: #9b9b9b;"  href="javascript:void(0);" >不可定投</a>
+				<%}%>
+				
+			<%}else{%>
+				<a class="g-btns g-submit g-m-t70"  style="background:#acacac;border-bottom-color: #9b9b9b;"  href="javascript:void(0);" >不可定投</a>
+			<%}%>
+			<%}%>
+			</#fundmarketinfo>
+			<a id="MumberPassword"  m-number-password="MumberPassword" style="display: none;" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+			<div class="bottom-e-msg"></div>
+		</div>
+	</div>
+	<%}}%> </#QuerSuperFundList>
+	<form action="${ctxPath}/h5/capital/investsuccess" id="form" method="post" style="display: none;">
+       	  <input type="hidden"   name="fund_code"      id="fund_code" value="${fundcode!}">
+       	  <input type="hidden"   name="trade_acco"     id="trade_acco_hidden">
+       	  <input type="hidden"   name="allot_no"       id="allot_no">
+       	  <input type="hidden"   name="invest_date"         id="invest_date" >
+       	  <input type="hidden"   name="next_fixrequest_date"  id="next_fixrequest_date"> 
+     </form> 
+	<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+	<script type="text/javascript">
+//查询费率
+function getrate(){
+	var fund_code=$("#fund_code").val();
+	var share_type=$("#share_type").val();
+	var fund_busin_code=$("#fund_busin_code").val();
+	$.ajax({
+		type : "post",
+		data : {
+			"fund_busin_code" : fund_busin_code,
+			"fund_code" : fund_code,
+			"share_type":share_type
+		},
+		url : "${ctxPath}/trade/rate",
+		success : function(result) {
+			var result=eval(result);
+			    if(result!=""&&result!=null){
+			    	rate=result[0].discount_rate;
+					rate=parseFloat(rate);
+					$("#fundrate").html("费率"+rate+"%");
+			    }else{
+			    	$("#fundrate").html("获取失败");
+			    }
+			
+		}
+	});
+}
+function checkinvest(){
+	var real_name_flag="${session.customer.data.real_name_flag!}";
+	if(real_name_flag=='1'){
+	     layer.open({
+		    content: "请先进行开户操作!",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/invest%3Ffundcode%3D"+"${fundcode!}";
+		    }, no: function(){
+		    }
+		  });
+	return false;
+	 }
+	$(".bottom-e-msg").text("");
+	var apply_sum=$("#investmoney").val();
+	var first_trade_month=$("#first_trade_month").val();
+	var checkvalue = $('input:radio[name="f"]:checked').val();//协议周期单位 "0":月,"1":周
+	var fix_date="";
+	if(checkvalue=="0"){
+		//月时取第二个下拉框里面的值
+		fix_date=$("#selectdate_2").val();
+	}else{
+		//其他的取第三个下拉框里面的值
+		fix_date=$("#selectdate_3").val();
+	}
+	var fund_code=$("#fund_code").val();
+	var trade_acco=$("#trade_acco").val();
+	var invest_risk_tolerance=$("#invest_risk_tolerance").val();
+	var ofund_risklevel=$("#ofund_risklevel").val();
+    if (invest_risk_tolerance == "" || invest_risk_tolerance == null) {//风险等级
+			layer.open({ 
+			    content: "请先进行风险评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/invest%3Ffundcode%3D"+fund_code;
+			    }, no: function(){
+			    }
+			});
+			return false;
+	}
+	if (ofund_risklevel -invest_risk_tolerance>0) {//
+		Popbox.sureWithBtn("您所要定投的基金，高出您的风险承受等级!");
+			/* layer.open({
+			    content: "该产品风险等级较高,请重新评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/invest%3Ffundcode%3D"+fund_code;
+			    }, no: function(){
+			    }
+			});
+			return false; */
+	}	
+	if (trade_acco == "" || trade_acco == null) {//支付方式
+			$(".bottom-e-msg").text("请选择支付方式!");
+			return false;
+	}
+	if (checkvalue == "" || checkvalue == null) {//协议周期单位 
+		$(".bottom-e-msg").text("请选择协议周期单位 !");
+		return false;
+	}
+	if (fix_date == "" || fix_date == null) {//定投日
+		$(".bottom-e-msg").text("请选择定投日!");
+		return false;
+	}
+	if (apply_sum == "" || apply_sum == null) {//定投金额
+		$(".bottom-e-msg").text("请填写定投金额!");
+		return false;
+	}
+	if (apply_sum == "" || apply_sum == null) {//定投金额
+		$(".bottom-e-msg").text("请填写定投金额!");
+		return false;
+	}
+    var minimum_purchase_amount=$("#minimum_purchase_amount").val();
+	if(minimum_purchase_amount-apply_sum>0){
+		$(".bottom-e-msg").text("定投金额要高于最低购买金额!");
+		return false;
+	}
+	if (!Regular.REG(apply_sum, RegexEnum.decmal)) {//购买金额
+		$(".bottom-e-msg").text("金额格式不正确!");
+		return false;
+    }
+	 $('#MumberPassword').click();
+}
+//下拉框选中事件
+function addchange(h){
+	var trade_acco=$("#trade_acco").val();
+	var checkvalue = $('input:radio[name="f"]:checked').val();
+	if(checkvalue=='0'){
+		h="2";
+	}else{
+		h="3";
+	}
+	var first_exchdate=$("#selectdate_"+h).find("option:selected").val();
+	$.ajax({
+		type : "post",
+		data : {
+			"first_exchdate" : first_exchdate,
+			"protocol_period_unit" : checkvalue,
+			"trade_acco" : trade_acco,
+			"target_fund_code" : "${fundcode!}"
+		},
+		url : "${ctxPath}/trade/firstdate",
+		success : function(result) {
+			if (result.code == "0000") {
+				console.log(result.data);
+				var obj = eval('(' + result.data + ')');
+				var exchdate=obj.first_exchdate;
+				var date=exchdate.substring(0,4)+"-"+exchdate.substring(4,6)+"-"+exchdate.substring(6,8);
+				$("#firstdate").text("下一扣款日："+date);
+				$("#next_fixrequest_date").val(date);//下一扣款日，为了成功页面展示
+				$("#first_trade_month").val(obj.first_trade_month);//首次交易月
+			} else {
+				$(".bottom-e-msg").text(result.msg);
+			}
+		}
+	}); 
+}
+
+//复选框选中事件
+function addcheck(h){
+	var trade_acco=$("#trade_acco").val();
+	var checkvalue = $('input:radio[name="f"]:checked').val();
+	var i=h[0].defaultValue;
+	if(i=='1'){
+		i="3"
+	}else{
+		i="2"	
+	}
+	var first_exchdate=$("#selectdate_"+i).find("option:selected").val();
+	$.ajax({
+		type : "post",
+		data : {
+			"first_exchdate" : first_exchdate,
+			"protocol_period_unit" : checkvalue,
+			"trade_acco" : trade_acco,
+			"target_fund_code" : "${fundcode!}"
+		},
+		url : "${ctxPath}/trade/firstdate",
+		success : function(result) {
+			if (result.code == "0000") {
+				console.log(result.data);
+				var obj = eval('(' + result.data + ')');
+				var exchdate=obj.first_exchdate;
+				var date=exchdate.substring(0,4)+"-"+exchdate.substring(4,6)+"-"+exchdate.substring(6,8);
+				$("#firstdate").text("下一扣款日："+date);
+				$("#next_fixrequest_date").val(date);//下一扣款日，为了成功页面展示
+				$("#first_trade_month").val(obj.first_trade_month);//首次交易月
+			} else {
+				$(".bottom-e-msg").text(result.msg);
+			}
+		}
+	}); 
+}
+$(function(){
+	$(".bottom-e-msg").text("");
+	var real_name_flag="${session.customer.data.real_name_flag!}";
+	if(real_name_flag=='1'){
+	     layer.open({
+		    content: "请先进行开户操作!",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/capital/invest%3Ffundcode%3D"+"${fundcode!}";
+		    }, no: function(){
+		    }
+		  });
+	return false;
+	 }
+	 var invest_risk_tolerance=$("#invest_risk_tolerance").val();
+	   var ofund_risklevel=$("#ofund_risklevel").val();
+	   if (invest_risk_tolerance == "" || invest_risk_tolerance == null) {//风险等级
+			layer.open({
+			    content: "请先进行风险评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false;
+		}
+	   
+	   if (ofund_risklevel -invest_risk_tolerance>0) {
+		   Popbox.sureWithBtn("您所要购买的基金，高出您的风险承受等级!");
+		   $(".bottom-e-msg").text("您所要购买的基金，高出您的风险承受等级!");
+		/* 	layer.open({
+			    content: "该产品风险等级较高,请重新评测!",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk?goto=${ctxPath}/h5/capital/buy%3Ffundcode%3D"+"${fundcode!}";
+			    }, no: function(){
+			    }
+			});
+			return false; */
+		}
+	getrate();
+	var checkvalue = $('input:radio[name="f"]:checked').val();
+	if(checkvalue=="0"){
+		addchange('2');//第二个下拉框
+	}else{
+		addchange('3');//第三个下拉框
+	}
+})
+
+function investfund(tradepassword){
+	 $(".bottom-e-msg").text("");
+	 var apply_sum=$("#investmoney").val();
+	 var first_trade_month=$("#first_trade_month").val();
+	 var checkvalue = $('input:radio[name="f"]:checked').val();//协议周期单位 "0":月,"1":周
+	 var fix_date="";
+	 if(checkvalue=="0"){
+			//月时取第二个下拉框里面的值
+			fix_date=$("#selectdate_2").val();
+	 }else{
+			//其他的取第三个下拉框里面的值
+			fix_date=$("#selectdate_3").val();
+	 }
+	 var fund_code=$("#fund_code").val(); 
+	 var trade_acco=$("#trade_acco").val();
+	 var share_type=$("#share_type").val();
+	 if (trade_acco == "" || trade_acco == null) {//支付方式
+		$(".bottom-e-msg").text("请选择支付方式!");
+		return false;
+	 }
+	 if (checkvalue == "" || checkvalue == null) {//协议周期单位 
+		$(".bottom-e-msg").text("请选择协议周期单位 !");
+		return false;
+	 }
+	 if (fix_date == "" || fix_date == null) {//定投日
+		$(".bottom-e-msg").text("请选择定投日!");
+		return false;
+	 }
+	 if (apply_sum == "" || apply_sum == null) {//定投金额
+		$(".bottom-e-msg").text("请填写定投金额!");
+		return false;
+	 }	
+	 if (share_type == "" || share_type == null) {
+		$(".bottom-e-msg").text("请选择银行卡!");
+		return false;
+	 }
+	 if (!Regular.REG(apply_sum, RegexEnum.decmal)) {//定投金额
+			$(".bottom-e-msg").text("金额格式不正确!");
+			return false;
+	 } 
+	if (tradepassword == "" || tradepassword == null) {
+		$(".bottom-e-msg").text("请输入交易密码!");
+		return false;
+	}
+	var capital_way=$("#trade_acco").find("option:selected").attr("name");
+	$.ajax({
+			type : "post",
+			data : {
+				"apply_sum" : apply_sum,
+				"first_trade_month" : first_trade_month,
+				"fix_date":fix_date,
+				"fund_code" : fund_code,
+				"password" : tradepassword,
+				"protocol_period_unit" : checkvalue,
+				"share_type" : share_type,
+				"trade_acco" : trade_acco,
+				"trade_period" : "1",
+				"pro_shortname" : $("#pro_shortname").val(),
+				"capital_way" : capital_way
+				
+			}, 
+			url : "${ctxPath}/trade/invest",
+			success : function(result) {
+				if("0000"==result.code){
+					$("#trade_acco_hidden").val(trade_acco);//交易账号
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					$("#allot_no").val(obj.allot_no);//申请编号
+					if(checkvalue=='0'){
+						$("#invest_date").val("每月"+fix_date+"号");
+					}else if(checkvalue=='1'){
+						if(fix_date=='02'){$("#invest_date").val("每周一");}
+						if(fix_date=='03'){$("#invest_date").val("每周二");}
+						if(fix_date=='04'){$("#invest_date").val("每周三");}
+						if(fix_date=='05'){$("#invest_date").val("每周四");}
+						if(fix_date=='06'){$("#invest_date").val("每周五");}
+					}
+					$("#form").submit();
+					//window.location.href="${ctxPath}/h5/capital/investsuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+				}else{
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+}
+</script>
+</body>
+</html>

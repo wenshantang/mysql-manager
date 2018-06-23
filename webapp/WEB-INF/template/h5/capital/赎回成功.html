@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>赎回成功</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">赎回</span></h1>
+		</div>
+</header>
+<div class="main wrap">
+<#applyorder fund_code="${fund_code}" allot_no="${allot_no}" trade_acco="${trade_acco}" ;applyorder>
+<%for(apply in applyorder!){%>
+		<div class="yl-zhuan3">
+				<h6 class="title">赎回申请成功！</h6>
+				<div class="table">
+						<table width="" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+										<td class="td1">基金简称 </td>
+										<td class="td2">${apply.fund_name!"--"}</td>
+								</tr>
+								<tr>
+										<td class="td1">基金代码 </td>
+										<td class="td2">${fund_code!"--"}</td>
+								</tr>
+								
+								<tr>
+										<td class="td1">申请时间 </td>
+										<td class="td2">${strutil.subStringTo(apply.apply_date,0,4)}-${strutil.subStringTo(apply.apply_date,4,6)}-${strutil.subStringTo(apply.apply_date,6,8)} ${strutil.subStringTo(apply.apply_time,0,2)}:${strutil.subStringTo(apply.apply_time,2,4)}:${strutil.subStringTo(apply.apply_time,4,6)}</td>
+								</tr>
+								<tr>
+										<td class="td1">申请份额 </td>
+										<td class="td2">${apply.apply_share!"--"}份</td>
+								</tr>
+								<tr>
+										<td class="td1">确认日期 </td>
+										<td class="td2">${strutil.subStringTo(apply.affirm_date,0,4)}-${strutil.subStringTo(apply.affirm_date,4,6)}-${strutil.subStringTo(apply.affirm_date,6,8)}</td>
+								</tr>
+								<tr>
+										<td class="td1">赎回至</td>
+										<td class="td2">
+										 <#mybanks client_id="${session.customer.data.client_id}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+								           <%for(bank in mybanks){%> 
+           										<%if(bank.trade_acco==trade_acco){%>
+										${strutil.subStringTo(bank.bank_name,0,4)}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))} <%}}%></#mybanks></td>
+								</tr>
+								 <tr>
+										<td class="td1 last">预计到账时间 </td>
+										<td class="td2 last">${strutil.subStringTo(apply.yuji_date,0,4)}-${strutil.subStringTo(apply.yuji_date,4,6)}-${strutil.subStringTo(apply.yuji_date,6,8)} ${strutil.subStringTo(apply.yuji_time,0,2)}:${strutil.subStringTo(apply.yuji_time,2,4)}:${strutil.subStringTo(apply.yuji_time,4,6)}</td>
+								</tr> 
+						</table>
+				</div>
+				<div class="btn">
+					<a href="${ctxPath}/h5/capital/mycapital" class="btn2">我的资产</a>
+					<a href="${ctxPath}/h5/product/fundlist" class="btn2">继续购买</a>
+				</div>
+		</div>
+</div>
+<%}%>
+</#applyorder>
+</body>
+</html>

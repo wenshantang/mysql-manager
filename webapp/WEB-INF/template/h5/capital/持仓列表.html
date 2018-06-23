@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-持仓列表（货币）</title>
+<%include("/h5/common/assets.html"){}%>  
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">持仓列表</span></h1>
+  </div>
+</header> 
+<#shares  client_id='${session.customer.data.client_id}' cust_no="${session.customer.data.cust_no!}" ;shares>
+<div class="main wrap main1 nofooter">
+  <nav class="sonNav  wrap" m-switch-tab="tab2">
+  <%if(shares.ReturnCode=="0000"){%>
+  <%for(fundtype in  shares.data){%>
+  	<%if(nav!=''){%>
+  		<a <%if(fundtype.fundtype==nav){%>class="m-on"<%}%> href="javascript:$(window).scrollTop(0);">${fundtype.fundtypename}</a>
+  	<%}else{%>
+  		<a <%if(fundtypeLP.index==1){%>class="m-on"<%}%> href="javascript:$(window).scrollTop(0);">${fundtype.fundtypename}</a>
+  	<%}%>
+  <%}}%>
+  </nav>
+  <div class="tabBox2" m-switch-con="tab2">
+  <%if(shares.ReturnCode=="0000"){%>
+  <%for(fundtype in  shares.data){%>
+  	<%if(fundtype.fundtypename=='货币'){%>
+  	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  		<div class="g-list-10">
+        <div class="l">
+        	<div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+            <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p">
+            <span class="s1 c-f25050">${NumberFunction(fundshare.i_incomdepercent!,"###0.000")}<%if(fundshare.i_incomdepercent!=null){%>%<%}%></span>
+            <span class="s2">七日年化</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.today_income!'')}</span><span class="s2">昨日收益（元）</span></p>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.unpaid_income!'')}</span><span class="s2">未付收益（元）</span></p>
+          </div> 
+        </div>
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        </div>
+      </div>
+	  <%}%>
+     </div>
+  	<%}else if(fundtype.fundtypename=='混合'){%>
+  	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  	<div class="g-list-10">
+        <div class="l">
+          <div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+          <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p"><span class="s1">${NumberFunction(fundshare.net_value!,"###0.0000")}</span><span class="s2">单位净值</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.current_share!'')}</span><span class="s2">份额（份）</span></p>
+            <%if(!strutil.contain(fundshare.gain_balance,"-")){%>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}else{%>
+             <p class="p"><span class="s1 " style="color:#008000;">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}%>
+          </div>
+        </div> 
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/editdividend');">修改分红方式</a> 
+        </div>
+      </div>
+	  <%}%>
+      </div>
+  	<%}else if(fundtype.fundtypename=='ETF'){%>
+	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  	<div class="g-list-10">
+        <div class="l">
+          <div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+          <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p"><span class="s1">${NumberFunction(fundshare.net_value!,"###0.0000")}</span><span class="s2">单位净值</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.current_share!'')}</span><span class="s2">份额（份）</span></p>
+           <%if(!strutil.contain(fundshare.gain_balance,"-")){%>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}else{%>
+             <p class="p"><span class="s1 " style="color:#008000;">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}%>
+            </div>
+        </div> 
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/editdividend');">修改分红方式</a> 
+        </div>
+      </div>
+	  <%}%>
+      </div>
+	  <%}else if(fundtype.fundtypename=='股票'){%>
+	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  	<div class="g-list-10">
+        <div class="l">
+          <div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+          <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p"><span class="s1">${NumberFunction(fundshare.net_value!,"###0.0000")}</span><span class="s2">单位净值</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.current_share!'')}</span><span class="s2">份额（份）</span></p>
+             <%if(!strutil.contain(fundshare.gain_balance,"-")){%>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}else{%>
+             <p class="p"><span class="s1 " style="color:#008000;">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}%>
+            </div>
+        </div> 
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/editdividend');">修改分红方式</a> 
+        </div>
+      </div>
+	  <%}%>
+      </div>
+	 <%}else if(fundtype.fundtypename=='债券'){%>
+	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  	<div class="g-list-10">
+        <div class="l">
+          <div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+          <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p"><span class="s1">${NumberFunction(fundshare.net_value!,"###0.0000")}</span><span class="s2">单位净值</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.current_share!'')}</span><span class="s2">份额（份）</span></p>
+            <%if(!strutil.contain(fundshare.gain_balance,"-")){%>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}else{%>
+             <p class="p"><span class="s1 " style="color:#008000;">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}%>
+            </div>
+        </div> 
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/editdividend');">修改分红方式</a> 
+        </div>
+      </div>
+	  <%}%>
+      </div>
+	  <%}else if(fundtype.fundtypename=='指数'){%>
+	<div class="list">
+	<%for(fundshare in  fundtype.dataList){%>
+  	<div class="g-list-10">
+        <div class="l">
+          <div class="clearfix"> <h6 class="title fl">${fundshare.fund_name}</h6><span class="p1 fl">(${fundshare.fund_code})</span>
+          <span class="title fr p1">${fundshare.bank_name}尾号${strutil.subStringTo(fundshare.bank_account,strutil.length(fundshare.bank_account)-4,strutil.length(fundshare.bank_account))}</span></div>
+          <div class="pp4">
+            <p class="p"><span class="s1">${NumberFunction(fundshare.net_value!,"###0.0000")}</span><span class="s2">单位净值</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.worth_value!'')}</span><span class="s2">资产（元）</span></p>
+            <p class="p"><span class="s1">${StringToNumber(fundshare.current_share!'')}</span><span class="s2">份额（份）</span></p>
+            <%if(!strutil.contain(fundshare.gain_balance,"-")){%>
+            <p class="p"><span class="s1 c-f25050">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}else{%>
+             <p class="p"><span class="s1 " style="color:#008000;">${StringToNumber(fundshare.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+            <%}%>
+            </div>
+        </div> 
+        <div class="btn">
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/redemption');" >赎回</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/buy');">购买</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/invest');">定投</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/change');">转换</a>
+        	<a href="javascript:sendfundinfo('${fundshare.fund_code!''}','${fundshare.trade_acco!''}','${ctxPath}/h5/capital/editdividend');">修改分红方式</a>  
+        </div>
+      </div>
+	  <%}%>
+      </div>
+	  <%}%>
+  <%}}%>
+  </div>
+</div>
+</#shares>
+<form action="" id="redirectform" method="post">
+	<input type="hidden" id="fundcode" name="fundcode" value="">
+	<input type="hidden" id="trade_acco" name="trade_acco" value="">
+</form>
+<script type="text/javascript">
+	function sendfundinfo(fundcode,trade_acco,url){
+		
+		$("#fundcode").val(fundcode);
+		$("#trade_acco").val(trade_acco);
+		$("#redirectform").attr("action", url);
+		$("#redirectform").submit();
+	}
+</script>
+</body>
+</html>

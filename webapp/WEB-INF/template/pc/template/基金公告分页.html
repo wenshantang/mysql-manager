@@ -1,0 +1,62 @@
+  <#publicFundNotices topic_code="noticesList" fund_id="${fund_id!}" fund_code="${fund_code!}" page="${p!}" pageSize="12";pageRecord>
+   <div class="md-leibiao">
+     <ul>
+     <%if(pageRecord.data!=null && pageRecord.data.dataList.~size>0){%>
+	   <%for(article in pageRecord.data.dataList){%> 
+	    <%if(article.type_id=='1'){%>
+        <li>
+        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${article.id}&topicCode=noticesList">
+        <span class="lb-time">${ strutil.subStringTo(article.publish_time,0,10)}</span>
+        <span class="lb-title">${article.title}</span>
+        <span class="lb-pic"><!-- <img src="${ctxPath}/portal/pc/images/down_03.png"/> --></span>
+        </a>
+        </li>
+        <%}%> 
+         <%if(article.type_id=='2'||article.type_id=='3'){%>
+         </li>
+        <a href="${article.article_location}">
+        <span class="lb-time">${ strutil.subStringTo(article.publish_time,0,10)}</span>
+        <span class="lb-title">${article.title}</span>
+        <span class="lb-pic"><img src="${ctxPath}/portal/pc/images/down_03.png"/></span>
+        </a>
+        </li>
+        <%}%>
+        <%}%>
+      </ul>
+    </div>
+    <%
+       var p = pageRecord.data.page;   // 当前页
+       var totalPage = pageRecord.data.totalPage;     // 总页数
+	%>
+    <div class="m-g-pageBox md-page-box1">
+      <div class="m-g-page">
+        <span>
+          <a id="a1" class="item" href="javascript:void(0);" onclick="gotoPage(1,${totalPage});">首页</a>
+        </span>
+        <span>
+          <a id="a2" class="item" href="javascript:void(0);" onclick="gotoPage(${p-1},${totalPage});">上一页</a>
+        </span>
+          <a id="a3"class="item" href="javascript:void(0);" onclick="gotoPage(${p+1},${totalPage});">下一页</a>
+          <a id="a4" class="item" href="javascript:void(0);" onclick="gotoPage(${totalPage},${totalPage});">尾页</a>
+        <span class="info">共${totalPage}页 当前为第<input class="thisnumber" value="${p}" type="text">页</span>
+        </div>
+    </div>
+    <script type="text/javascript">    
+      function setCss(){
+    	  if(${p}>1){
+    		  $("#a1").addClass("on");
+    		  $("#a2").addClass("on");
+    	  }
+    	  if(${totalPage}>${p}){
+    		  $("#a3").addClass("on");
+    		  $("#a4").addClass("on");
+    	  }
+      }
+      $(function(){
+    	  setCss();
+      });
+    </script>
+    <%}else{%>
+        ...暂无更新数据...
+    <%}%>
+   </#publicFundNotices>

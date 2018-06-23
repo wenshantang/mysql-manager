@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>选择模板</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script>
+	function submit_data(url){
+		var templateid = $('#tablelist input[name="_ckid"]:checked ').val();
+		jQuery.ajax({
+			url  : url,
+			data : "templateid="+templateid,
+			type : "POST",
+			success : function(result) {
+				if (result.code == '0000') {
+					popStatus(1, result.msg, 1);
+				}else{
+					popStatus(4, result.msg, 2);
+				}
+			}
+		});
+	}
+</script>
+
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">选择模板</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" >
+	            <tr>
+	                <th>选择</th>
+	                <th>模板名称</th>
+	                <th>PC端模板效果</th>
+	                <th>HTML5端模板效果</th>
+	            </tr>
+	            <tbody id="tablelist">
+	            <%for(list in templateList!){%>
+	            <tr>
+					<td>
+		               	<input id="id_${list.id}" type="radio" name="_ckid" value="${list.id}" ${list.id == ap.memo ?'checked':''}/>
+		            </td>
+					<td>${list.template_name}</td>  
+		            <td><a href="${ctx}?yulan=${list.style_path}" target="_blank"><img src="${list.pc_simage_path}" height="250px" width="200px" /></a></td>
+					<td><a href="${list.html5_bimage_path}" target="_blank"><img src="${list.html5_simage_path}" height="200px" width="160px" /></a></td>  
+		         </tr>
+		         <%}%>
+	            </tbody>
+	        </table>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/webpublish/baseconfig/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="submit_data('${ctx}/admin/webpublish/baseconfig/update');"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

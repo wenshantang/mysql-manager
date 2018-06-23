@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-风险等级</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+
+<body>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">风险等级</span></h1>
+		</div>
+</header>
+<#token/>
+<div class="main wrap bg-fff">
+<#PaperinfoqueryTag cust_type="1" paper_client_type="0";questions>
+ <#riskinfo id_kind_gb="${session.customer.data.id_kind_gb}" full_name="${session.customer.data.client_name}" id_no="${session.customer.data.id_no}" query_type="2";riskinfo>
+		<div class="yl-position-top">
+		<%if(riskinfo!=""&&riskinfo!=null){%>
+		    <#cms_properties type="risklist" ; dicts>
+			    <%for(dict in dicts){%>
+			    	<%if(dict.name==riskinfo.invest_risk_tolerance!){%>
+			    		<p class="txt">您上次的评测结果：<span style="font-size: 1.2rem ;font-weight: 700;">${dict.value} </span></p>
+			    	<%}%>
+			    <%}%>
+		    </#cms_properties>
+    	<%}else{%><p class="txt">为保障您的权益，请及时评估您的风险承受能力。</p><%}%>
+		</div>
+		<div class="yl-fengx"> 
+				
+			 <%if(questions!=null) {%>
+              	<%for(question in questions.data){%>
+				<div class="yl-radio-box g-radioBox">
+						<p class="old">${question.question_order}、${question.question_content}</p>
+						<%if(question.questionOptions!=null){for(q in question.questionOptions){%>
+						<label class="read br m-right b-t">
+						
+						 
+						<input name="${question.question_order}" class="g-radio" type="radio"
+						  value="${question.question_order}:${q.option_no}" 
+						  <%if(riskinfo!=""&&riskinfo!=null){%><%for(answer in  riskinfo.elig_content){%> 
+						  <%if(answer.questionno==question.question_order){%>
+						  <%if(answer.answer==q.option_no){%>checked<%}%>
+						 <%}%>
+						 <%}}%>
+						   />
+						 
+						<span class="yl-checkbox reg"></span> 
+						<div class="p-box">
+							<p class="ppp">${q.option_content}</p>
+						</div>
+						</label>
+						<%}}%> 
+				</div>
+				<%}%>
+              	<%}%>
+  				<%if(riskinfo!=""&&riskinfo!=null){%>
+					<a class="g-btns g-submit m-auto" href="javascript:void(0);" onclick="sumchoose()">重新评测</a>
+				<%}else{%>
+					<a class="g-btns g-submit m-auto" href="javascript:void(0);" onclick="sumchoose()">评  测</a>
+				<%}%>
+		</div>
+		</#riskinfo>
+</div>
+
+<script>
+function sumchoose(){
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var real_name_flag="${session.customer.data.real_name_flag!}";
+	if(real_name_flag=='1'){
+		layer.open({
+		    content: "请先去完成实名认证！",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard";
+		    }, no: function(){
+		    }
+		});
+		return false;
+	}
+	var  json="";
+		<%for(quest in questions.data){%>
+		if(!($('input:radio[name="${quest.question_order}"]:checked').val())){
+			Popbox.sureWithBtn("第${quest.question_order}题未选择!");
+			return false;
+		}
+		<%if(questLP.index==1){%>
+			json=json+$('input:radio[name="${quest.question_order}"]:checked').val();
+		<%}else{%>
+			json=json+"|"+$('input:radio[name="${quest.question_order}"]:checked').val();
+		<%}%>
+		<%}%> 
+	 jQuery.ajax({
+	    url : '${ctxPath}/user/submitpaperinfo',  
+	    type : "POST", 
+	    data:{"elig_content":json}, 
+	    success : function(result) {
+			 if (result.code == '0000') {
+				 <%if(strutil.length(goto!"")<1){%>
+				   window.location.href="${ctxPath}/h5/account/realname";
+				  <%}else{%>
+                    window.location='${goto!}'; 
+                  <%}%> 
+				
+			 }else{
+				 Popbox.sureWithBtn(result.msg);
+			 }
+	    },  
+	   error:function(){
+		   Popbox.sureWithBtn("系统异常");
+	   }
+	});
+}
+
+</script>
+</#PaperinfoqueryTag>	
+</body>
+</html>

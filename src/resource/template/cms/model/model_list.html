@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>CMS模型管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<style type="">
+#jsddm {
+    margin: 0;
+    padding: 0;
+    width: 78px;
+}
+</style>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.code}}" type="checkbox" name="_ckid" value="{{row.code}}"/>
+               	</span>
+            </td>
+            <td>{{row.code}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.idx}}</td>
+			<td>{{row.status | decode:'0','停止使用','1','正常使用'}}</td>
+            <td>
+				<a href="javascript:;" class="img-btn edit operator" onclick='fullWithBar("${ctx}/admin/cms/model/edit/{{row.code}}")'>修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+        <div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/cms/model/insert">
+                        <li><a class="add" onclick='fullWithBar("${ctx}/admin/cms/model/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/cms/model/delete">    
+                        <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                        </li>
+                        <li><a onclick="del('${ctx}/admin/cms/model/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                        </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cms/model/json" sort="idx">
+            <tr>
+                <th>选择</th>
+                <th sort="code">模型代码</th>
+                <th sort="name">模型名称</th>
+                <th sort="idx">排列顺序</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

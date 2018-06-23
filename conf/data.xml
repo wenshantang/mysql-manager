@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<table name="SYS_RESOURCE">
+	<check>
+		<column name="url" value="/admin/sys/leftmenu">
+			<insert id="100000000000000001"/>
+			<insert id="100000000000000011"/>
+		</column>
+		<column name="url" value="/admin/sys/leftmenu/insert">
+			<insert id="100000000000000012"/>
+		</column>
+	</check>
+	<insert>
+		<sql id="100000000000000001">
+			insert into SYS_RESOURCE (ID,NAME,URL,MEMO,PARENT_ID) values ('100000000000000001','菜单管理','菜单管理','888888888888888888')
+		</sql>
+		<sql id="100000000000000011">
+			insert into SYS_RESOURCE (ID,NAME,URL,MEMO,PARENT_ID,DEP_URL) values ('100000000000000011','菜单列表','/admin/sys/leftmenu','菜单列表','100000000000000001','/admin/sys/leftmenu/json')
+		</sql>
+		<sql id="100000000000000012">
+			insert into SYS_RESOURCE (ID,NAME,URL,MEMO,PARENT_ID,DEP_URL) values ('100000000000000012','新增菜单','/admin/sys/leftmenu','新增菜单','100000000000000001','/admin/sys/leftmenu/add')
+		</sql>
+	</insert>
+</table>

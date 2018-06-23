@@ -1,0 +1,26 @@
+ <div class="bm-right m-min-hieght">
+   <div id="customerEdu"></div>   
+ </div>
+ <script>
+   function customerEduPage(p){
+	   $("#customerEdu").load("${ctxPath}/pc/customer/tzzjxPage?p="+p);
+   }
+   $(function(){
+	   customerEduPage(1);
+   });
+   function jumpPage(){
+		  var pagenum=$("#pagenum").val();
+		  if(!isNaN(pagenum)){
+			}else{
+			  alert("请输入数字!");
+			  return false;
+			}
+		  var  totalPagenum=$("#totalPage").val();
+		  if(pagenum-totalPagenum>0){
+			  alert("当前页大于总页数!");
+			  return false;
+		  }
+		  customerEduPage(pagenum);
+
+	  }
+ </script>

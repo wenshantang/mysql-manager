@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>后台系统设置</title>
+<%include("resource/template/common/resource.html"){}%>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+</head>
+<script type="text/javascript">
+var CTX = '${ctx}';
+
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+
+KindEditor.ready(function(K) {
+	var editor = K.editor({
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/manager/config/upload'
+	});
+	
+	K('#select_logo_image').click(function() {
+		editor.loadPlugin('upimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					K('#logo').val(url);
+					if (K('#logo_image')) {
+						if(url.startWith("http")){
+							 K('#logo_image').attr('src', url);
+						}else{
+							 K('#logo_image').attr('src', CTX+url);
+						}
+						 K('#logo_image').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	
+	K('#select_icon_image').click(function() {
+		editor.loadPlugin('upimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					K('#icon').val(url);
+					if (K('#icon_image')) {
+						 if(url.startWith("http://")||url.startWith("https://")){
+							 K('#icon_image').attr('src', url);
+						 }else{
+							 K('#icon_image').attr('src', CTX+url);
+						 }
+						 K('#icon_image').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	
+});
+function submit_form(form_id,url){
+	jQuery.ajax({
+		url  : url,
+		data : $('#'+form_id).serialize(),
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				var url ='${ctx}/admin/sys/manager/config';
+				popStatus(1, result.msg, 1, url, true);
+			}else if (result.errMsg) {
+				$('#'+form_id).children("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+
+function remLogin(){
+	if($('#rem_pwd').is(':checked')) {
+	    $("#remb_login").show();
+	}else{
+		$("#remb_login").hide();
+	}
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" class="selected">后台系统设置</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="basicConfig">
+			<div class="tab-content">
+				<dl>
+					<dt>公司名称</dt>
+					<dd>
+						<input name="company_name" type="text" id="company_name" value="${config.company_name!}" class="input normal" />
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				
+				<dl>
+					<dt>Logo</dt>
+					<dd>
+						<img id="logo_image" src="${config.full_logo!}" style="max-height:100px;" />
+						    <input id="logo" type="hidden" name="logo" value="${config.logo!}"/>
+	                        <span class="help-inline"><a id="select_logo_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<span id="Validform_checktip">162*42</span>
+					</dd>
+					
+				</dl>
+				<dl>
+					<dt>Icon</dt>
+					<dd>
+						<img id="icon_image" src="${config.full_icon!}" style="max-height:100px;" />
+						<input id="icon" type="hidden" name="icon" value="${config.icon!}"/>
+	                        <span class="help-inline"><a id="select_icon_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<span id="Validform_checktip">16*16</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>首页路径</dt>
+					<dd>
+						<input name="index_url" type="text" id="index_url" value="${config.index_url!}" class="input normal"/>
+						<span id="Validform_checktip">*自定义首页</span>
+					</dd>
+				</dl>
+				
+				<dl>
+				<dt>访问方式</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="login_filter" type="radio" value="1" ${config.login_filter=='1'?'checked':''}/><label for="">不限</label>
+			      		<input name="login_filter" type="radio" value="2" ${config.login_filter=='2'?'checked':''}/><label for="">内网访问</label>
+				    </div>
+				    <span id="Validform_checktip"></span>
+				</dd>
+				</dl>
+				
+				<dl>
+				<dt>记住用户名密码?</dt>
+				<dd>
+					<div class="rule-multi-porp">
+			      		<input id="rem_pwd" name="rem_pwd" type="checkbox" onchange="remLogin()" ${notRemLogin?'':'checked'}/>
+						<label for="rem_pwd">记住</label>
+				    </div>
+				    <span id="Validform_checktip"></span>
+				</dd>
+				</dl>
+				
+				<div id="remb_login" ${notRemLogin?'style="display: none"':''}>
+					<dl>
+						<dt>用户名</dt>
+						<dd>
+							<input name="username" type="text" id="username" value="${config.username!}" class="input normal big"/>
+						</dd>
+					</dl>
+				
+					<dl>
+						<dt>密码</dt>
+						<dd>
+							<input name="pwd" type="password" id="pwd" value="${config.pwd!}" class="input normal big"/>
+						</dd>
+					</dl>
+				</div>
+				
+				
+				
+				<dl>
+			    	<dt>登录验证码</dt>
+				    <dd>
+						<div class="rule-multi-radio">
+					      	<input type="radio" id="authcode_format" name="authcode_format" value="0" ${config.authcode_format == '0' ?'checked=checked':'' }/><label for="">不要验证码</label>
+					      	<input type="radio" id="authcode_format" name="authcode_format" value="1" ${config.authcode_format == '1' ?'checked=checked':'' }/><label for="">数字</label>
+				      		<input type="radio" id="authcode_format" name="authcode_format" value="2" ${config.authcode_format == '2' ?'checked=checked':'' }/><label for="">字母</label>
+				      		<input type="radio" id="authcode_format" name="authcode_format" value="3" ${config.authcode_format == '3' ?'checked=checked':'' }/><label for="">数字+字母</label>
+					    </div>
+				    </dd>
+			  	</dl>
+			  	
+		  		<dl>
+					<dt></dt>
+					<dd>
+						<span style="color: red">超级管理员拥有所有权限</span>
+					</dd>
+				</dl>
+			  	
+		  		<dl>
+					<dt>超级管理员用户</dt>
+					<dd>
+						<input name="super_user" type="text" id="super_user" value="${config.super_user!}" class="input normal big"/>
+					</dd>
+				</dl>
+			
+				<dl>
+					<dt>超级管理员密码</dt>
+					<dd>
+						<input name="super_pwd" type="password" id="super_pwd" value="${config.super_pwd!}" class="input normal big"/>
+					</dd>
+				</dl>
+			  	
+				
+				<dl style="margin-top: 50px;">
+					<dt></dt>
+					<dd>
+						<div class="btn-list">
+							<#permission url="/admin/sys/manager/config/update">
+							<input type="button" name="btnSubmit" value="修改设置" id="btnSubmit" class="btn" onclick="submit_form('basicConfig','${ctx}/admin/sys/manager/config/update')"/> 
+							</#permission>
+						</div>
+					</dd>
+				</dl>
+			</div>
+		</form>
+</body>
+</html>

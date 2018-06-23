@@ -1,0 +1,41 @@
+<footer class="footer">
+  <div class="wrap">
+    <nav class="footer-nav">
+    	<#APPIndex ;list> 
+    		<%if(list!=null){%>
+		     <a class="nav-asset ${nav =='index'?'on':''}"  href="${ctxPath}/h5/index">${list[0].title!}</a>
+		     <a class="nav-club ${nav =='fund'?'on':''}"  href="${ctxPath}/h5/product/fundlist">${list[1].title!}</a>
+		     <a class="nav-asset2 ${nav =='myassets'?'on':''}"   href="${ctxPath}/h5/capital/mycapital">${list[2].title!}</a>
+		     <a class="nav-my ${nav =='selfinfo'?'on':''}" href="javascript:void(0);" onclick="gotomy()">${list[3].title!}</a>
+		   <%}%>
+		</#APPIndex>
+    </nav>
+  </div>
+  <script type="text/javascript">
+  function gotomy(){ 
+	 var flag="";
+	 <%if(session.customer!=""&&session.customer!=null){%>
+	      flag="1"
+	 <%}%>
+	 if(flag==""||flag==null){
+		 window.location.href="${ctxPath}/h5/account/myunlogin";
+	 }else{
+		 flag="${session.customer.data.real_name_flag!}";
+		 if(flag=="1"){
+			 window.location.href="${ctxPath}/h5/account/norealname";
+		 }else{
+			 var logintype="${session.customer.data.logintype!}"
+			 if(logintype=='0'){
+				 window.location.href="${ctxPath}/h5/account/realname";
+			 }else{
+				 window.location.href="${ctxPath}/h5/account/myconsignment";
+			 }
+			
+		 }
+		
+	 }
+  }
+  
+  </script>
+ 
+</footer>

@@ -1,0 +1,199 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* 2016/08/02  liang*/
+
+.main-top{ height:60px;border-top: solid 1px #76dbe5;background: #444444;}
+.main-nav a{ height:60px; line-height:60px;color: #fff; border:none; border-right:none;}
+.logo{ border:none; height:60px;}
+.icon-menu{ border:none;margin-top: 10px;}
+.main-nav a.selected, .main-nav a:hover {
+    color: #fff;
+    text-decoration: none;
+    background: #75dce5;
+}
+.nav-right .option{ border:none;}
+.nav-right .info span{ color:#FFF}
+.nav-right .info {
+    float: left;
+    padding-right: 10px;
+    height: 60px;
+    line-height: 60px;
+}
+.sidebar-nav .list-group .list-wrap{ top:62px;}
+.main-container{top:62px;}
+.sidebar-nav {
+    margin-top: 62px;
+}
+.sidebar-nav .list-group .list-wrap{background: #f9f9f9;border-right: solid 1px #ccc; padding:0px;}
+.sidebar-nav .list-group ul li {
+    font-size: 12px;
+    background: #fff;
+    float: left;
+    width: 180px;
+    color: #000;
+	padding:0px;
+}
+.sidebar-nav .list-group .list-wrap{ width:180px;}
+.sidebar-nav .list-group ul li a{color: #000;height: 35px;
+    line-height: 35px; padding:0px;background: #fff;
+    border-bottom: solid 1px #f0f0f0;
+    border-top: solid 1px #f0f0f0;
+    text-indent: 5px;}
+.sidebar-nav .list-group h2 {
+    position: relative;
+    display: block;
+    color: #fff;
+    font-size: 12px;
+    background: #75dce5;
+    line-height: 35px;
+    height: 35px;
+    text-indent: 5px;
+    float: left;
+    width: 180px;
+    border-bottom: solid 1px #f0f0f0;
+}
+
+.sidebar-nav .list-group ul li a .icon.file{ background:none;}
+.l-tab-links{position: relative;
+    height: 41px;
+	background:none;
+    overflow: hidden;
+    z-index: 1;}
+.l-tab-links ul {
+    list-style: none;
+    width: 9999px;
+    overflow: hidden;
+    position: absolute;
+    background: #f9f9f9;
+    top: 0;
+    left: 0;
+    zoom: 1;
+}
+.l-tab-links li{ border:none;}
+.l-tab-links li:hover{border:none;}
+.l-tab-links li a {
+    display: inline-block;
+    padding: 0 20px 0 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    margin-left: 5px;
+    margin-top: 4px;
+    color: #999999;
+    height: 30px;
+    line-height: 30px;
+	border:none;
+	border-style:none;
+}
+.l-tab-links li.l-selected {
+    color: #000;
+    height: 40px;
+    margin: 0 5px 0 0;
+	border-top:none;
+	background:none;
+}
+.l-tab-links li.l-selected a{color: #fff;
+    height: 30px;
+    line-height: 30px;
+    outline: medium none;
+    background: #75dce5;}
+.l-tab-links li.l-selected a:hover{ background:none;color: #999999;}
+.l-tab-links-item-close{ top:12px;}
+#tabManage{float: left;
+    height: 40px;
+    width: 23px;
+    line-height: 40px;}
+
+.sidebar-nav .list-group ul li a:hover{color: #75dce5;
+    text-decoration: none;
+    background: #f8f8f8;}
+.sidebar-nav .list-group ul li ul li a{ border:none;}
+.sidebar-nav .list-group ul li a.selected{color: #fff;
+    background: #75dce5;border-radius:0px;}
+.sidebar-nav .list-group ul li a.selected:hover{color: #fff;
+    background: #75dce5;border-radius:0px;}
+.btn.yellow {
+    background: #FF9C30;
+}
+.btn {
+    background: #62c4cf;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Microsoft Yahei";
+    font-size: 12px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0 1px 0 0;
+    padding: 0 12px;
+}
+.lay-mini .sidebar-nav .list-group .list-wrap{ padding:0px; width:180px; padding-top:19px;}
+.lay-mini .main-left{ background:#FFF;}
+.sidebar-nav{background:#f9f9f9;}
+.sidebar-nav .list-group .list-wrap{background:#f9f9f9;}
+.lay-mini .sidebar-nav .list-group:hover .list-wrap{background:#f9f9f9;}
+.nav-right .option i{ height:51px;}
+.nav-right .info i{margin: 14px 10px 0 0;}
+.nav-right .info span{padding-top: 17px;}
+.nav-right .option i{background: url(${ctx}/resource-injar/image?t=skin_icons.png) -41px -229px no-repeat;}
+.sidebar-nav .list-group h2 i{ background:none;}
+.sidebar-nav .list-group ul li a .expandable.close {
+    background-position: -56px -168px;
+}
+.sidebar-nav .list-group h2 em {
+    height: 35px;
+    width: 35px;
+    background: #62c4cf;
+    float: left;
+}
+.sidebar-nav .list-group ul li em {
+    height: 35px;
+    width: 35px;
+    background: #f8f8f8;
+    float: left;
+}
+.sidebar-nav .list-group ul li a .icon.folder{ background:none;}
+.sidebar-nav .list-group ul li a .expandable{right: 15px;}
+.main-left h1{background: #62c4cf;}
+.main-left {
+    border-right: 1px solid #ededed;
+}
+.lay-mini .sidebar-nav .list-group.selected h1, .sidebar-nav .list-group:hover h1
+	{
+	background: #75dce5;
+	border-radius: 3px;
+}
+
+
+
+
+#div_frame{ margin-top:60px !important;}
+.lbody{ margin:0px;}
+.lbody .left{ border-right:1px solid #b9d4e9;}
+.treeview li.lastCollapsable, .treeview li.lastExpandable{ background:none;}
+.treeview .hitarea{ background:none;}
+.treeview li{ background:none;}
+.filetree li, .treeview li{ padding:0px;}
+.treeview li{line-height:37px;font-size: 12px;
+    background: #fff;color: #000;}
+.filetree span.file{ background:none;}
+.filetree span.folder, .filetree span.file{ padding:0px;}
+.filetree span.file a:hover{color:#75dce5;text-decoration: none;background: #f8f8f8;}
+.filetree span.folder a, .filetree span.file a{ display:block;border-right:1px solid #b9d4e9;color:#000;font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;}
+.filetree span.file a{ text-indent:45px;}
+.treeview, .treeview ul{padding:0px;}
+.filetree span.folder a{ border-bottom: solid 1px #f0f0f0;
+    border-top: solid 1px #f0f0f0;text-indent:45px; background:url(${ctx}/resource-injar/image?t=ml-bg.png) no-repeat #FFF;}
+.filetree span.folder a:hover{color:#75dce5;text-decoration: none;background:url(${ctx}/resource-injar/image?t=ml-bg.png) no-repeat #f8f8f8;}
+.m-shaxin{line-height:37px;}
+.m-shaxin a{ display:block;color: #fff;
+    font-size: 12px;
+    border-bottom: solid 1px #f0f0f0; text-indent:45px; font-weight:bold;background:url(${ctx}/resource-injar/image?t=title-pic.png) no-repeat #75dce5;}
+
+
+
+
+
+

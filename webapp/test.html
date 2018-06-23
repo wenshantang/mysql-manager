@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://aresoft.cn/article-list.aspx?category_id=85 -->
+<html
+	class="js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths">
+<head>
+<%include("/common/html_meta.html"){}%>
+<%include("/common/js_css引入.html"){}%>
+</head>
+<body>
+	<!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="#/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+   <%include("/common/页头.html",{nav:'news'}){} %>
+
+	<div class="services hudie">
+		<div class="container">
+			<div class="row">
+				<div class="hudiejie"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="services zhixian">
+		<div class="container">
+			<div class="row">
+				<div class="zhixianliu">
+					<p>
+						<img src="${ctxPath}/static/hudie.png">
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container" style="margin-top: 65px;">
+		<div class="row">
+			<div class="col-md-12 news-art">
+				<h1>${article.title}</h1>
+				<h2>
+					<i>作者：${article.author}</i>
+				</h2>
+				<p></p>
+				<p>${article.digest}</p>
+				<#article_content id='${article.id}';content>
+					${content}
+				</#article_content>
+				<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/buttonLite.js"></script>
+				<script type="text/javascript" charset="utf-8" src="${ctxPath}/static/bshareC0.js"></script>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<%if(parent_id == '888888888888888888'){%>
+	[{
+		"text": "<a id='A888888888888888888' href='${ctx}/admin/cms/topic/list/888888888888888888' target='topicRightFrame'>网站栏目</a>",
+		"classes": "folder"
+		<%if(topics!=null && topics.~size>0){%>
+			,
+			"expanded": true,
+			"children": [
+			<%for(topic in topics){%>
+				{
+				"id": "${topic.id}",
+				<%if(topic.has_child){%>
+					"text": "<a id='A${topic.id}' href='${ctx}/admin/cms/topic/list/${topic.id}' target='topicRightFrame' >${topic.menu_name}</a>",
+					"classes": "folder",
+					"hasChildren":true
+				<%}else{%>
+					"text": "<a id='A${topic.id}' href='${ctx}/admin/cms/topic/edit/${topic.id}' target='topicRightFrame'>${topic.menu_name}</a>",
+					"classes": "file",
+					"hasChildren":false
+				<%}%>
+				}
+				<%if(topicLP.size>topicLP.index){%>
+					,
+				<%}%>
+			<%}%>
+			]
+		<%}%>
+	}]
+<%}else{%>
+	<%if(topics!=null && topics.~size>0){%>
+		[
+			<%for(topic in topics){%>
+			{
+				"id": "${topic.id}",
+				<%if(topic.has_child){%>
+					"text": "<a id='A${topic.id}' href='${ctx}/admin/cms/topic/list/${topic.id}' target='topicRightFrame' >${topic.menu_name}</a>",
+					"classes": "folder",
+					"hasChildren":true
+				<%}else{%>
+					"text": "<a id='A${topic.id}' href='${ctx}/admin/cms/topic/edit/${topic.id}' target='topicRightFrame'>${topic.menu_name}</a>",
+					"classes": "file",
+					"hasChildren":false
+				<%}%>
+			}
+				<%if(topicLP.size>topicLP.index){%>
+					,
+				<%}%>
+			<%}%>
+		]
+	<%}%>
+<%}%>

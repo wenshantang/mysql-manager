@@ -1,0 +1,19 @@
+<div class="bm-right">
+          
+                 <div class="p-about-new">
+                     <ul>
+					 <#articleListTag topic_code="zxdt" page="1" rows="10";pageRecord>
+						<%if(pageRecord.dataList.~size>0){%> 
+							<%for(article in pageRecord.dataList){%>
+                         <li><a href="#">${article.title}</a><span class="p-new-time">${strutil.subStringTo(article.publish_time,0,10)}</span></li>
+							<%}%>
+						<%}%>
+					</#articleListTag>
+                     </ul>                  
+                 </div>
+                 
+                 <div class="m-g-pageBox p-new-pagebox">
+      <div class="m-g-page"><span class="item">首页</span><span class="item">上一页</span><a class="item on" href="#">下一页</a><a class="item on" href="#">尾页</a><span class="info">共8页 第<input class="thisnumber" value="1" type="text">页</span></div>
+    </div> 
+             
+  </div>

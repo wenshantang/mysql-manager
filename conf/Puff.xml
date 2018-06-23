@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Puff>
+
+	<constant>
+		<!-- 是否使用Puff的开发模式。 正式上线后改成false -->
+		<property name="devMode" value="true" />
+		<!-- 配置错误处理器 -->
+		<!-- <property name="errorHandler" value="cn.aresoft.portal.error.ErrorHandler"/> -->
+		<!-- 后台日志记录类型-->
+		<property name="logType" value="insert-delete-update-audit" />
+		<!-- 需要特殊验证 sql注入的路径,没有配置此项，则拦截所有请求-->
+		<!-- <property name="sqlInject"  value="/admin/cms/article/insert|/admin/sys/leftmenu/update"/> -->
+	    <!-- 设置后台最多登录失败次数,系统默认值10 -->
+		<property name="logTimes" value="100" />
+	</constant>
+	
+	<scan>
+		<property name="bean" value="cn.aresoft.ftp,cn.aresoft.common.service,cn.aresoft.common.cache,cn.aresoft.manager.cache,cn.aresoft.weixin.common.service,
+		cn.aresoft.weixin.portal.service,cn.aresoft.openapi.doc.cache,cn.aresoft.weixin.common.cache,cn.aresoft.manager.service.impl,cn.aresoft.cms.common.cache,
+		cn.aresoft.cms.common.service" />
+		<property name="controller" value="cn.aresoft.manager,cn.aresoft.weixin.manager.controller,cn.aresoft.cms.manager,cn.aresoft.cms.common" />
+	</scan>
+
+<!-- 	<scan>
+		<property name="bean" value="cn.aresoft.ftp,cn.aresoft.common.service" />
+		<property name="controller" value="cn.aresoft.manager.web.controller" />
+	</scan> -->
+	
+	<dispatcher class="com.puff.web.dispatcher.Zh_CN_GetDispatcher" />
+	<!-- XSS\CSRF -->
+	<dispatcher class="cn.aresoft.dispatcher.RequestSafeDispatcher" />
+	<!-- 部分特殊SQL inject -->
+	<dispatcher class="cn.aresoft.dispatcher.SqlInjectDispatcher" />
+	<dispatcher class="cn.aresoft.dispatcher.LogDispatcher" />
+	
+	<!-- redis缓存 -->
+  <plugin name="CachePlugin" class="com.puff.plugin.cache.CachePlugin">
+	    <property name="cache.L1.provider" value="ehcache" /> 
+		<property name="cache.L2.provider" value="redis" />
+		<property name="cache.broadcast" value="true" />
+		<property name="cache.broadcast.channel" value="redis" />
+		<property name="redis.host" value="116.62.203.161" />
+		<property name="redis.port" value="6379" />
+		<property name="redis.timeout" value="3000" />
+		<property name="redis.database" value="6" />
+		<property name="redis.maxIdle" value="3000" />
+		<property name="redis.maxWait" value="6000" />
+		<property name="redis.minEvictableIdleTimeMillis" value="864000000" />
+		<property name="redis.minIdle" value="1000" />
+		<property name="redis.numTestsPerEvictionRun" value="10" />
+		<property name="redis.softMinEvictableIdleTimeMillis" value="10" />
+		<property name="redis.timeBetweenEvictionRunsMillis" value="300000" />
+	</plugin>
+	
+	 
+  <plugin name="TemplateSyncPlugin" class="cn.aresoft.cms.manager.synctemplate.TemplateSyncPlugin">
+		<property name="templatePath" value="/Users/gfl/workspace/lsh.manager/webapp/WEB-INF/template"></property>
+	</plugin> 
+	
+</Puff>

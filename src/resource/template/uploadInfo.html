@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>upload tip</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+    var flag="${flag}";
+    var msg="${msg}";
+    var url="${url}";
+    var urlStart = url.indexOf("http");
+    //alert("${msg}"+"===="+"${flag}"+url);
+    $(function(){
+    	if(flag=="1"){
+    		if(urlStart!=0){
+    			url="${ctx}"+url;
+    		}
+    		popStatus(1, msg, 2,url);
+    	}else{
+    		if(urlStart!=0){
+    			url="${ctx}"+url;
+    		}
+    		popStatus(4, msg, 2,url);	
+    	}
+    });
+</script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>填写信息</title>
+<script src="${ctxPath}/portal/h5/js/jquery-2.2.4.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/swiper-3.3.1.jquery.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/M-v1.0.3.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/M-public.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/swiper-3.3.1.min.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/style.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/select2.min.css" />
+<script type="text/javascript" src="${ctxPath}/portal/h5/activity/js/select2.full.js"></script>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+</head>
+<style>
+  
+  body.bg-fff .wrap{ background: #fff;}
+  .yl-tianxBox h6.title{ font-size: 1.4814814814815rem; text-align: center; color: #333; padding-top:2.2222222222222rem; padding-bottom: 0.86rem;}
+  .yl-tianxBox .tip{ font-size: 0.98765432098765rem; text-align: center; color: #999; margin-bottom: 2.2222222222222rem;}
+
+  .yl-tianxBox .inputBox{ overflow: hidden; height: 3.9506172839506rem;}
+  .yl-tianxBox .name{ width: 6.628395061728rem; float: left; height: 2.962962962963rem; line-height: 2.962962962963rem; margin-right: 1rem; font-size: 0.98765432098765rem; color: #666;}
+  .yl-tianxBox .inputDiv{ width: 16.0666666666667rem; float: left;height: 2.962962962963rem;line-height: 1.562963rem; border: 1px solid #d2d2d2; border-radius: 3px;}
+  .yl-tianxBox .inputDiv input,.yl-tianxBox .inputDiv select{ width: 100%; height:2.9rem; line-height: 2.9rem; border: none; text-indent: 0.5rem;}
+
+  .yl-tianxBox .xqhyList{ overflow: hidden;}
+  .yl-tianxBox .xqhyList li{ float: left; /*width:4.4444444444444rem; */ line-height:2.2222222222222rem; height: 2.2222222222222rem; border: 1px solid #d2d2d2; border-radius: 3px; font-size:0.98765432098765rem; color: #999; text-align: center; margin-right: 0.49382716049383rem; padding: 0.1rem 0.6rem;margin-top:0.5rem}
+  .yl-tianxBox .xqhyList li.on{ border: 1px solid #f25050; background:url("${ctxPath}/portal/h5/activity/images/tian/on.png") no-repeat left top; background-size: 0.64197530864198rem  0.59259259259259rem ;}
+
+  .yl-tianxBox .inputBox.height{ height: auto;}
+  .yl-tianxBox .xqhyList{ margin-top:  1rem; margin-bottom: 2.3rem;}
+  /* .icon-rr-wrong {
+    background: rgba(0, 0, 0, 0) url("${ctxPath}/portal/h5/activity/images/alert.png") no-repeat scroll 0 0 / 120px auto;
+    background-position: -54px -280px;
+   /*  display: inline-block; */
+    height: 54px;
+    vertical-align: middle;
+    width: 54px; */
+}
+</style>
+
+<body class="bg-fff">
+<#queryactivityinfo;queryactivityinfo>
+<%if(queryactivityinfo.code=='0000'){%>
+<%if(queryactivityinfo.data!=null&&queryactivityinfo.data!=""){%>
+<div class="main wrap nofooter noheader yl-tianxBox">
+  <h6 class="title" style="">个人信息</h6>
+  <p class="tip">（星号标识为必填项）</p>
+  <div class="m50">
+    <div class="inputBox">
+      <div class="name">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text"  readonly="readonly" placeholder="请填写姓名" id="name" value="${queryactivityinfo.data.name}">
+      </div>
+    </div>
+
+    <div class="inputBox">
+      <div class="name">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="sex" disabled="disabled">
+          <option value="" >请选择性别</option>
+          <option value="1" <%if(queryactivityinfo.data.sex=='1'){%>selected<%}%> >男</option>
+          <option value="0" <%if(queryactivityinfo.data.sex=='0'){%>selected<%}%> >女</option>
+        </select>
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text" readonly="readonly" placeholder="请填写年龄" type="number"  id="age" maxlength="3" value="${queryactivityinfo.data.age}" >
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">手&nbsp;&nbsp;&nbsp;机&nbsp;&nbsp;&nbsp;号<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text" readonly="readonly" placeholder="请填写手机号码" type="number" id="mobile" maxlength="11" value="${queryactivityinfo.data.mobile}" >
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">本&nbsp;科&nbsp;专&nbsp;业<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="undergraduatemajor"  disabled="disabled">
+          <option value="">请选择本科专业</option>
+          <#cms_properties type="discipline_specialty" ; dicts>
+           <%for(dict in dicts){%>
+            		<option  value="${dict.name}" <%if(dict.name==queryactivityinfo.data.undergraduate_major){%>selected<%}%> >${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+        </select>
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">现&nbsp;修&nbsp;专&nbsp;业<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="presentmajor"   disabled="disabled" >
+          <option value="">请选择现修专业</option>
+        <#cms_properties type="discipline_specialty" ; dicts>
+           <%for(dict in dicts){%>
+            	<option  value="${dict.name}" <%if(dict.name==queryactivityinfo.data.present_major){%>selected<%}%> >${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+        </select>
+      </div>
+    </div>
+
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">感兴趣的研究方向<span class="c-f25050">*</span>：</div>
+      <div class="clear"></div>
+      <div class="xqhyList">
+        <ul>
+        <#cms_properties type="research_direction" ; dicts>
+           <%for(dict in dicts){%>
+            	<li id="${dict.name}"  <%if(strutil.contain(queryactivityinfo.data.interested_industry,dict.name)){%>class="on"<%}%> >${dict.value}</li>
+		    <%}%>
+         </#cms_properties>
+        </ul>
+      </div>
+    </div>
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">本科毕业院校：</div>
+      <div class="clear"></div>
+      <div class="xqhyList inputDiv" style="width: 99%;">
+        <select id="undergraduateschool"    disabled="disabled">
+          <option value="">请选择本科毕业院校</option>
+          <#cms_properties type="graduate_institutions" ; dicts>
+           <%for(dict in dicts){%>
+            		<option  value="${dict.name}" <%if(dict.name==queryactivityinfo.data.undergraduate_school){%>selected<%}%> >${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+
+        </select>
+      </div>
+    </div>
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">备注</div>
+      <div class="clear"></div>
+      <div class="xqhyList">
+        <textarea id="remarks" readonly="readonly" style="width: 23.9rem; height:9.1358024691358rem; resize: none; border:1px solid #d2d2d2; outline: none;">${queryactivityinfo.data.remarks}</textarea>
+      </div>
+    </div>
+      <div style="margin-bottom: 1.1rem;"><a href="javascript:void(0);"   style="height: 1.5rem;text-align: center;margin-left: 3.5rem;color:#f25050;">如果需要修改信息，请联系课程助理</a></div>
+      <a class="g-btns g-submit"  href="javascript:void(0);"   style="margin-bottom: 1.2rem;background:#999999;border-bottom:0.12345679012346rem solid #999999;">提 交</a>
+  </div>
+</div> 
+<%}%>
+<%}%>
+</#queryactivityinfo>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>消息中心</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/zepto.js"></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">消息中心</span></h1>
+  </div>
+</header>
+<#token/>
+<div class="main wrap">
+  <nav class="sonNav2" m-switch-tab="tab2">
+  <a class="m-on" href="javascript:void(0);">消息查看</a><a href="javascript:void(0);">消息订阅</a></nav>
+  <div class="tabBoxNews" m-switch-con="tab2">
+   <#querymessagelist client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}"  operator_from="1" page="1" pagesize="14";querymessagelist>
+    <ul class="g-list-li new" id="messagelist">
+    <%if(querymessagelist.code=='0000'){%> 
+     <%for(message in querymessagelist.data.dataList){%>
+       <li>
+       <form action="${ctxPath}/h5/account/messagedetail" id="message_${message.id}" method="post" style="display: none;">
+       	  <input type="hidden"     name="id"       value="${message.id}">
+       	  <input type="hidden"     name="msgtype" value="${message.msgtype}">
+       </form>
+       <a href="javascript:void(0);" onclick="getdetail('${message.id}')"><span class="name">
+       <%if(strutil.length(message.title)<=16){%>${message.title}<%}else{%>${strutil.subStringTo(message.title,0,16)}...<%}%>
+       </span><span class="info">${message.create_time}</span></a>
+       </li>
+        <%}%>
+     <%}else{%>
+       <li>暂无相关信息</li>
+      <%}%>
+    </ul> 
+    <div class="sgdfdfhfdg">
+      <ul class="g-list-li new newnewnew">
+       <%if(session.customer!=""&&session.customer!=null){%>
+       		
+       		<#infocustom customerId="${session.customer.data.mobile_tel!}"; infocustom>
+       		<%if(session.customer.data.logintype=='0'){%>
+       		<%if(session.customer.data.real_name_flag=="0"){%>
+	             <li class="g-no-icon"><a href="javascript:void(0);"><p class="autoheightc"><span class="name">止盈通知</span><span class="li-spaninfo">单只持有产品的浮动盈亏率高于10%(盈亏率=浮动盈亏/投资成本)</span>
+		          </p> 
+		          <%if(infocustom.code=="0000"){%>
+		          <label id="stopnotice" class="g-off-on <%for(info in infocustom.data){if(info.msgvalue=='1'){%><%if(info.isswitch=='0'){%> m-on <%}}}%>">
+		            <input class="checkbox" name="stopnotice" type="checkbox" value="" <%for(info in infocustom.data){if(info.msgvalue=='1'){%><%if(info.isswitch=='0'){%> checked <%}}}%> >
+		          </label>
+                 <%}%>
+		          </a></li>
+         <li class="g-no-icon"><a href="javascript:void(0);"><p class="autoheightc"><span class="name">止损通知</span><span class="li-spaninfo">单只持有产品的浮动盈亏率低于-10%</span>
+          </p>
+          <%if(infocustom.code=="0000"){%>
+          <label id="stoplossnotification" class="g-off-on <%for(info2 in infocustom.data){if(info2.msgvalue=='2'){%><%if(info2.isswitch=='0'){%> m-on <%}}}%> ">
+            <input class="checkbox" name="stoplossnotification" type="checkbox" value="" <%for(info2 in infocustom.data){if(info2.msgvalue=='2'){%><%if(info2.isswitch=='0'){%> checked <%}}}%> >
+          </label>
+          <%}%>
+          </a></li>
+         <%}%>
+         <%}%>
+         <li class="g-no-icon" id="informationnews"><a href="javascript:void(0);"><p class="autoheightc"><span class="name">资讯新闻</span>
+          </p>
+          <%if(infocustom.code=="0000"){%>
+          <label  id="informationnews" class="g-off-on last <%for(info3 in infocustom.data){if(info3.msgvalue=='3'){%><%if(info3.isswitch=='0'){%> m-on <%}}}%> ">
+            <input class="checkbox" name="informationnews" type="checkbox" value="" <%for(info3 in infocustom.data){if(info3.msgvalue=='3'){%><%if(info3.isswitch=='0'){%> checked <%}}}%> >
+          </label>
+          <%}%>
+          </a></li>
+          </#infocustom>
+          
+	   <%}%>
+      </ul>
+    </div>
+  </div>
+</div>
+<div id="message_list" style="display: none;"></div> 
+<script type="text/javascript">
+		 var page=1;//当前页(交易记录查询)
+		 var totalPage=${querymessagelist.data.totalPage!};//总页数（交易记录查询）
+		 var pagesize=14;//每页的条数	
+		Zepto(function($){ 
+			$(window).scroll(function(){
+				 //滚动条拉到离底10像素内，而且没超过总页数
+				 console.info(($(window).scrollTop() + $(window).height() > $(document).height()-10));
+		      if(($(window).scrollTop() + $(window).height() > $(document).height()-10)){
+		        	 if(totalPage>page){
+		        		page++; 
+		        		var url ="${ctxPath}/h5/account/messagePage?p="+page;
+		        		$("#message_list").load(url, function(response, status, xhr) {
+		        			console.info($("#message_list").html());
+		        			$('#messagelist').append($("#message_list").html());
+		        		});
+		        	}
+		       }
+		  });
+		});
+	</script>
+</#querymessagelist>
+<%include("/h5/common/foot.html",{nav:'selfinfo'}){}%>
+<script type="text/javascript">
+function getdetail(id){
+	document.getElementById("message_"+id).submit();
+}
+
+function updateswitch(msgvalue,msgname,status){
+	var flag=false;
+	var customerid="${session.customer.data.mobile_tel!}"
+	 $.ajax({
+			url : '${ctxPath}/user/updateuserswitch',
+			data : {
+				"msgvalue" : msgvalue,"customerid":customerid,"status":status,"msgname":msgname
+			},
+			dataType : 'json',
+			async : false,
+			type : 'post',
+			success : function(data) {
+				if (data.code = "0000") {
+					flag = true;
+				}else{
+					flag = false;
+				}
+			}
+		});
+	return flag;
+}
+//资讯新闻
+$('input[name="informationnews"]').click(function(){
+	if ($(this).is(":checked")) {
+		if(updateswitch("3","资讯新闻","0")){
+			$("#informationnews").addClass("m-on");
+		}
+    } else {
+    	if(updateswitch("3","资讯新闻","1")){
+    		$("#informationnews").removeClass("m-on");
+		}
+    }
+});
+
+//止盈通知
+$('input[name="stopnotice"]').click(function(){
+	if ($(this).prop("checked")) { 
+		if(updateswitch("1","止盈通知","0")){
+			$("#stopnotice").addClass("m-on");
+		}
+    } else {
+    	if(updateswitch("1","止盈通知","1")){
+    		$("#stopnotice").removeClass("m-on");
+		}
+    } 
+});
+
+
+//止损通知
+$('input[name="stoplossnotification"]').click(function(){
+	if ($(this).is(":checked")) {
+		if(updateswitch("2","止损通知","0")){
+			$("#stoplossnotification").addClass("m-on");
+		}
+    } else {
+    	if(updateswitch("2","止损通知","1")){
+    		$("#stoplossnotification").removeClass("m-on");
+		}
+    }
+});
+
+</script>
+</body>
+</html>

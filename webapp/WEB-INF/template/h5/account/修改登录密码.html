@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-密码管理-修改登录密码</title> 
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+
+<body>
+<#token/>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">修改登录密码</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <div class="m50 g-input40">
+  <h6 class="g-listTitle2 title">当前密码</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input" maxlength="6" type="password" placeholder="请输入当前密码" id="loginpassword"><span class="g-pass-eye-btn" id="editpassword"><img src="${ctxPath}/portal/h5/images/reg_nosee.png"  onclick="showpassword()" ></span>
+      </span> </div>
+      <h6 class="g-listTitle2 title">新密码</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input"  maxlength="6" type="password" placeholder="请输入六位数字的新密码" id="newloginpassword" ><span class="g-pass-eye-btn" id="editnewpassword" ><img src="${ctxPath}/portal/h5/images/reg_nosee.png"  onclick="shownewpassword()"></span>
+      </span> </div>
+      <h6 class="g-listTitle2 title">确认新密码</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input" maxlength="6"  type="password" placeholder="确认密码"  id="newconformloginpassword" ><span class="g-pass-eye-btn" id="editconfirmpassword" ><img src="${ctxPath}/portal/h5/images/reg_nosee.png"   onclick="showconfirmpassword()" ></span>
+      </span> </div>
+      <a class="g-btns g-submit g-m-t40" href="javascript:void(0);" onclick="editpassword()">确 定</a>
+      <div class="center"><a href="${ctxPath}/h5/account/forgetps" class="bottom-aaabtn">忘记登录密码？</a></div>
+
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+function showpassword(){//显示明文密码
+	$("#loginpassword").attr('type','text');
+	$("#editpassword").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hidepassword()' >");
+} 
+function hidepassword(){//隐藏明文密码
+	$("#loginpassword").attr('type','password');
+	$("#editpassword").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='showpassword()' >");
+}
+function shownewpassword(){//显示明文密码
+	$("#newloginpassword").attr('type','text');
+	$("#editnewpassword").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hidenewpassword()' >");
+} 
+function hidenewpassword(){//隐藏明文密码
+	$("#newloginpassword").attr('type','password');
+	$("#editnewpassword").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='shownewpassword()' >");
+}
+
+function showconfirmpassword(){//显示明文密码
+	$("#newconformloginpassword").attr('type','text');
+	$("#editconfirmpassword").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hideconfirmpassword()' >");
+} 
+function hideconfirmpassword(){//隐藏明文密码
+	$("#newconformloginpassword").attr('type','password');
+	$("#editconfirmpassword").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='showconfirmpassword()' >");
+}
+ 
+function editpassword(){
+	var loginpassword = $("#loginpassword").val();//原登录密码
+	var newloginpassword = $("#newloginpassword").val();//新登录密码	
+	var newconformloginpassword = $("#newconformloginpassword").val();//确认登录密码
+	if (loginpassword == "" || loginpassword == null) {
+		Popbox.sureWithBtn("请输入登录密码!");
+		return false;
+	}
+	if (newloginpassword == "" || newloginpassword == null) {
+		Popbox.sureWithBtn("请输入新的登录密码!");
+		return false;
+	}
+	if (newconformloginpassword == "" || newconformloginpassword == null) {
+		Popbox.sureWithBtn("请输入确认登录密码!");
+		return false;
+	}
+	if (!Regular.REG(loginpassword, RegexEnum.num)||loginpassword.length!=6) {
+		Popbox.sureWithBtn("请输入6位数字密码");
+		return false;
+	}
+	if (!Regular.REG(newloginpassword, RegexEnum.num)||newloginpassword.length!=6) {
+		Popbox.sureWithBtn("请输入6位数字密码");
+		return false;
+	}
+	if (!Regular.REG(newconformloginpassword, RegexEnum.num)||newconformloginpassword.length!=6) {
+		Popbox.sureWithBtn("请输入6位数字密码");
+		return false;
+	}
+	if (newloginpassword != newconformloginpassword) {
+		Popbox.sureWithBtn("两次输入的密码不一致!");
+		return false;
+	}
+	
+	if (newloginpassword == loginpassword) {
+		Popbox.sureWithBtn("新密码和原始密码一致!");
+		return false;
+	}
+	$.ajax({
+		type : "post",
+		data : {
+			"password" : newloginpassword,
+			"old_password":loginpassword,
+			"acco_no" : "${session.customer.data.cust_no!}",
+			"id_no" : "${session.customer.data.id_no!}",
+			"acco_type":"1"
+		},
+		url : "${ctxPath}/user/editps",
+		success : function(result) {
+			console.log(result);
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("修改成功!");
+				var logintype="${session.customer.data.logintype!}"
+				if(logintype=='0'){
+					window.location.href="${ctxPath}/h5/account/psmanager";
+				}else{
+					window.location.href="${ctxPath}/h5/account/myconsignment";
+				}
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</html>

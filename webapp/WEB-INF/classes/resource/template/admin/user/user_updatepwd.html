@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>修改密码</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+function opt(url){
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				alert('密码修改成功！！！');
+				Public.closeDialog();
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+</script>
+<body class="mainbody">
+	<div class="content-tab-wrap">
+		<div id="floatHead" class="content-tab">
+			<div class="content-tab-ul-wrap">
+				<ul>
+					<li><a href="javascript:;" onclick="tabs(this);" class="selected">登陆密码修改</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>原始登录密码</dt>
+				<dd>
+					<input name="old_pwd" type="password" id="old_pwd" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>新登陆密码</dt>
+				<dd>
+					<input name="new_pwd" type="password" id="new_pwd" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>确认登陆密码</dt>
+				<dd>
+					<input name="new_pwd_confirm" type="password" id="new_pwd_confirm" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		</div>
+	</form>
+	<div class="page-footer">
+		<div class="btn-list">
+			<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="opt('${ctx}/admin/sys/user/pwd/update')"/>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+		</div>
+		<div class="clear"></div>
+	</div>
+</body>
+</html>

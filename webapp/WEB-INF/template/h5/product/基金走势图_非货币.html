@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>基金走势图</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/highcharts.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/trade.fundnav.js"></script>
+<style>
+.main:before {
+    height: 0rem;
+}
+#leijijingzhi .m-ui-checkbox-box.m-on b {
+    background-image: url(${ctxPath}/portal/h5/images/taaaaaa_003.png);
+}
+</style>
+</head>
+<body>
+<script type="text/javascript">
+$(function(){
+	 gethighcharts('1');
+});
+</script>
+<#QuerSuperFundList fundcode="${fundcode!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+<div class="main wrap">
+    <input type="hidden" value="${fundcode!}" id="fundcode">
+    <input type="hidden" value="1" id="fundtype">
+  <div class="m-tabBox" m-switch-con="tab">
+    <div class="list">
+      <div class="m-duduBox">
+      	  <div id="container" class="g-imgatuo" style="height:155px;"></div>
+		   <div style="height:20px;position: relative;"> 
+		         <div id="showdate1" style="font-size:9px;position:absolute;top:3px;left:3%;width:25%;"></div>
+		        <div id="showdate2" style="font-size:9px;position:absolute;top:3px;left:29%;width:25%;"></div>
+		        <div id="showdate3" style="font-size:9px;position:absolute;top:3px;left:54%;width:25%;"></div>
+		        <div id="showdate4" style="font-size:9px;position:absolute;top:3px;left:79%;width:25%;"></div>
+		    </div> 
+     </div>
+      <div class="m-duduBtns">
+        <div class="date">
+        <a href="javascript:void(0);" id="1" onclick="gethighcharts('1')" class="m-on">一月</a> 
+        <a href="javascript:void(0);" id="2" onclick="gethighcharts('2')" >三月</a>
+        <a href="javascript:void(0);" id="3" onclick="gethighcharts('3')" >一年</a> 
+        <a href="javascript:void(0);" id="4" onclick="gethighcharts('4')" >今年来</a></div>
+        <div class="type">
+          <label>
+            <input class="m-checkbox" onclick="serieshideorshow('1');" type="checkbox"  checked>单位净值</label>
+          <label id="leijijingzhi">
+            <input class="m-checkbox" onclick="serieshideorshow('2');"  type="checkbox" checked >累计净值</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%}}%>
+</#QuerSuperFundList>
+</body>
+</html>

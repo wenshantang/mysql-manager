@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑任务</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js" charset="utf-8"></script>
+<script type="text/javascript">
+	function showDD(id){
+		$("#runperiodsType").find("dd").each(function(){
+			$(this).hide();
+			if($(this).attr('id')==id){
+				$(this).show();
+			}
+		});
+	}
+</script>
+</head>
+<body class="mainbody">
+	<div class="content-tab-wrap">
+		<div id="floatHead" class="content-tab">
+			<div class="content-tab-ul-wrap">
+				<ul>
+					<li><a href="javascript:;" onclick="tabs(this);" class="selected">任务基本信息</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>是否启用</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="isRun" type="checkbox" name="isRun" value="1" ${task.isRun == '1'?'checked':''}/>
+					</div>
+					<span id="Validform_checktip">*不启用则任务不启动</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>任务名称</dt>
+				<dd>
+					<input type="hidden" name="id" value="${task.id}"/>
+					<input type="hidden" name="createTime" value="${task.createTime}"/>
+					<input name="scheduleName" type="text" id="scheduleName" value="${task.scheduleName}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>启动时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" onfocus="WdatePicker({dateFmt:'HH:mm'})" class="input rule-date-input" id="startTime" name="startTime" value="${task.startTime}"/>
+					</div>
+					<input type="hidden" id="startTimeTip"/><span id="Validform_checktip">(格式如"09:00")</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>中止时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" onfocus="WdatePicker({dateFmt:'HH:mm'})" class="input rule-date-input" id="endTime" name="endTime" value="${task.endTime}"/>
+					</div>
+					<input type="hidden" id="endTimeTip"/><span id="Validform_checktip">(格式如"09:00")</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>重试次数</dt>
+				<dd>
+					<input name="retryCount" type="text" id="retryCount" class="input" style="width: 80px;text-align: center;" value="${task.retryCount}"/>
+					<span id="Validform_checktip">数字</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>重试间隔</dt>
+				<dd>
+					<input name="retryTime" type="text" id="retryTime" class="input" style="width: 80px;text-align: center;" value="${task.retryTime}"/>
+					<span id="Validform_checktip">分钟</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>基金工作日</dt>
+				<dd>
+				<div class="rule-multi-porp">
+					<input type="checkbox" id="isFundday" name="isFundday" value="0" ${task.isFundday == '1'?'checked':''}/><label for="">是</label>
+				</div>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>运行周期</dt>
+				<dd>
+				<div class="rule-multi-radio">
+					<input type="radio" id="everyday" name="periodsType" value="0" onclick="showDD();" ${task.periodsType == '0'?'checked':''}/><label for="">每日</label>
+					<input type="radio" id="everyweek" name="periodsType" value="1" onclick="showDD('everyweek');" ${task.periodsType == '1'?'checked':''}/><label for="">每周</label>
+					<input type="radio" id="everymonth" name="periodsType" value="2" onclick="showDD('everymonth');" ${task.periodsType == '2'?'checked':''}/><label for="">每月</label>
+					<input type="radio" id="specialdate" name="periodsType" value="3" onclick="showDD('specialdate');" ${task.periodsType == '3'?'checked':''}/><label for="">特定日期</label>
+				</div>
+				</dd>
+			</dl>
+			
+			<dl id="runperiodsType">
+				<dt></dt>
+				<dd id="everyweek" ${task.periodsType != '1'?'style="display: none"':''}>
+					<div class="rule-multi-porp">
+							<input type="checkbox" id="sunday" name="workDays" value="1000000" ${week.sunday =='1'?'checked':''}/>
+							<label for="sunday">星期日</label>
+							<input type="checkbox" id="monday" name="workDays" value="0100000" ${week.monday =='1'?'checked':''}/>
+							<label for="monday">星期一</label>
+							<input type="checkbox" id="tuesday" name="workDays" value="0010000" ${week.tuesday =='1'?'checked':''}/>
+							<label for="tuesday">星期二</label>
+							<input type="checkbox" id="wendsday" name="workDays" value="0001000" ${week.wendsday =='1'?'checked':''}/>
+							<label for="wendsday">星期三</label>
+							<input type="checkbox" id="thursday" name="workDays" value="0000100" ${week.thursday =='1'?'checked':''}/>
+							<label for="thursday">星期四</label>
+							<input type="checkbox" id="friday" name="workDays" value="0000010" ${week.friday =='1'?'checked':''}/>
+							<label for="friday">星期五</label>
+							<input type="checkbox" id="saturday" name="workDays" value="0000001" ${week.saturday =='1'?'checked':''}/>
+							<label for="saturday">星期六</label>
+					</div>
+					<input type="hidden" id="workDayTip"/><span id="Validform_checktip"></span>
+				</dd>
+				<dd id="everymonth" ${task.periodsType != '2'?'style="display: none"':''}>
+					<input name="monthDay" type="text" id="monthDay" class="input normal small" style="text-align: center;" value="${task.monthDay}"/>
+					<span id="Validform_checktip">每月输入格式:(1-31)</span>
+				</dd>
+				<dd id="specialdate" ${task.periodsType != '3'?'style="display: none"':''}>
+					<div class="date-input">
+						<i></i><input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'%y-%M-{%d}'})" class="input rule-date-input" id="specialDate" name="specialDate" value="${task.specialDate}"/>
+					</div>
+					<input type="hidden" id="specialDateTip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			<dl>
+			    <dt>运行任务Class</dt>
+			    <dd>
+			      	<span>*必须继承cn.aresoft.manager.task.TaskJob</span>
+			    </dd>
+			  </dl>
+			  <dl>
+			    <dt></dt>
+			    <dd>
+				  	<textarea name="taskClass" rows="1" cols="20" id="taskClass" class="input" style="width: 500px;height: 45px;">${task.taskClass}</textarea>
+			      	<span id="Validform_checktip"></span>
+			    </dd>
+			  </dl>
+			
+			
+			<dl>
+			    <dt>任务描述</dt>
+			    <dd>
+				  	<textarea name="memo" rows="1" cols="20" id="memo" class="input" style="width: 500px;height: 60px;">${task.memo}</textarea>
+			      	<span id="Validform_checktip"></span>
+			    </dd>
+		  </dl>
+			
+		</div>
+	</form>
+	<div class="page-footer">
+		<div class="btn-list">
+			<#permission url="/admin/sys/task/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/sys/task/update')"/>
+			</#permission>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();"/>
+		</div>
+	</div>
+</body>
+</html>

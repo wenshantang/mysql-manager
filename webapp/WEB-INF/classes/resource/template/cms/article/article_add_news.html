@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增CMS文章</title>
+<%include("resource/template/common/resource.html"){}%>
+<link rel="stylesheet" href="${ctx}/admin/plugin/kindeditor-4.1.10/themes/default/default.css" />
+<script src="${ctx}/admin/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/admin/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<script>
+	KindEditor.ready(function(K) {
+		var editor1 = K.create('textarea[name="content"]', {
+			allowFileManager : true,
+			allowFlashUpload : true,
+			allowMediaUpload : true,
+			allowFileUpload : true,
+			// urlType: "domain"//”relative”、”absolute”、”domain”。
+			uploadJson : '${ctx}/kindeditor/upload',
+			fileManagerJson : '${ctx}/kindeditor/list',
+			afterBlur: function(){this.sync();}
+		});
+		
+		
+		var editor = K.editor({
+			themeType: "simple",
+			allowFileManager : true,
+			uploadJson : '${ctx}/kindeditor/upload',
+			fileManagerJson : '${ctx}/kindeditor/list'
+		});
+		
+		K('#select_big_image').click(function() {
+			editor.loadPlugin('smimage', function() {
+				editor.plugin.imageDialog({
+					clickFn : function(url, title, width, height, border, align) {
+						K('#image_url').val(url);
+						if (K('#article_image')) {
+							 K('#article_image').attr('src', url);
+							 K('#article_image').show();
+						}
+						editor.hideDialog();
+					}
+				});
+			});
+		});
+	});
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">新增文章</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<input name="status" type="hidden" id="status" value="0" />
+		<div class="tab-content">
+			<dl>
+				<dt>文章名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章标题</dt>
+				<dd>
+                    <textarea name="title" rows="3" cols="20" id="title" class="input" style="width: 600px;height: 60px;"></textarea>
+					<span id="Validform_checktip">*html title</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章关键字</dt>
+				<dd>
+					<textarea name="keywords" rows="3" cols="20" id="keywords" class="input" style="width: 600px;height: 60px;"></textarea>
+					<span id="Validform_checktip">*meta keywords</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章描述</dt>
+				<dd>
+					<textarea name="description" rows="3" cols="20" id="description" class="input" style="width: 600px;height: 60px;"></textarea>
+					<span id="Validform_checktip">*meta description</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章预览图</dt>
+				<dd>
+					<img id="article_image" src="" style="max-height:100px ;display:none;" />
+					    <input class="inputxt" id="image_url" type="text" name="image_url" class="input-xlarge" readonly="readonly" style="display:none;"/>
+                        <span class="help-inline"><a id="select_big_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章来源</dt>
+				<dd>
+					<input name="source" type="text" id="source" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章作者</dt>
+				<dd>
+					<input name="author" type="text" id="author" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>文章模板</dt>
+				<dd>
+					<div class="rule-single-select">
+				          	<select name="template_code">
+							  	<c:forEach var="cmsTemplate" items="${cmsTemplates}">
+								<option value="${cmsTemplate.t_code}">${cmsTemplate.name}</option>
+								</c:forEach>
+							</select>
+				    </div>
+					<span id="Validform_checktip"></span>
+				<dd>
+			</dl>
+			
+			<dl>
+				<dt>所属栏目</dt>
+				<dd>
+					<div class="rule-multi-porp">
+						<span id="cblActionType">
+							<c:forEach items="${topics }" var="topic">
+							<input id="${topic.topic_code}" type="checkbox" name="topics" value="${topic.topic_code}" />
+							<label for="${topic.topic_code}">${topic.name}</label>
+							</c:forEach>
+						</span>
+					</div>
+					<input type="hidden" id="topics"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+
+			
+			<dl>
+				<dt>文章内容</dt>
+				<dd>
+                    <textarea name="content" rows="3" cols="20" id="content" class="input" style="width: 800px;height: 800px;"></textarea>
+                    <span id="Validform_checktip">*</span>
+                </dd>
+			</dl>
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/cms/article/insert')"/> 
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

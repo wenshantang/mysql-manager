@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>后台调用日志列表</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+            <td>{{row.loginname}}</td>
+            <td>{{row.user_id}}</td>
+            <td>{{row.logtime}}</td>
+            <td>{{row.logCount}}</td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+      <!--   <div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+			<!-- <dl>
+				<dt>字典项分类</dt>
+				<dd>
+					<select name="type" id="type" class="js-example-basic-single" style="width: 200px;">
+                    <option value="">请选择</option>
+				  	<%for(dict in dictTypes!){%>
+					<option value="${dict}">${dict}</option>
+				  	<%}%>
+				   </select>
+				</dd>
+			</dl> -->
+									
+			<dl>
+				<dt>调用时间段</dt>
+				<dd>
+					<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input"  id="begin_time" name="begin_time" />
+					~<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input"  id="end_time" name="end_time" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>用户名</dt>
+				<dd>
+					<input type="text" class="input normal big" id="loginname" name="loginname"/>
+				</dd>
+			</dl>
+			
+			</form>
+          </div>
+          
+          <div class="searchButton">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+          
+		</div>
+          
+        
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/sys/logcount/json">
+            <tr>
+                <th sort="loginname" width="10%">用户名</th>
+                <th sort="user_id" width="15%">用户ID</th>
+                <th sort="logtime" width="10%">日志发生时间</th>
+                <th sort="logCount" width="5%">发布日志数量</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

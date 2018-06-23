@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>菜单管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+    $(function () {
+    	$(".ltable tr").hover(function() {
+    		$(this).find("span.nav_tool").css("display",""); 
+    	}, function() {
+    		$(this).find("span.nav_tool").css("display","none"); 
+    	});
+    });
+    
+    function delRes(url){
+    	$.layer({
+    	    shade: [0.5, '#888'],
+    	    border: [0.2, 0.1, '#000'],
+    	    area: ['auto','auto'],
+        	title:'确定删除吗？',
+    	    dialog: {
+    	        msg: '确定要删除该资源下所有资源吗？这将无法恢复。',
+    	        btns: 2,                    
+    	        type: 4,
+    	        btn: ['确定','取消'],
+    	        yes: function(index){
+    	        	layer.close(index);
+    	        	jQuery.ajax({
+    	        		url : url,
+    	        		type : "GET",
+    	        		success : function(result) {
+    	        			if (result.code == '0000') {
+    	        				success('删除成功！！！');
+    	        			}else{
+    	        				popStatus(4, result.msg, 2);
+    	        			}
+    	        		}
+    	        	});
+    	        }, no: function(){
+    	            
+    	        }
+    	    }
+    	});
+    }
+    
+
+    function success(msg){
+		var leve1_open = $("#leve1_open").val();
+		var leve2_open = $("#leve2_open").val();
+		var url ='${ctx}/admin/sys/leftmenu?leve1_open='+leve1_open+'&leve2_open='+leve2_open;
+		popStatus(1, msg, 1, url, true);
+	}
+    
+    function open_close(id,level){
+    	if(level){
+    		$("tr[name='"+id+"']").each(
+   				function(){
+   					var hid = $(this).is(":hidden");
+   					if(!hid){
+   						$(this).hide();
+   						$("tr[parent='"+id+"']").each(
+			   				function(){
+			   					$(this).hide();
+			   				}
+			   			);
+   					}else{
+   						$(this).show();
+   					}
+   				}
+   			);
+    	}else{
+    		$("tr[name='"+id+"']").each(
+   				function(){
+   					$(this).toggle();
+   				}
+   			);
+    	}
+    }
+    
+    function setOpen(id,level){
+    	$("#leve"+level+"_open").val(id);
+    }
+</script>
+<style type="text/css">
+.nav_tool{
+	padding-left: 10px;
+}
+</style>
+</head>
+
+<body class="mainbody">
+	<div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/sys/leftmenu/insert">
+                        <li>
+                        	<a class="add" onclick="add('${ctx}/admin/sys/leftmenu/add/1-1')" href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+		<input id="leve1_open" value="${leve1_open!}" type="hidden"/>
+		<input id="leve2_open" value="${leve2_open!}" type="hidden"/>
+        <thead>
+          <tr>
+            <th width="60%">菜单名称</th>
+            <th width="30%">资源（URL地址）</th>
+            <th width="10%">排序</th>
+          </tr>
+        </thead>
+        <tbody>
+        <%for(menu in menus!){%>
+        	<tr style="cursor: pointer">
+	            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+	              <span class="folder-open" onclick="open_close('${menu.id}','1')"></span>
+	              <span onclick="open_close('${menu.id}','1')">${menu.name}</span>
+	              <span class="nav_tool" style="display: none">
+	              <%if(menu.type == '1'){%>
+	              <#permission url="/admin/sys/leftmenu/insert">
+	              	<a title="添加" class="img-btn add operator" onclick="setOpen('${menu.id}','1');add('${ctx}/admin/sys/leftmenu/add/${menu.id}-2')">添加</a>
+	              </#permission>	
+	              <%}%>
+	              <#permission url="/admin/sys/leftmenu/update">
+                    <a title="编辑" class="img-btn edit operator" onclick="edit('${ctx}/admin/sys/leftmenu/edit/${menu.id}-1')">编辑</a>
+                  </#permission>
+                  <#permission url="/admin/sys/leftmenu/delete">
+			        <a title="删除" class="img-btn del operator" onclick="delRes('${ctx}/admin/sys/leftmenu/delete/${menu.id}-1');">删除</a>
+	          	</#permission>
+	              </span>
+	            </td>
+	            <td class="tdleft" onclick="open_close('${menu.id}','1')">
+	              ${menu.url}
+	            </td>
+            	<td class="tdleft" onclick="open_close('${menu.id}','1')">
+            	  ${menu.idx}
+	            </td>
+          	</tr>
+          	<%for(son in menu.sons!){%>
+          	<tr name="${menu.id}" ${menu.id == leve1_open!?'style="cursor: pointer"':'style="display:none;cursor: pointer"'}>
+            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+              <span style="display:inline-block;width:38px;" onclick="open_close('${son.id}')" ></span><span class="folder-line" onclick="open_close('${son.id}')" ></span><span class="folder-open" onclick="open_close('${son.id}')" ></span>
+              <span onclick="open_close('${son.id}')">${son.name}</span>
+              <span class="nav_tool" style="display: none">
+              	<#permission url="/admin/sys/leftmenu/insert">
+                   	<a title="添加" class="img-btn add operator" onclick="setOpen('${menu.id}','1');setOpen('${son.id}','2');add('${ctx}/admin/sys/leftmenu/add/${son.id}-3')">添加</a>
+                </#permission>
+              	<#permission url="/admin/sys/leftmenu/update">
+	              	<a title="编辑" class="img-btn edit operator" onclick="setOpen('${menu.id}','1');edit('${ctx}/admin/sys/leftmenu/edit/${son.id}-2')">编辑</a>
+	            </#permission>
+	            <#permission url="/admin/sys/leftmenu/delete">
+			        <a title="删除" class="img-btn del operator" onclick="setOpen('${menu.id}','1');delRes('${ctx}/admin/sys/leftmenu/delete/${son.id}-2');">删除</a>
+			    </#permission>
+	          </span>
+            </td>
+            <td class="tdleft" onclick="open_close('${son.id}')" >
+            	${son.url}
+            </td>
+            <td class="tdleft" onclick="open_close('${son.id}')" >
+            	${son.idx}
+            </td>
+          </tr>
+          <%for(sonson in son.sons!){%>
+          	<tr parent="${menu.id}" name="${son.id}" ${son.id == leve2_open!?'':'style="display:none"'}>
+            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden; ">
+              <span style="display:inline-block;width:72px;"></span><span class="folder-line"></span><span class="folder-open"></span>
+              ${sonson.name}
+              <span class="nav_tool" style="display: none">
+              <#permission url="/admin/sys/leftmenu/update">
+	              	<a title="编辑" class="img-btn edit operator" onclick="setOpen('${menu.id}','1');setOpen('${son.id}','2');edit('${ctx}/admin/sys/leftmenu/edit/${sonson.id}-3')">编辑</a>
+	          </#permission>
+	          <#permission url="/admin/sys/leftmenu/delete">
+			        <a title="删除" class="img-btn del operator" onclick="setOpen('${menu.id}','1');setOpen('${son.id}','2');delRes('${ctx}/admin/sys/leftmenu/delete/${sonson.id}-3');">删除</a>
+	          </#permission>
+	          </span>
+            </td>
+            <td class="tdleft">
+            	${sonson.url}
+             </td>
+            <td class="tdleft">
+            	${sonson.idx}
+            </td>
+          </tr>
+          <%}%>
+          	<%}%>
+       <%}%>
+        </tbody>
+      </table>
+</body>
+</html>

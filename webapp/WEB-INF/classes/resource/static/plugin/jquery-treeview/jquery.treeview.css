@@ -1,0 +1,84 @@
+ .lbody {
+    background: #f6fafb url("${ctx}/resource-injar/image?t=/jquerytree/lbg.jpg") repeat-y scroll right center;
+    color: #666666;
+    margin-right: 6px;
+    font-size: 12px;
+}
+.left {
+    background-color: #f6fafb;
+}
+a {
+    text-decoration: none;
+}
+a:link {
+    color: #364f56;
+}
+.treeview, .treeview ul {
+	margin: 0;
+	list-style: none;
+	padding: 3px 0 0 0;
+}
+
+.treeview .hitarea {
+	background: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-default.gif) -64px -25px no-repeat;
+	height: 16px;
+	width: 16px;
+	margin-left: -16px;
+	float: left;
+	cursor: pointer;
+}
+/* fix for IE6 */
+* html .hitarea {
+	display: inline;
+	float:none;
+}
+
+.treeview li {
+	margin: 0;
+	padding: 3px 0pt 3px 16px;
+}
+
+.treeview a.selected {
+	background-color: #eee;
+}
+
+#treecontrol { margin: 1em 0; display: none; }
+
+.treeview .hover { color: red; cursor: pointer; }
+
+.treeview li { background: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-default-line.gif) 0 0 no-repeat; }
+.treeview li.collapsable, .treeview li.expandable { background-position: 0 -176px; }
+
+.treeview .expandable-hitarea { background-position: -80px -3px; }
+
+.treeview li.last { background-position: 0 -1766px }
+.treeview li.lastCollapsable, .treeview li.lastExpandable { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-default.gif); }
+.treeview li.lastCollapsable { background-position: 0 -111px }
+.treeview li.lastExpandable { background-position: -32px -67px }
+
+.treeview div.lastCollapsable-hitarea, .treeview div.lastExpandable-hitarea { background-position: 0; }
+
+.treeview-red li { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-red-line.gif); }
+.treeview-red .hitarea, .treeview-red li.lastCollapsable, .treeview-red li.lastExpandable { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-red.gif); }
+
+.treeview-black li { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-black-line.gif); }
+.treeview-black .hitarea, .treeview-black li.lastCollapsable, .treeview-black li.lastExpandable { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-black.gif); }
+
+.treeview-gray li { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-gray-line.gif); }
+.treeview-gray .hitarea, .treeview-gray li.lastCollapsable, .treeview-gray li.lastExpandable { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-gray.gif); }
+
+.treeview-famfamfam li { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-famfamfam-line.gif); }
+.treeview-famfamfam .hitarea, .treeview-famfamfam li.lastCollapsable, .treeview-famfamfam li.lastExpandable { background-image: url(${ctx}/resource-injar/image?t=/jquerytree/treeview-famfamfam.gif); }
+
+.treeview .placeholder {
+	background: url(${ctx}/resource-injar/image?t=/jquerytree/ajax-loader.gif) 0 0 no-repeat;
+	height: 16px;
+	width: 16px;
+	display: block;
+}
+
+.filetree li { padding: 3px 0 2px 16px; }
+.filetree span.folder, .filetree span.file { padding: 3px 0 1px 18px;}
+.filetree span.folder { background: url(${ctx}/resource-injar/image?t=/jquerytree/folder.gif) 0 0 no-repeat; }
+.filetree li.expandable span.folder { background: url(${ctx}/resource-injar/image?t=/jquerytree/folder-closed.gif) 0 0 no-repeat; }
+.filetree span.file { background: url(${ctx}/resource-injar/image?t=/jquerytree/file.gif) 0 0 no-repeat; }

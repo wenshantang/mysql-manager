@@ -1,0 +1,15 @@
+<#querymessagelist client_id="${session.customer.data.client_id!}" cust_no="${session.customer.data.cust_no!}"  operator_from="1"  customerId="${session.customer.data.mobile_tel!}" page="${p!}" pagesize="14";querymessagelist>
+    <%if(querymessagelist.code=='0000'){%>
+     <%for(message in querymessagelist.data.dataList){%>
+     <li>
+       <form action="${ctxPath}/h5/account/messagedetail" id="${message.id}" method="post" style="display: none;">
+       	  <input type="hidden"         name="id"       value="${message.id}">
+       	  <input type="hidden"   name="msgtype" value="${message.msgtype}">
+       </form>
+       <a href="javascript:void(0);" onclick="getdetail('${message.id}')"><span class="name"><%if(strutil.length(message.title)<=16){%>${message.title}<%}else{%>${strutil.subStringTo(message.title,0,16)}...<%}%>
+       </span><span class="info">${message.create_time}</span></a></li>
+        <%}%>
+     <%}else{%>
+       <li>暂无相关信息</li>
+      <%}%>
+</#querymessagelist>

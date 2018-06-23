@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-手机修改-原手机可以接收短信2</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+var wait =60; 
+function time() {
+	if (wait == 0) {
+		$("#send_authcode").attr("onclick","sendcode();");
+		$("#send_authcode").text("发送手机验证码");
+		$("#send_authcode").css("background","#f25050");
+        wait = 60;
+    } else {
+    	$("#send_authcode").removeAttr("onclick");
+    	$("#send_authcode").css("background","#dcdcdc");
+    	$("#send_authcode").text("重新发送("+wait+")");
+        wait--;
+        setTimeout(function() {
+            time()
+    	}, 1000)
+ 	}
+ }
+ 
+function checkmobile() {
+	var mobile = $("#mobile").val();
+	var flag = false;
+	 $.ajax({
+		//校验该手机号是否已被注册()
+		url : '${ctxPath}/user/checkuser',
+		data : {
+			"acco_no" : mobile,"acco_type":"D","system_from":"1"
+		},
+		dataType : 'json',
+		async : false,
+		type : 'post',
+		success : function(data) {
+			if (data.code = "0000") {
+				console.log(eval("("+data.data+")").exist);
+				if(eval("("+data.data+")").exist=='0'){
+					flag = true;
+				}else{
+					flag = false;
+				}
+				
+			}
+		}
+	}); 
+	return flag;
+}
+//发送手机验证码
+function sendcode() {
+	var mobile = $("#mobile").val();
+	if (mobile == "" || mobile == null) {
+		Popbox.sureWithBtn("手机号不能为空")
+		return false;
+	}
+	if (!Regular.REG(Number(mobile), RegexEnum.mobile)) {
+		Popbox.sureWithBtn("手机格式错误")
+		return false;
+	}
+	if (checkmobile()) {
+		$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"template_id":"7",
+				"sms_channel_id":"3"
+			},
+			url : "${ctxPath}/send/sendcode",
+			success : function(result) {
+				if (result.code == "0000") {
+					time();
+					layer.open({
+		    			content:"验证码发送成功!",
+		    			shadeClose: true,
+		    		    btn: ['确定'],
+		    		    time:5
+		    		});
+				} else {
+					Popbox.sureWithBtn("验证码发送失败!");
+				}
+			}
+		});
+	}else{
+		Popbox.sureWithBtn("该手机号已注册!");
+		return false;
+	}
+
+}
+function updatemobile(){
+	var authcode=$("#authcode").val();
+	if(authcode==""||authcode==null){
+		Popbox.sureWithBtn("请输入验证码");
+		return false;
+	}
+	var acco_no="${session.customer.data.cust_no!}";//客户编号
+	var acco_type="1";
+	var client_name="";
+	var short_name="";
+	var mobile_tel=$("#mobile").val();
+	var old_mobile_tel="${session.customer.data.mobile_tel!}";
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var operator_from="9";
+	var password="";
+	var real_name_flag="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+	if(real_name_flag=="1"){
+		//未开户的修改手机号
+		client_name=mobile_tel;
+		short_name=mobile_tel;
+		$.ajax({
+			type : "post",
+			data : {
+				"acco_no" : acco_no,
+				"acco_type":acco_type,
+				"client_name" : client_name,
+				"short_name":short_name,
+				"mobile_tel" : mobile_tel,
+				"id_no":id_no,
+				"id_kind_gb" : id_kind_gb,
+				"password":password,
+				"operator_from" : operator_from,
+				"old_mobile_tel":old_mobile_tel,
+				"authcode":authcode
+			},
+			url : "${ctxPath}/user/editmobile",
+			success : function(result) {
+				if (result.code == "0000") {
+					Popbox.sureWithBtn("修改成功!");
+					window.location.href="${ctxPath}/h5/account/norealname";
+				} else {
+					Popbox.sureWithBtn(result.msg);
+				}
+			}
+		});
+	}else{
+		var invest_risk_tolerance="${session.customer.data.invest_risk_tolerance!}";
+		if(invest_risk_tolerance==null||invest_risk_tolerance==""){
+			layer.open({
+			    content: "您还未风险评测,点击确认去设置！",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk";
+			    }, no: function(){
+			    }
+			});
+		}else{
+			$('#MumberPassword').click();
+		}
+	} 
+	
+}
+//开户完成之后修改手机号码
+function editmobile(password){
+	var authcode=$("#authcode").val();
+	if(authcode==""||authcode==null){
+		Popbox.sureWithBtn("请输入验证码");
+		return false;
+	}
+	var acco_no="${session.customer.data.cust_no!}";//客户编号
+	var acco_type="1";
+	var client_name="${session.customer.data.client_name!}";
+	var short_name="${session.customer.data.client_name!}";
+	var mobile_tel=$("#mobile").val();
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var old_mobile_tel="${session.customer.data.mobile_tel!}";
+	var operator_from="9";
+	$.ajax({
+		type : "post",
+		data : {
+			"acco_no" : acco_no,
+			"acco_type":acco_type,
+			"client_name" : client_name,
+			"short_name":short_name,
+			"mobile_tel" : mobile_tel,
+			"id_no":id_no,
+			"id_kind_gb" : id_kind_gb,
+			"password":password,
+			"operator_from" : operator_from,
+			"authcode":authcode,
+			"old_mobile_tel":old_mobile_tel
+		},
+		url : "${ctxPath}/user/editmobile",
+		success : function(result) {
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("修改成功!");
+				window.location.href="${ctxPath}/h5/account/realname";
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</head>
+<body>
+<#token/>
+<m m-main="editmobile_m_number_password"></m> 
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">新手机验证</span></h1>
+  </div>
+</header>
+<div class="main wrap">
+  <div class="m50">
+    <div class="top-e-msg yl-f m-t136">新手机号</div>
+    <div class="g-inputDiv"> <span class="g-input-span m-l40">
+      <input class="g-input"  id="mobile" maxlength="11"  type="tel"  placeholder="请输入您的手机号">
+      </span> </div>
+			 <div class="top-e-msg yl-f m-t116">请输入短信验证码</div>
+    <div class="g-inputVeri">
+      <div class="g-inputDiv"><span class="g-input-span m-l40">
+       <input class="g-input" maxlength="6" id=authcode   type="tel" placeholder="">
+        </span> </div>
+      <a class="veri-btn veri-btn-icon" href="javascript:void(0);"  style="background-color: #f25050" id="send_authcode" onclick="sendcode()">获取验证码</a>
+      <a class="g-btns g-submit g-m-t90" href="javascript:void(0);" onclick="updatemobile()">确认修改</a>
+      <a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+  </div>
+</div>
+</div>
+</body>
+</html>

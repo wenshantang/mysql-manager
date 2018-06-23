@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>系统管理中心</title>
+<link rel="shortcut icon" href="${config.full_icon}" type="image/x-icon" />
+<link href="${ctx}/resource-injar/css?t=/skin/default/style.css" rel="stylesheet" type="text/css">
+<link href="${ctx}/resource-injar/css?t=/styles/base.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/poptip/poptip.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/layer-v1.8.5/skin/layer.css" type="text/css" />
+<script type="text/javascript">
+	var CTX = '${ctx}';
+	var index_url = '${config.full_index_url}';
+</script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/poptip/poptip.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/layer-v1.8.5/layer.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/tabs.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/layout.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/index.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/skin/default/CSS.css" type="text/css" />
+</head>
+<body class="indexbody">
+  <div class="main-top">
+    <div id="logo"><h1 class="logo" style="background: url(${config.full_logo}) no-repeat center;"></h1></div>
+    <a class="icon-menu"></a>
+    <div id="main-nav" class="main-nav"></div>
+    <div class="nav-right">
+      <div class="info">
+        <i></i>
+        <span>
+          您好，${session.user.name}<br>
+          欢迎您！
+        </span>
+      </div>
+      <div class="option">
+        <i></i>
+        <div class="drop-wrap">
+          <div class="arrow"></div>
+          <ul class="item">
+            <li><a onclick="small('${ctx}/admin/sys/user/pwd');">修改密码</a> </li>
+            <li><a id="lbtnExit" href="${ctx}/admin/quit">注销登录</a> </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="main-left">
+    <div id="sidebar-nav" class="sidebar-nav">
+    	<%for(menu in leftMenus){%>
+			<%if(menu.type == '1'){%>
+			<div class="list-group" name="${menu.name}">
+			<h1><img src="${ctx}/resource-injar/image?t=/nav/nav_${menuLP.index}.png"/></h1>
+		  		<div class="list-wrap">
+		  		<h2><em><img src="${ctx}/resource-injar/image?t=/icon001.png" style="margin-left:-5px;" /></em>${menu.name}<i></i></h2>
+		  		<ul>
+		  		<%for(son in menu.sons!){%>
+					<li>
+						<a><em><img src="${ctx}/resource-injar/image?t=/icon002.png" style="margin-left:-5px;" /></em><span>${son.name}</span></a>
+						<ul>
+							<%for(sonson in son.sons){%>
+			  					<li><a id="${sonson.id}" rel="${ctx}${sonson.url}"> <span>${sonson.name}</span> </a></li>
+			  				<%}%>
+						</ul>
+					</li>
+				<%}%>
+				</ul>
+		  		</div>
+	  		</div>
+			<%}else{%>
+			<div class="list-group" name="${menu.name}" src="${ctx}${menu.url}" target="${menu.id}">
+		    </div>
+			<%}%>
+		<%}%>
+  	</div>
+  </div>
+  <div class="main-container" id="main-bd">
+    <div class="page-tab" id="page-tab"> 
+	</div>
+  </div>
+  <div id="div_frame" style="display: none;margin-top: 43px">
+  </div>
+</body>
+</html>

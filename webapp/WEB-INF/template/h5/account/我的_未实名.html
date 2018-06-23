@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的（未实名）</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+<script type="text/javascript">
+function gotomyhtml(){
+	var logintype="${session.customer.data.logintype!}"
+		 if(logintype=='0'){
+			 var myid_no="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+			 if(myid_no=="1"){
+				// window.location.href="${ctxPath}/h5/account/norealname";
+			 }else{
+				 window.location.href="${ctxPath}/h5/account/realname";
+			 }
+		 }else if(logintype=='1'){
+			 window.location.href="${ctxPath}/h5/account/myconsignment";
+		 }
+}
+window.onload=gotomyhtml();
+</script>
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">我的</span></h1>
+  </div>
+</header>
+<div class="main wrap">
+<div class="uuBox">
+<img class="g-imgatuo" src="${ctxPath}/portal/h5/images/uu_02.gif">
+<div class="cc">
+<p class="tel">${strutil.subStringTo(session.customer.data.mobile_tel,0,3)}****${strutil.subStringTo(session.customer.data.mobile_tel,7,11)}</p>
+<p class="p1"><span class="txt bg-f25050" onclick="javascript:window.location.href='${ctxPath}/h5/account/addcard'">马上实名</span></p>
+</div>
+</div>
+  <ul class="g-list-li">
+    <li><a href="${ctxPath}/h5/account/message"><span class="name">消息中心</span></a></li>
+    <li><a href="${ctxPath}/h5/account/mybank_unbind"><span class="name">我的银行卡</span></a></li>
+    <li><a href="${ctxPath}/h5/account/psmanager"><span class="name">密码管理</span></a></li>
+    <li><a href="${ctxPath}/h5/account/editphone"><span class="name">手机号变更</span></a></li> 
+    <li><a href="${ctxPath}/h5/account/risk"><span class="name">风险等级</span><span class="info">未评测</span></a></li>
+    <li><a href="${ctxPath}/h5/account/guide"><span class="name">新手指引</span></a></li>
+    <li><a href="${ctxPath}/h5/account/aboutus"><span class="name">关于</span></a></li>
+  </ul>
+  
+  <a href="${ctxPath}/user/loginout" class="exit-btn">退出登录</a>
+  
+</div>
+<%include("/h5/common/foot.html",{nav:'selfinfo'}){}%>
+</body>
+</html>

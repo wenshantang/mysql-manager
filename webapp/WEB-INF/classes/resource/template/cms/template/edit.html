@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑CMS模板</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+$(function(){
+	$("#btnSubmit").click(function(){
+		jQuery.ajax({
+			url : "${ctx}/admin/cms/template/update",
+			data : $('#data_form').serialize(),
+			type : "POST",
+			success : function(result) {
+				if (result.code == '0000') {
+					popStatus(1, '修改成功！！！', 2);
+					parent.location.reload();
+				}else if (result.errMsg) {
+					$("span[id='Validform_checktip']").each(function() {
+						$(this).html('');
+						$(this).attr("class", "Validform_right");
+					});
+					$.each(result.errMsg, function(tag, msg) {
+						$obj = $("#" + tag).next('span');
+						$obj.attr("class", "Validform_wrong");
+						$obj.html(msg);
+					});
+				}else{
+					popStatus(4, result.msg, 2);
+				}
+			}
+		});
+	});
+});
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">编辑模板</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>模板类型</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="type" type="radio" value="1" ${template.type == '1'?'checked':''}/><label for="">大模版</label>
+			      		<input name="type" type="radio" value="2" ${template.type == '2'?'checked':''}/><label for="">小模块</label>
+				    </div>
+				    <span id="Validform_checktip">*大模版被栏目引用，小模块被大模版引用</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>模板名称</dt>
+				<dd>
+					<input name="id" type="hidden" id="id" value="${template.id}"/>
+					<input name="parent_id" type="hidden" id="parent_id" value="${template.parent_id}"/>
+					<input name="path" type="hidden" value="${template.path}"/>
+					<input name="old_name" type="hidden" value="${template.name}"/>
+					<input name="name" type="text" id="name" value="${template.name}" class="input normal" readonly="readonly"/>.html
+					<span id="Validform_checktip">*不能修改</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>页面内容</dt>
+				<dd>
+                    <textarea name="content" rows="3" cols="20" id="content" class="input" style="width: 800px;height: 420px;">${template.content}</textarea>
+                    <span id="Validform_checktip">*内容必须填写</span>
+                </dd>
+			</dl>
+			
+			<%if(includeTemplate!=null && includeTemplate.~size>0){%>
+				<dl>
+					<dt>包含模板</dt>
+					<dd>
+						<table width="88%" cellspacing="0" cellpadding="0" border="0" class="border-table">
+				        <thead>
+				          <tr>
+				            <th width="5%"></th>
+				            <th>模板名称</th>
+				            <th>模板路径</th>
+				            <th width="5%"></th>
+				          </tr>
+				        </thead>
+	       				<tbody>
+	       				<%for(t in includeTemplate!){%>
+							<tr>
+								<td align="center">${tLP.index}</td>
+								<td align="center">${t.name}</td>
+								<td align="left">${t.path}</td>
+								<td align="center">
+									<#permission url="/admin/cms/template/update">
+									<a href="javascript:;" class="img-btn edit operator" onclick="fullWithBar('${ctx}/admin/cms/template/edit/${t.id}')">修改</a>
+									</#permission>
+								</td>
+							</tr>
+						<%}%>
+	        			</tbody>
+	      				</table>
+					</dd>
+				</dl>
+			<%}%>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+				<#permission url="/admin/cms/template/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" />
+				</#permission>
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

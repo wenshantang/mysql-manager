@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增访问控制信息</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">访问控制信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>状态</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="status" type="radio" value="1" checked="checked"/><label for="">启用</label>
+			      		<input name="status" type="radio" value="2"/><label for="">停用</label>
+				    </div>
+					<span id="Validform_checktip">*不启用则无法访问</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>类名</dt>
+				<dd>
+                    <textarea name="class_name" rows="3" cols="20" id="class_name" class="input" style="width: 400px;height: 30px;"></textarea>
+					<span id="Validform_checktip">*类全名，必须实现AccessIntercept</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>描述</dt>
+				<dd>
+					<textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 600px;height: 60px;"></textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/access/permission/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/cms/access/permission/insert')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<#TradeapplyQuery  client_id='${session.customer.data.client_id}' request_pageno='${p!}' request_num='11' fund_busin_code ="${fund_busin_code!}" end_date="${end_date!}" begin_date="${begin_date!}";TradeapplyQuery>
+                    <%if(TradeapplyQuery.ReturnCode=='0000'){%>
+                    	<%if(TradeapplyQuery.data!=""){%>
+						<%for(map in TradeapplyQuery.data!){%>
+						<tr>
+						  <td onclick="tradeinfodetail('${map.allot_no}')"><p class="pt">${StringToDateFormatShort(map.apply_date!'')}<br>
+							  ${StringToDateFormatShortDate(map.apply_time!'')}</p></td>
+						  <td onclick="tradeinfodetail('${map.allot_no}')">
+							<%if(map.fund_busin_code=='' || map.fund_busin_code=='0'){%> 
+								--
+							<%}else if(map.fund_busin_code=='020'){%>
+								认购
+							<%}else if(map.fund_busin_code=='022'){%>
+								申购
+							<%}else if(map.fund_busin_code=='024'){%>
+								赎回
+							<%}else if(map.fund_busin_code=='026'){%>
+								转托管
+							<%}else if(map.fund_busin_code=='029'){%>
+								修改分红方式
+							<%}else if(map.fund_busin_code=='036'){%>
+								转换
+							<%}else if(map.fund_busin_code=='039'){%>
+								定投
+							<%}else if(map.fund_busin_code=='090'){%>
+								定投
+							<%}else if(map.fund_busin_code=='988'){%>
+							       定投修改
+							<%}else if(map.fund_busin_code=='093'){%>
+								定投取消
+							<%}else if(map.fund_busin_code=='053'){%>
+								撤单申请
+							<%}else{%>
+								--
+							<%}%>
+						  </td>
+						  <td onclick="tradeinfodetail('${map.allot_no}')">${map.fund_name!''}</td>
+						  <td>
+						  <%if(map.fund_busin_code=='029'){%>--<%}else{%>
+						  <%if(map.fund_busin_code=='024'||map.fund_busin_code=='036'){%>${StringToNumber(map.shares!'')}份<%}else{%>
+						  ${StringToNumber(map.balance!'')}元<%}%><%}%>
+						  </td>
+						  <td class="center">
+						  <%if(map.iswithdraw=='0'){%>
+						  <a class="t3-btn" href="javascript:void(0);" onclick="killorder('${map.trade_acco}','${map.allot_no}')" >撤单</a>
+						  <%}else{%>
+						  不可撤单
+						  <%}%>
+						  </td>
+						</tr>
+						<%}%>
+						<script type="text/javascript">
+						totalPage=${TradeapplyQuery.total_page!};
+						</script>
+						<%}else{%>
+						<%if(datatype=="w"){%>
+						<tr><td colspan="5" style="text-align: center;" >暂无相关数据</td></tr>
+						<%}else{%>
+						 <tr><td colspan="5" style="text-align: center;" >暂无相关数据</td></tr>
+						 <%}%>
+						<%}%>
+						<%}%>
+						
+</#TradeapplyQuery>

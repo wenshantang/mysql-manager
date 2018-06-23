@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-转换</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<m m-main="zh_m_number_password"></m>
+<#sharedetail client_id="${session.customer.data.client_id}" fund_code="${fundcode!}" trade_acco="${trade_acco!}" cust_no="${session.customer.data.cust_no}";sharedetail>
+<%if(sharedetail[0].dataList.~size>0){%>
+<%for(myshare in sharedetail[0].dataList){%>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">转换</span></h1>
+    <div class="f-topBox2">
+      <p class="p p1">基金简称：${myshare.fund_name}</p>
+      <p class="p p2">基金代码：${myshare.fund_code}</p>
+      <input type="hidden" id="pro_shortname" value="${myshare.fund_name}" >
+    </div>
+  </div>
+</header>
+ 	 <%
+ 	 	var fundcode=myshare.fund_code;
+ 	 	var share_type=myshare.share_type;
+ 	 	var trade_acco=myshare.trade_acco;
+ 	 	var enableshares=myshare.enable_shares;
+ 	 %>
+<div class="main isTop2 wrap nofooter">
+  <div class="g-box54">
+  	
+  	 <div class="g-inputBox g-m-t60">
+      <h6 class="title">关联账户</h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" id="bankselect" >
+           <#mybanks client_id="${session.customer.data.client_id}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+           <%for(bank in mybanks){%> 
+           <%if(bank.trade_acco==myshare.trade_acco){%>
+            <option  value="${bank.trade_acco}">${bank.bank_name}****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+            <%}%>
+            <%}%>
+           </#mybanks> 
+          </select>
+        </div>
+      </div>
+    </div>
+  
+  
+    <div class="g-inputBox g-m-t60" >
+     <h6 class="title"><span class="name">转入基金</span></h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox" id="loadzrfundlist">
+         	<select m-select="m" id="target_fund_code_select" class="m-select" name=""> 
+      		 <#convertinlistTag  trade_acco="${myshare.trade_acco}" client_id="${session.customer.data.client_id}" fund_code="${fundcode!}";convertinlist>
+	          <%if(convertinlist.~size>0){ for(convertin in convertinlist){%>
+	          	<option value="${convertin.fund_code}" a="${convertin.share_type}" >${convertin.fund_name}</option> 
+	          <%}}%>
+		 	</#convertinlistTag>
+	 </select>	 
+        </div>
+      </div>
+    </div>
+    		
+    
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">转出份额</span><span class="info" id="msg">需补差费0元</span></h6>
+      <div class="g-inputDiv"> 
+	      <span class="g-input-span">
+	      	<input class="g-input" type="tel" onkeyup='this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/gi,"")' value="" id="zrmoney" type="text" placeholder="可用${NumberFunction(myshare.enable_shares!,"#,###,##0.00")}份">
+	      </span> 
+      </div>
+    </div> 
+    <#turnoutlist trade_acco="${myshare.trade_acco}"  isFilter="1";turnoutlist>
+    <%if(turnoutlist.ReturnCode=='0000'){%>
+	
+    <%if(turnoutlist.data.~size>0){%>
+	
+    	<% var index=0; for(turnout in turnoutlist.data){%>
+    	<%if(turnout.fund_code==myshare.fund_code){ index=1;%>
+       <%}}%>
+	   
+        <%if(index==1){%>
+		 <a class="g-btns g-submit g-m-t70" href="javascript:void(0);" onclick="checkauthcode()">确定</a> 
+       <%}else{%>
+	   <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可转换</a>
+	   <%}%>
+    <%}else{%>
+       <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可转换</a>
+    <%}%>
+	
+    <%}else{%>
+       <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可转换</a>
+    <%}%>
+    </#turnoutlist>
+    <a id="MumberPassword" m-number-password="MumberPassword" style="display:none;" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+    <div class="bottom-e-msg"></div>
+  </div>
+</div>
+<input type="hidden" id="fundcode_h" value="${fundcode}"/>
+<input type="hidden" id="share_type_h" value="${share_type}"/>
+<input type="hidden" id="trade_acco_h" value="${trade_acco}"/>
+<script>
+$(function(){
+	 $('#zrmoney').bind('input propertychange', function() {
+		var apply_sum=$('#zrmoney').val();
+		var target_fund_code=$("#target_fund_code_select option:selected").val(); 
+		var target_share_type=$("#target_fund_code_select option:selected").attr("a"); 
+		if(apply_sum!=''){
+			if(Number("${enableshares}") <= Number(apply_sum)){
+				apply_sum="${enableshares}";
+				$('#zrmoney').val(apply_sum);
+			}
+			 $.ajax({
+				type : "post",
+				data : { 
+					"fund_busin_code" : "036",  //转换编号
+					"fund_code":"${fundcode}",
+					"share_type":"${share_type}",
+					"trade_acco":"${trade_acco}",
+					"apply_sum":apply_sum,
+					"target_fund_code":target_fund_code,
+					"target_share_type":target_share_type
+				},
+				url : "${ctxPath}/trade/fee",
+				async : true,
+				success : function(result) {
+					if(result.ReturnCode == "0000"){
+						$("#msg").text("需补差费0元");
+					}else{
+						$("#msg").text("需补差费0元");
+					}
+				}
+			});  
+		}
+	});
+});
+function checkauthcode(){
+	var apply_sum=$('#zrmoney').val();
+	var target_fund_code=$("#target_fund_code_select option:selected").val(); 
+	var trade_acco=$("#bankselect option:selected").val();
+	if(trade_acco==""){
+		$(".bottom-e-msg").text("银行卡不能为空");
+		return false;
+	}
+	if(target_fund_code==""){
+		$(".bottom-e-msg").text("转入基金不能为空");
+		return false;
+	}
+	if(apply_sum==""){
+		$(".bottom-e-msg").text("转出份额不能为空");
+		return false;
+	}
+	$('#MumberPassword').click();
+}
+</script>
+ <%}}%>
+</#sharedetail>
+</body>
+</html>

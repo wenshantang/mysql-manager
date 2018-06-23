@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>文件管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/upload.js"></script>
+<script>
+$(function(){
+	$("#upload-img").InitUploader({btntext:'选择文件...',sendurl: "${ctx}/admin/sys/file/upload", swf: "${ctx}/resource-injar/swf?t=/plugin/webuploader/Uploader.swf"});
+});
+
+function uploadError(data){
+	popStatus(2, data.message, 2);
+}
+
+function uploadSuccess(data){
+	popStatus(1, "文件上传成功", 1, '${ctx}/admin/sys/file');
+}
+
+</script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.file_menu}}</td>
+			<td>{{row.file_describe}}</td>
+            <td>{{row.type}}</td>
+            <td class="tdleft">{{row.http_url}}</td>
+            <td>{{row.file_size}}</td>
+			<td>{{row.upload_time}}</td>
+			<td>
+				<a href="javascript:;" onclick='edit("${ctx}/admin/sys/file/edit/{{row.id}}")'>修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+        <div id="floatHead" class="toolbar">
+        <div class="box-wrap">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/sys/manager/config/upload/setting">
+                        <li><a class="edit" onclick="edit('${ctx}/admin/sys/manager/config/upload/setting')" href="javascript:;"><i></i><span>文件上传设置</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/sys/file/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/sys/file/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/sys/file/delete">
+                        <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                        </li>
+                        <li><a onclick="del('${ctx}/admin/sys/file/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                        </li>
+                    </#permission>
+                    </ul>
+                </div>
+                <div class="r-list">
+                
+                <form id="search_form">
+		        	<input type="text" class="keyword" id="name" name="name">
+		        	<a href="javascript:;" class="btn-search" id="searchBtn">查询</a>
+                </form>
+            	</div>
+            </div>
+        </div>
+        
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/sys/file/json" sort="upload_time" order="desc">
+            <tr>
+                <th width="5%">选择</th>
+                <th sort="file_menu" width="15%">文件目录</th>
+                <th sort="file_describe" width="15%">文件说明</th>
+                <th sort="type" width="8%">文件类型</th>
+                <th sort="http_url">文件访问url</th>
+                <th sort="file_size" width="8%">文件大小</th>
+                <th sort="upload_time" width="12%">上传时间</th>
+                <th width="6%">操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

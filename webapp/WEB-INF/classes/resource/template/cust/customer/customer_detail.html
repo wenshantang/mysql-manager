@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>客户信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+</head>
+<script type="text/javascript">
+var CTX = '${ctx}';
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">客户基本信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">份额信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">交易记录</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">附件详情</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">测评信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>客户名称</dt>
+				<dd>
+					${ap.cust_name}
+				</dd>
+			</dl>
+ 			<dl>
+				<dt>客户简称</dt>
+				<dd>
+					${ap.short_name}
+				</dd>
+			</dl> 
+			<dl>
+				<dt>客户类别</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="cust_kind" name="cust_kind" class="js-example-basic-single" >
+   		      	    <option class="cust_kind" value="" ></option>
+				<%for(list in cust_kind_list!){%>
+					<option class="cust_kind" value="${list.name}" ${list.name == ap.cust_kind ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户类型</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="cust_type" name="cust_type" class="js-example-basic-single" >
+   		      	    <option class="cust_type" value="" ></option>
+				<%for(list in cust_type_list!){%>
+					<option class="cust_type" value="${list.name}" ${list.name == ap.cust_type ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>性别</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="sex" name="sex" class="js-example-basic-single" >
+   		      	    <option class="sex" value="" ></option>
+   		      	    <option class="sex" value="0" ${'0' == ap.sex ?'selected':''} >男</option>
+   		      	    <option class="sex" value="1" ${'1' == ap.sex ?'selected':''} >女</option>
+   		      	  </select>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>手机号码</dt>
+				<dd>
+					${ap.mobile}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>座机号码</dt>
+				<dd>
+					${ap.telnum}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>电子邮件</dt>
+				<dd>
+					${ap.email}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>邮政编码</dt>
+				<dd>
+					${ap.postcode}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>联系地址</dt>
+				<dd>
+					${ap.address}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>证件类型</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="cer_type" name="cer_type" class="js-example-basic-single" >
+   		      	    <option value="" ></option>
+				<%for(list in certificationtype_list!){%>
+					<option value="${list.name}" ${list.name == ap.cer_type ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>证件号码</dt>
+				<dd>
+					${ap.cer_num}
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户状态</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="cust_status" name="cust_status" class="js-example-basic-single" >
+   		      	    <option class="cust_status" value="" ></option>
+				<%for(list in cust_status_list!){%>
+					<option class="cust_status" value="${list.name}" ${list.name == ap.cust_status ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_status_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户等级</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="cust_level" name="cust_level" class="js-example-basic-single" >
+   		      	    <option class="cust_level" value="" ></option>
+				<%for(list in cust_level_list!){%>
+					<option class="cust_level" value="${list.name}" ${list.name == ap.cust_level ?'selected':''}>${list.value}</option>
+				<%}%>
+   		      	  </select>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>合同编号</dt>
+				<dd>
+					${ap.contract_num}
+				</dd>
+			</dl>
+			<dl>
+				<dt>所属渠道</dt>
+				<dd>
+                 <select  style="width: 300px" disabled="disabled" id="channel_id" name="channel_id" class="js-example-basic-single" >
+   		      	    <option class="channel_id" value="" ></option>
+				<%for(list in channel_id_list!){%>
+					<option class="channel_id" value="${list.channel_id}" ${list.channel_id == ap.channel_id ?'selected':''}>${list.channel_name1}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_status_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+		</div>
+		<div class="tab-content" style="display: none">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" >
+            <tr>
+                <th sort="name">产品名称</th>
+                <th sort="name">持有人</th>
+                <!-- <th sort="name">合同编号</th> -->
+                <th sort="name">持有份额</th>
+            </tr>
+            <%for(sharelist in shareCurList!){%>
+            <tr>
+            	<td>${sharelist.pro_id}</td>
+            	<td>${sharelist.cust_id}</td>
+            	<td>${sharelist.shares}</td>
+            </tr>
+            <%}%>
+        </table>
+		</div>
+		<div class="tab-content" style="display: none">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" >
+            <tr>
+                <th sort="conf_date">确认日期</th>
+                <th sort="busi_code">交易类型</th>
+                <th sort="pro_id">产品代码</th>
+                <th sort="conf_amts">确认金额(元)</th>
+                <th sort="conf_shares">确认份额(份)</th>
+            </tr>
+             <%for(conf in confList!){%>
+            <tr>
+            	<td>${conf.conf_date}</td>
+            	<td>${conf.busi_code}</td>
+            	<td>${conf.pro_id}</td>
+            	<td>${conf.conf_amts}</td>
+            	<td>${conf.conf_shares}</td>
+            </tr>
+            <%}%>
+        </table>
+		</div>
+		<div class="tab-content" style="display: none">
+		 <%for(list in cust_auth_list!){%>
+		 <dl>
+		 <dt>附件描述：</dt>
+		 <dd>
+		 ${list.auth_desc}
+		 </dd>
+		 </dl>
+		  <dl>
+		 <dt>附件地址：</dt>
+		 <dd>
+		 ${list.auth_attach}<a href="${list.auth_attach}" id="auth_attach_preview" target="_blank" ${list.auth_attach!=null?'':'hidden'} >预览</a>
+		 </dd>
+		 </dl>
+		 <%}%>
+		</div>
+		
+		<div class="tab-content" style="display: none">
+		<%if(cust_uCustomerRisk_flag=="1"){%>
+		<dl>
+				<dt>客户名称</dt>
+				<dd>
+					${uCustomerRisk.short_name}
+				</dd>
+			</dl>
+		    <dl>
+				<dt>评测时间</dt>
+				<dd>
+					${uCustomerRisk.create_time}
+				</dd>
+			</dl>
+			<dl>
+				<dt>评测分数</dt>
+				<dd>
+					${uCustomerRisk.totalscore}
+				</dd>
+			</dl>
+			 
+			<dl>
+				<dt>评测明细</dt>
+				<dd>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+						<thead>
+						<tr>
+							<th>题目序号</th><th>答案</th><th>分数</th>
+						</tr>
+						</thead>
+						<%for(record in uCustomerRisk.listRecord!){%>
+						<tr>
+							<td>${record.tm_code}</td><td>${record.tm_answer}</td><td>${record.tm_score}</td>
+						</tr>
+						<%}%>
+					</table>
+				</dd>
+			</dl>
+			<%}else{%>
+				<dl>还没有进行风险评测</dl>
+			<%}%>
+		</div>
+		</form>
+</body>
+</html>

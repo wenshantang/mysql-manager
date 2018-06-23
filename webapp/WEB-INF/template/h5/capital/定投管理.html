@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-定投管理</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<body>
+<#token/>
+<m m-main="updateinvest_m_number_password"></m>  
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">定投管理</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <div class="g-table-2">
+    <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr>
+          <th scope="col" width="26%">基金简称/代码</th>
+          <th scope="col">累计成本(元)</th>
+          <th scope="col">定投金额(元)</th>
+          <th scope="col">扣款时间</th>
+          <th scope="col" width="17%">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+      <#mybanks client_id="${session.customer.data.client_id}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+      <#investlist id_kind_gb="${session.customer.data.id_kind_gb!}"  id_no="${session.customer.data.id_no!}" request_num="20" request_pageno="1";investlist>
+      <%if(investlist.ReturnCode=='0000'){%> 
+      <%for(invest in investlist.data){%>
+        <tr>
+          <%for(bank in mybanks){%><%if(bank.trade_acco==invest.trade_acco){%>
+          <input id="capital_way_${invest.scheduled_protocol_id}" value="${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}(${bank.capital_mode_name})" type="hidden">
+          <%}}%>
+          <input id="fund_name_${invest.scheduled_protocol_id}" value="${invest.fund_name}" type="hidden">
+          <input id="fund_code_${invest.scheduled_protocol_id}" value="${invest.fund_code}" type="hidden">
+          <td><p class="pt">${invest.fund_name}${invest.fund_code}</p></td>
+          <td>${invest.total_succ_sum}</td>
+          <td id="apply_sum_${invest.scheduled_protocol_id}">${invest.apply_sum}</td>
+          <td id="fixrequest_date_${invest.scheduled_protocol_id}"><%if(invest.protocol_period_unit=='0'){%>每月${invest.protocol_fix_day}号<%}%>
+              <%if(invest.protocol_period_unit=='1'){%>
+              <%if(invest.protocol_fix_day=='2'){%>每周一<%}%>
+              <%if(invest.protocol_fix_day=='3'){%>每周二<%}%>
+              <%if(invest.protocol_fix_day=='4'){%>每周三<%}%>
+              <%if(invest.protocol_fix_day=='5'){%>每周四<%}%>
+              <%if(invest.protocol_fix_day=='6'){%>每周五<%}%>
+              <%}%>
+          </td> 
+          <td><%if(invest.scheduled_protocol_state=='A'){%>正常<%}%>
+              <%if(invest.scheduled_protocol_state=='P'){%>暂停<%}%>
+              <%if(invest.scheduled_protocol_state=='H'){%>终止<%}%>
+          </td>
+        </tr>
+        <tr class="t-btn">
+          <td colspan="5"><div class="table-btns">
+          <%if(invest.scheduled_protocol_state=='A'){%>
+          <a href="${ctxPath}/h5/capital/editinvestment?id=${invest.scheduled_protocol_id}">修改</a>
+          <a href="javascript:void(0);" onclick="changefixinveststate('${invest.scheduled_protocol_id}','P','${invest.trade_acco}')">暂停</a>
+          <a href="javascript:void(0);" onclick="changefixinveststate('${invest.scheduled_protocol_id}','H','${invest.trade_acco}')">终止</a>
+          <%}%>
+          <%if(invest.scheduled_protocol_state=='P'){%>
+          <a href="javascript:void(0);" onclick="changefixinveststate('${invest.scheduled_protocol_id}','A','${invest.trade_acco}')">启用</a>
+          <a href="javascript:void(0);" onclick="changefixinveststate('${invest.scheduled_protocol_id}','H','${invest.trade_acco}')">终止</a>
+          <%}%>
+          <%if(invest.scheduled_protocol_state=='H'){%>
+          <a style="background:#d6d6d6">修改</a>
+          <a style="background:#d6d6d6" href="javascript:void(0);" >暂停</a>
+          <a style="background:#d6d6d6" href="javascript:void(0);" >终止</a>
+          <%}%>
+          </div></td>
+        </tr>
+        <%}%>
+        <%}%>
+       </#investlist>
+       </#mybanks>	
+      </tbody>
+    </table>
+  </div>
+  <a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+  <p style="height:1rem"></p>
+   <input type="hidden" id="scheduled_protocol_id"     >
+   <input type="hidden" id="state"       >
+   <input type="hidden" id="trade_acco"  >
+  <script type="text/javascript">
+function changefixinveststate(scheduled_protocol_id,state,trade_acco){
+  		 if (scheduled_protocol_id == "" || scheduled_protocol_id == null) {//定投协议号
+  			Popbox.sureWithBtn("定投协议号为空 !");
+  			return false;
+  		 }
+  		 if (state == "" || state == null) {//定投协议状态
+  			Popbox.sureWithBtn("定投协议状态为空 !");
+   			return false;
+   		 }
+  		 if (trade_acco == "" || trade_acco == null) {//交易账号
+  			Popbox.sureWithBtn("交易账号为空 !");
+   			return false;
+   		 }
+  	    $("#scheduled_protocol_id").val(scheduled_protocol_id);
+  	    $("#state").val(state);
+  	    $("#trade_acco").val(trade_acco);
+  	    $('#MumberPassword').click();
+}
+function  changeinveststate(password){
+	var scheduled_protocol_id=$("#scheduled_protocol_id").val();
+	var scheduled_protocol_state=$("#state").val();
+	var trade_acco=$("#trade_acco").val();
+	var fund_name=$("#fund_name_"+scheduled_protocol_id).val();
+	var fund_code=$("#fund_code_"+scheduled_protocol_id).val();
+	var apply_sum=$("#apply_sum_"+scheduled_protocol_id).text();
+	var fixrequest_date=$("#fixrequest_date_"+scheduled_protocol_id).text();
+	var capital_way=$("#capital_way_"+scheduled_protocol_id).val();
+	$.ajax({
+		type : "post", 
+		data : { 
+			"trade_acco" : trade_acco,
+			"scheduled_protocol_id" : scheduled_protocol_id,
+			"scheduled_protocol_state" : scheduled_protocol_state,
+			"password" : password,
+			"fund_name" : fund_name,
+			"fund_code" : fund_code,
+			"apply_sum" : apply_sum,
+			"fixrequest_date" : fixrequest_date,
+			"capital_way" : capital_way
+			
+		},
+		url : ctx+"/trade/changeinveststate",
+		success : function(result) {
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("修改成功!");
+				window.location.href="${ctxPath}/h5/capital/investment";
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+  </script>
+</div>
+</body>
+</html>

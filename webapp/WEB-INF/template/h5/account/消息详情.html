@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-消息详情</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+ 
+<body>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">消息中心</span></h1>
+		</div>
+</header>
+<#querymessagedetail id="${id!}" msgtype="${msgtype!}" ;querymessagedetail>
+    <%if(querymessagedetail.code=='0000'){%>
+   <div class="main wrap">
+		<div class="yl-xiaoxi">
+				<h6 class="title">${querymessagedetail.data.title!}</h6>
+				<p class="date">${querymessagedetail.data.create_time!}</p>
+				<div class="con">
+						${querymessagedetail.data.content!}
+				</div>
+		</div>
+</div>
+<%}%>
+</#querymessagedetail>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>产品信息新增</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js&version=2015120313"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js&version=2015120313"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js&version=2015120313"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css&version=2015120313" />
+<script type="text/javascript">
+var CTX = '${ctx}';
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+
+//交易结构图片上传
+KindEditor.ready(function(K) {
+	var editor1 = K.create('textarea[name="content"]', {
+		allowFileManager : true,
+		allowFlashUpload : true,
+		allowMediaUpload : true,
+		allowFileUpload : true,
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list',
+		afterBlur: function(){this.sync();}
+	});
+	var editor = K.editor({
+		allowFileManager : true,
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list'
+	});
+
+	K('#select_img_big').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url,title, width, height, border, align) {
+					if (K('#image_show_img_big')) {
+						if(url.startWith("http://")||url.startWith("https://")){
+							 K('#image_show_img_big').attr('src', url);
+							 K('#image_show_img_big').attr('src', url);
+							 K('#img_big').val(url);
+						}else{
+							 K('#image_show_img_big').attr('src', CTX+url);
+							 K('#img_big').val(CTX+url);
+							 K('#image_show_img_big').attr('src', url);
+						}
+						 K('#image_show_img_big').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	K('#dele_img_big').click(function() {
+		 K('#image_show_img_big').attr('src', '');
+		 K('#img_big').val('');
+	});
+	
+	K('#select_img_small').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url,title, width, height, border, align) {
+					if (K('#image_show_img_small')) {
+						if(url.startWith("http://")||url.startWith("https://")){
+							 K('#image_show_img_small').attr('src', url);
+							 K('#image_show_img_small').attr('src', url);
+							 K('#img_small').val(url);
+						}else{
+							 K('#image_show_img_small').attr('src', CTX+url);
+							 K('#image_show_img_small').attr('src', url);
+							 K('#img_small').val(CTX+url);
+						}
+						 K('#image_show_img_small').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	K('#dele_small_img_small').click(function() {
+		 K('#image_show_img_small').attr('src', '');
+		 K('#img_small').val('');
+	});
+	
+});
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">产品信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">产品内容</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>是否热推</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="isHot" type="checkbox" name="isHot" value="1"
+							onclick="javascript:if(this.checked){$('#dl_top').css('display','block')}else{$('#dl_top').css('display','none')}" />
+					</div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl id="dl_top" style="display: none">
+				<dt>热推排序</dt>
+				<dd>
+					<input name="sort_num" type="text" id="sort_num" class="input small" value="1" style="text-align: center"/>
+					<span id="Validform_checktip">*数字（大于0，越大越靠前）</span>
+				</dd>
+			</dl>
+		    <dl>
+				<dt>产品代码</dt>
+				<dd>
+                  <input   name="code" type="text" id="code" class="input normal"/>	
+                  <span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>产品名称</dt>
+				<dd>
+                  <input   name="name" type="text" id="name" class="input normal"/>	
+                  <span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>产品简称</dt>
+				<dd>
+                  <input   name="item" type="text" id="item" class="input normal"/>	
+                  <span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>产品类型</dt>
+				<dd>
+                  <select  style="width: 133px" id="type" name="type" class="js-example-basic-single">
+   		      	    <option value="">请选择</option>
+					<option value="1">自组网产品</option>
+					<option value="2">有中心产品</option>
+					<option value="3">自组网+有中心双网合一产品</option>
+   		      	  </select>		
+				</dd>
+			</dl>
+			<dl>
+				<dt>发布时间</dt>
+				<dd>
+                  <input  name="public_time" type="text" id="public_time" class="input normal" onclick='WdatePicker({dateFmt:"yyyy-MM-dd HH:mm:ss"})'
+						readonly="readonly" />	
+                  <span id="Validform_checktip">*用于排序</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>产品大图</dt>
+				<dd>
+				  <img id="image_show_img_big" src="" style="max-height:100px;display: none" />
+						 <input id="img_big" type="text" name="img_big"  readonly="readonly" class="input normal"/>
+	                     <span class="help-inline"><a id="select_img_big" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a>
+	                     <a id="dele_img_big" class="icon-btn edit" href="javascript:;"><i></i><span>删除</span></a>
+	                     </span>
+				</dd>
+			</dl>	
+			<dl>
+				<dt>产品小图</dt>
+				<dd>
+				  <img id="image_show_img_small" src="" style="max-height:100px;display: none" />
+						 <input id="img_small" type="text" name="img_small"  readonly="readonly" class="input normal"/>
+	                     <span class="help-inline"><a id="select_img_small" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a>
+	                     <a id="dele_small_img_small" class="icon-btn edit" href="javascript:;"><i></i><span>删除</span></a>
+	                     </span>
+				</dd>
+			</dl>
+							
+		</div>
+		<div class="tab-content" style="display: none">
+			<dl>
+				<dt>文章内容</dt>
+				<dd>
+                    <textarea name="content" rows="3" cols="20" id="content" class="input" style="width: 700px;height: 500px;"></textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/product/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/product/insert')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

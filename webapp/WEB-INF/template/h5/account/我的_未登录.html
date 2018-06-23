@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的（未登录）</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><span class="txt">我的（未登录）</span></h1>
+  </div>
+</header>
+<div class="main wrap">
+  <ul class="g-list-li">
+  <li><a href="${ctxPath}/h5/account/message"><span class="name">消息中心</span></a></li>
+   <!--  <li><a href="${ctxPath}/h5/account/message"><span class="name">消息中心</span></a></li> -->
+    <li><a href="${ctxPath}/h5/account/mybanks"><span class="name">我的银行卡</span></a></li>
+   
+    <li><a href="${ctxPath}/h5/account/psmanager"><span class="name">密码管理</span></a></li>
+    <li><a href="${ctxPath}/h5/account/editphone"><span class="name">手机号变更</span></a></li>
+  <!--   <li><a href="${ctxPath}/h5/account/psmanager"><span class="name">密码管理</span></a></li>
+    <li><a href="${ctxPath}/h5/account/editphone"><span class="name">手机修改</span></a></li> -->
+    <li><a href="${ctxPath}/h5/account/risk"><span class="name">风险等级</span></a></li>
+     <li><a href="${ctxPath}/h5/account/guide"><span class="name">新手指引</span></a></li>
+     <li><a href="${ctxPath}/h5/account/aboutus"><span class="name">关于</span></a></li>
+  </ul>
+  
+  <a href="${ctxPath}/h5/login" class="exit-btn">登录</a>
+  
+</div>
+<%include("/h5/common/foot.html",{nav:'selfinfo'}){}%>
+</body>
+</html>

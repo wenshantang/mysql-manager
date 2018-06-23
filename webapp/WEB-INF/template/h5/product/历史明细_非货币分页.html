@@ -1,0 +1,22 @@
+			<#fundnav fundcode="${fundcode!}" page="${p!}" pagesize="14" ;fundnav>
+			<%if(fundnav.code=='0000'){%>
+          <%if(fundnav.data.dataList.~size>0){for(nav in fundnav.data.dataList){%>
+            <tr>
+              <td>${nav.c_funddate}</td>
+               <td>${NumberFunction(nav.i_fundvalue!,"###0.0000")}</td>
+               <td>${NumberFunction(nav.i_fundtotalnetval!,"###0.0000")}</td>
+              <td>
+              <%if(strutil.contain(nav.i_fluctuateper+"","-")){%>
+              <span style="color:#008000;" ><%if(nav.i_fluctuateper!=null){%>${NumberFunction(nav.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></span>
+              <%}else{%>
+              <span class="c-f25050" ><%if(nav.i_fluctuateper!=null){%>${NumberFunction(nav.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></span>
+              <%}%>
+              </td>
+            </tr>
+            <%}}else{%> 
+              <tr><td colspan="4" style="text-align: center;">暂无相关信息</td></tr>
+            <%}%>
+         <%}else{%>
+           <tr><td colspan="4"  style="text-align: center;" >暂无相关信息</td></tr>
+         <%}%>
+            </#fundnav>

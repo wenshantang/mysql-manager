@@ -1,0 +1,44 @@
+<#tradelist  acco_no='${session.customer.data.cust_no}'  page_size="11"  page_no="${p1!}" acco_type='1'  agency_type="0" busin_flag ="${fund_busin_code!}" end_date="${end_date!}" begin_date="${begin_date!}" ;tradelist>
+						 <%if(tradelist.ReturnCode=='0000'){%>
+						 <%if(tradelist.data!=""){%>
+					  <%for(trade in tradelist.data){%>
+						<tr onclick="confirmtradeinfodetail('${trade.allot_no}')">
+						  <td><p class="pt">${strutil.subStringTo(trade.affirm_date,0,4)}-${strutil.subStringTo(trade.affirm_date,4,6)}-${strutil.subStringTo(trade.affirm_date,6,8)}</p></td>
+						  <td>${trade.busin_name!''}</td>
+						  <td  >${trade.fund_name!''}</td>
+						  <td><%if(trade.busin_flag=='07'){%>--<%}else{%><%if(trade.busin_flag=='02'){%>${StringToNumber(trade.apply_sum!'')}元<%}else{%>${StringToNumber(trade.apply_share!'')}份<%}%><%}%></td>
+						  <td>${trade.trade_status_name}</td>
+						</tr> 
+						
+						  <input type="hidden" id="fund_name_${trade.allot_no}"          value="${trade.fund_name}">
+				       	  <input type="hidden" id="fund_code_${trade.allot_no}"          value="${trade.fund_code}">
+				       	  <input type="hidden" id="affirm_date_${trade.allot_no}"        value="${trade.affirm_date}">
+				       	  <input type="hidden" id="busin_flag_${trade.allot_no}"         value="${trade.busin_flag}">
+				       	  <input type="hidden" id="busin_name_${trade.allot_no}"         value="${trade.busin_name}">
+				       	  <input type="hidden" id="auto_buy_name_${trade.allot_no}"      value="${trade.auto_buy_name}"> 
+				       	  <input type="hidden" id="trade_acco_hidden_${trade.allot_no}"  value="${trade.trade_acco}"> 
+				       	  <input type="hidden" id="bank_no_${trade.allot_no}"            value="${trade.bank_no}"> 
+				       	  <input type="hidden" id="apply_date_${trade.allot_no}"         value="${trade.apply_date}">
+				       	  <input type="hidden" id="apply_sum_${trade.allot_no}"          value="${trade.apply_sum}">
+				       	  <input type="hidden" id="trade_confirm_type_${trade.allot_no}" value="${trade.trade_confirm_type}" >
+				       	  <input type="hidden" id="trade_fee_${trade.allot_no}"          value="${trade.trade_fee}" >
+				       	  <input type="hidden" id="apply_share_${trade.allot_no}"        value="${trade.apply_share}"> 
+				       	  <input type="hidden" id="from_fund_name_${trade.allot_no}"     value="${trade.from_fund_name}"> 
+				       	  <input type="hidden" id="from_fund_code_${trade.allot_no}"     value="${trade.from_fund_code}"> 
+				       	  <input type="hidden" id="trade_status_name_${trade.allot_no}"  value="${trade.trade_status_name}">
+				       	  <input type="hidden" id="trade_confirm_balance_${trade.allot_no}"  value="${trade.trade_confirm_balance}">
+				       	  
+				       	  
+						<%}%>
+						<script type="text/javascript">
+						totalPage1=${tradelist.total_page!};
+						</script>
+						<%}else{%>
+						<%if(datatype=="w"){%>
+						<tr><td colspan="5" style="text-align: center;" >暂无相关数据</td></tr>
+						<%}else{%>
+						 <tr><td colspan="5" style="text-align: center;" >暂无相关数据</td></tr>
+						 <%}%>
+						<%}%>
+						<%}%>
+</#tradelist> 

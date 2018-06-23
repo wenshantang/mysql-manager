@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-添加银行卡4</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<m m-main=""></m>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">添加银行卡</span></h1>
+		</div>
+</header>
+<div class="main wrap nofooter">
+		<div class="m50 g-input40">
+				<div class="top-e-msg yl-f m-t185 m-b70">
+						请输入短信验证码
+				</div>
+				<div class="g-inputVeri">
+						<div class="g-inputDiv">
+								<span class="g-input-span">
+								<input class="g-input" type="password" placeholder="">
+								</span>
+						</div>
+						<a class="veri-btn veri-btn-icon" href="#">获取验证码</a>
+				</div>
+				<div class="top-e-msg yl-f m-t-b120px">
+						请输入6位数字的交易密码
+				</div>
+				<div class="yl-inputDiv yl-pword-bg">
+						<input class="g-input" type="password" placeholder="" maxlength="6">
+				</div>
+				<!--<div class="yl-inputpass-box">
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg m-r0">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+				</div>-->
+				
+				<!--<div class="yl-inputpass-box">
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg m-r0">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+						<div class="yl-inputDiv yl-pword-bg m-r0">
+								<input class="g-input" type="password" placeholder="" maxlength="1">
+						</div>
+				</div>-->
+				
+				<a class="g-btns g-submit g-m-t112" href="#">确 定</a>
+				<div class="bottom-e-msg">
+						交易密码不能为空
+				</div>
+				<p style="height:1rem"></p>
+		</div>
+</div>
+<!--<footer class="footer">
+  <div class="wrap">
+    <nav class="footer-nav"> <a class="nav-index on" href="#">首页</a><a class="nav-club" href="#">基金俱乐部</a><a class="nav-asset" href="#">我的资产</a><a class="nav-my" href="#">我的</a> </nav>
+  </div>
+</footer>-->
+
+<div class="yl-popupBox">
+		<div class="wrap">
+				<div class="yl-popupConBox">
+						
+								<p class="con">绑卡出错：XXXXXXXXXX
+										具体易懂信息XXXXXXXXX
+										XXXXXXXX。</p>
+								<a class="btn help" href="#">客服协助</a>
+								<a class="btn close" href="${ctxPath}/h5/account/verifybanktel">取 消</a>
+						
+				</div>
+		</div>
+</div>
+</body>
+</html>

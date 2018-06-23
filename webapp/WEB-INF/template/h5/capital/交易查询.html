@@ -1,0 +1,439 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-交易查询(确认)</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/zepto.js"></script>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<script type="text/javascript"> 
+        //在途交易记录分页查询
+		var page=1;//当前页(在途交易记录查询)
+		var totalPage=1;
+		var pagesize=11;//每页的条数	
+		Zepto(function($){ 
+			$(window).scroll(function(){
+				var applywindow = $("#applywindow").css("display"); 
+				 console.log("applywindow"+applywindow);
+				 $("#datatype").val("");
+				 if(applywindow=="block"){
+					 //滚动条拉到离底10像素内，而且没超过总页数
+					 console.info(($(window).scrollTop() + $(window).height() > $(document).height()-10));
+			      if(($(window).scrollTop() + $(window).height() > $(document).height()-10)){
+			        	 if(totalPage>page){
+			        		page++; 
+			        		searchapplytrade(page);
+			        	}
+			       }
+				 }
+		 });
+		});
+
+		 //确认交易记录分页查询
+		 var page1=1;//(确认交易记录查询)
+		 var totalPage1=1;
+		Zepto(function($){ 
+			$(window).scroll(function(){
+			 var confirmwindow = $("#confirmwindow").css("display"); 
+			 $("#datatype").val("");
+			 if(confirmwindow=="block"){
+				 //滚动条拉到离底10像素内，而且没超过总页数
+		      console.info(($(window).scrollTop() + $(window).height() > $(document).height()-10));
+		      if(($(window).scrollTop() + $(window).height() > $(document).height()-10)){
+		        	 if(totalPage1>page1){
+		        		page1++; 	 
+		        		searchconfirmtrade(page1);
+		        	}
+		       }
+			 }
+		  });
+		});
+</script>
+<body>
+<m m-main="killorder_m_number_password"></m>  
+<header class="header">
+    <div class="wrap">
+        <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">交易查询</span></h1>
+    </div>
+</header>
+<div class="main wrap nofooter">
+    <nav class="sonNav2" m-switch-tab="tab2"><a class="m-on" href="javascript:void(0);">在途交易</a><a onclick="confirmshow()"  id="confirmshow" href="javascript:void(0);" >确认交易</a></nav>
+    <div class="tabBox2" m-switch-con="tab2">
+        <div class="list" id="applywindow">
+            <div class="g-table-3">
+                <input type="hidden" value=""  id="fund_busin_code"/>
+                <input type="hidden" value=""  id="starttime"/>
+                <input type="hidden" value=""  id="endtime"/>
+                <div class="g-table-typeBox" m-show="type"  id="type-content1" m-onclass="on" style="display: none;">
+                <a class="btn on" onclick="searchtype('','1')">全部</a>
+                <a class="btn" onclick="searchtype('022','1')">申购</a>
+                <a class="btn" onclick="searchtype('020','1')">认购</a>
+                <a class="btn" onclick="searchtype('024','1')">赎回</a>
+                <a class="btn" onclick="searchtype('039','1')">定投</a>
+                <a class="btn" onclick="searchtype('036','1')">转换</a>
+                <a class="btn" onclick="searchtype('029','1')">修改分红方式</a>
+                <a class="btn" onclick="searchtype('','1')">人保宝</a>
+            </div>
+                <div class="g-table-typeBox g-table-typeBox2" id="date-content1" m-show="date" style="display: none;">
+                    <p class="p"><a class="d-btn" onclick="searchtype('w','0')">近1周</a><span class="date"><input m-date="m" class="input" type="text" placeholder="开始日期" value="" id="startDate1"></span></p>
+                    <p class="p"><a class="d-btn" onclick="searchtype('m','0')">近1月</a><span class="date"><input m-date="m" class="input" type="text" placeholder="结束日期" id="endDate1"></span></p>
+                </div>
+                <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr class="no-top-border">
+                        <th scope="col"  id="date1" m-onshow="date"  >交易时间<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></th>
+                        <th scope="col" id="type1"  m-onshow="type">交易类型<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></th>
+                        <th scope="col">基金简称</th>
+                        <th scope="col">金额/份额</th>
+                        <th scope="col" width="18%" class="center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="applytradelist">
+                    </tbody>
+                </table>
+            </div>
+            <p style="height:1rem"></p>
+        </div>
+        <div class="list" id="confirmwindow">
+                <input type="hidden" value=""  id="fund_busin_code_confirm"/>
+                <input type="hidden" value=""  id="starttime_confirm"/>
+                <input type="hidden" value=""  id="endtime_confirm"/>
+            <div class="g-table-3">
+                <div class="g-table-typeBox" m-show="type" id="type-content2"  m-onclass="on" style="display: none;">
+                    <a class="btn on" onclick="searchtype('','3')">全部</a>
+	                <a class="btn" onclick="searchtype('02','3')">申购</a>
+	                <a class="btn" onclick="searchtype('01','3')">认购</a>
+	                <a class="btn" onclick="searchtype('03','3')">赎回</a>
+	                <a class="btn" onclick="searchtype('39','3')">定投</a>
+	                <a class="btn" onclick="searchtype('13','3')">转换</a>
+	                <a class="btn" onclick="searchtype('07','3')">修改分红方式</a>
+	                <a class="btn" onclick="searchtype('74','3')">基金分红</a>
+	                <a class="btn" onclick="searchtype('50','3')">基金成立</a>
+	                <a class="btn" onclick="searchtype('53','3')">强制赎回</a>
+	                <a class="btn" onclick="searchtype('','3')">人保宝</a>
+                </div>
+
+
+                <div class="g-table-typeBox g-table-typeBox2" id="date-content2" m-show="date" style="display: none;">
+                    <p class="p"><a class="d-btn" onclick="searchtype('w','2')">近1周</a><span class="date"><input m-date="m" class="input" type="text" placeholder="开始日期" id="startDate2"></span></p>
+                    <p class="p"><a class="d-btn" onclick="searchtype('m','2')">近1月</a><span class="date"><input m-date="m" class="input" type="text" placeholder="结束日期" id="endDate2" ></span></p>
+                </div>
+
+
+
+                <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                    <tr class="no-top-border">
+                        <th scope="col" id="date2"  m-onshow="date">确认日期<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></th>
+                        <th scope="col" id="type2"><a m-onshow="type">交易类型<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></a></th>
+                        <th scope="col">基金简称</th>
+                        <th scope="col">金额/份额</th>
+                        <th scope="col" width="18%">状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="confirmtradelist">
+                    </tbody>
+                </table>
+            </div>
+            <p style="height:1rem"></p>
+                <input type="hidden" value=""  id="trade_acco"/>
+                <input type="hidden" value=""  id="allot_no"/>
+             <a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+        </div>
+    </div>
+</div>
+<div id="apply_trade_list" style="display: none;"></div>
+<div id="confirm_trade_list" style="display: none;"></div>
+<form action="${ctxPath}/h5/capital/conformtradeinfo" id="form" method="post" style="display: none;">
+		  <input type="hidden"   name="busin_flag"           id="busin_flag">
+       	  <input type="hidden"   name="fund_name"           id="fund_name">
+       	  <input type="hidden"   name="fund_code"           id="fund_code">
+       	  <input type="hidden"   name="apply_date"          id="apply_date">
+       	  <input type="hidden"   name="affirm_date"         id="affirm_date">
+       	  <input type="hidden"   name="busin_name"          id="busin_name">
+       	  <input type="hidden"   name="apply_sum"           id="apply_sum">
+       	  <input type="hidden"   name="trade_confirm_type"  id="trade_confirm_type" >
+       	  <input type="hidden"   name="auto_buy_name"       id="auto_buy_name"> 
+       	  <input type="hidden"   name="trade_acco"          id="trade_acco_hidden"> 
+       	  <input type="hidden"   name="bank_no"             id="bank_no"> 
+       	  <input type="hidden"   name="trade_fee"           id="trade_fee" >
+       	  <input type="hidden"   name="apply_share"         id="apply_share"> 
+       	  <input type="hidden"   name="from_fund_name"      id="from_fund_name"> 
+       	  <input type="hidden"   name="from_fund_code"      id="from_fund_code"> 
+       	  <input type="hidden"   name="trade_status_name"   id="trade_status_name">
+       	  <input type="hidden"   name="trade_confirm_balance"   id="trade_confirm_balance">
+       	  <input type="hidden"   name=""   id="datatype" value="">
+       	  
+</form>  
+<script type="text/javascript">
+var fund_busin_code=$("#fund_busin_code").val();//业务代码查询
+var start_date=$("#starttime").val();//开始时间
+var end_date=$("#endtime").val();//结束时间
+$("#datatype").val("");
+//在途交易查询
+function searchapplytrade(page){
+	fund_busin_code=$("#fund_busin_code").val();
+	start_date=$("#starttime").val();
+	end_date=$("#endtime").val();
+	var datatype=$("#datatype").val();
+	$("#apply_trade_list").html("");
+	var url ="${ctxPath}/h5/capital/applylistPage?p="+page+"&fund_busin_code="+fund_busin_code+"&end_date="+end_date+"&begin_date="+start_date+"&datatype="+datatype;
+	$("#apply_trade_list").load(url, function(response, status, xhr) {
+		console.info($("#apply_trade_list").html());
+		$('#applytradelist').append($("#apply_trade_list").html());
+		$("#apply_trade_list").html("");
+	});
+}
+//确认交易查询
+function searchconfirmtrade(page1){
+	fund_busin_code=$("#fund_busin_code_confirm").val();
+	start_date=$("#starttime_confirm").val();
+	end_date=$("#endtime_confirm").val();
+	var datatype=$("#datatype").val();
+	$("#confirm_trade_list").html("");
+	var url ="${ctxPath}/h5/capital/confirmtradePage?p1="+page1+"&fund_busin_code="+fund_busin_code+"&end_date="+end_date+"&begin_date="+start_date+"&datatype="+datatype;
+	$("#confirm_trade_list").load(url, function(response, status, xhr) {
+		console.info($("#confirm_trade_list").html()); 
+		$('#confirmtradelist').append($("#confirm_trade_list").html());
+		$("#confirm_trade_list").html("");
+	});
+}
+function searchtype(code,type){
+	$("#datatype").val("");
+	if(type=='1'){//在途交易类型
+		var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show(); 
+				$("#type-content1").hide();
+				return false;
+			}
+		}
+		$("#fund_busin_code").val(code);
+		$("#type-content1").hide();
+		$("#date-content1").hide();
+		$("#applytradelist").html("");
+		searchapplytrade('1');
+	}else if(type=='0'){//在途交易时间框
+		var now = new Date();
+		if(code=='w'){
+			var end=new Date();
+			var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+			$("#starttime").val(date.format("yyyyMMdd"));
+			$('#startDate1').val(date.format("yyyy-MM-dd"));
+			$('#endDate1').val(now.format("yyyy-MM-dd"));
+			$("#endtime").val(end.format("yyyyMMdd"));
+			$("#datatype").val("w");
+		}else{
+			var begin=new Date();
+			var end=new Date();
+			new Date(begin.setMonth((new Date().getMonth()-1)));
+			var begintime= begin.format("yyyy-MM-dd");
+			var endtime=end.format("yyyy-MM-dd");
+			$('#startDate1').val(begintime);
+			$('#endDate1').val(endtime);
+			$("#starttime").val(begin.format("yyyyMMdd"));
+			$("#endtime").val(end.format("yyyyMMdd"));
+		}
+		$("#date-content1").hide();
+		$("#applytradelist").html("");
+		searchapplytrade('1');
+	}else if(type=='3'){//确认交易类型
+		$("#fund_busin_code_confirm").val(code);
+		$("#date-content2").hide();
+		$("#type-content2").hide();
+		$("#confirmtradelist").html("");
+		searchconfirmtrade('1');
+	}else if(type=='2'){//确认交易时间框
+		var now = new Date();
+		if(code=='w'){
+			var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+			$("#starttime_confirm").val(date.format("yyyyMMdd"));
+			$('#startDate2').val(date.format("yyyy-MM-dd"));
+			$('#endDate2').val(now.format("yyyy-MM-dd"));
+			$("#datatype").val("w");
+		}else{
+			var begin=new Date();
+			var end=new Date();
+			new Date(begin.setMonth((new Date().getMonth()-1)));
+			var begintime= begin.format("yyyy-MM-dd");
+			var endtime=end.format("yyyy-MM-dd");
+			$('#startDate2').val(begintime);
+			$('#endDate2').val(endtime);
+			$("#starttime_confirm").val(begin.format("yyyyMMdd"));
+			$("#endtime_confirm").val(end.format("yyyyMMdd"));
+		}
+		$("#date-content2").hide();
+		$("#confirmtradelist").html("");
+		searchconfirmtrade('1');
+	}
+}
+
+function adddate(g,r,i,p){
+	$("#datatype").val("");
+	if(g=='1'||g=='2'){//1：在途开始时间框2：在途的结束时间框
+		var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show(); 
+				return false;
+			}
+		
+		$("#starttime").val(startDate);
+		$("#endtime").val(endDate);
+		$("#applytradelist").html("");
+		if(g=='2'){
+			$("#date-content1").hide();
+			searchapplytrade('1'); 
+		} 
+		}
+	}
+	if(g=='3'||g=='4'){//3：确认交易开始时间框4：确认的交易结束时间框
+		var startDate=$('#startDate2').val().replace(/-/g,"");
+		var endDate=$('#endDate2').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content2").show();
+				return false;
+			}
+		$("#starttime_confirm").val(startDate);
+		$("#endtime_confirm").val(endDate);
+		$("#confirmtradelist").html("");
+		if(g=='4'){
+			$("#date-content2").hide();
+			searchconfirmtrade('1');
+		}
+		}
+	}
+}
+
+$(function(){
+	searchtype("w","0");
+})
+function confirmshow(){
+	$("#type-content2").hide();
+	searchtype("w","2");
+	$("#confirmshow").removeAttr("onclick");
+}
+ 
+function tradeinfodetail(id){
+	window.location.href="${ctxPath}/h5/capital/tradeinfo?allot_no="+id;
+}
+function confirmtradeinfodetail(id){
+	$("#busin_flag").val($("#busin_flag_"+id).val());
+	$("#fund_name").val($("#fund_name_"+id).val());
+	$("#fund_code").val($("#fund_code_"+id).val());
+	$("#apply_date").val($("#apply_date_"+id).val());
+	$("#affirm_date").val($("#affirm_date_"+id).val());
+	$("#busin_name").val($("#busin_name_"+id).val());
+	$("#apply_sum").val($("#apply_sum_"+id).val());
+	$("#trade_confirm_type").val($("#trade_confirm_type_"+id).val());
+	$("#auto_buy_name").val($("#auto_buy_name_"+id).val());
+	$("#trade_acco_hidden").val($("#trade_acco_hidden_"+id).val());
+	$("#bank_no").val($("#bank_no_"+id).val());
+	$("#trade_fee").val($("#trade_fee_"+id).val());
+	$("#apply_share").val($("#apply_share_"+id).val());
+	$("#from_fund_name").val($("#from_fund_name_"+id).val());
+	$("#from_fund_code").val($("#from_fund_code_"+id).val());
+	$("#trade_status_name").val($("#trade_status_name_"+id).val());
+	$("#trade_confirm_balance").val($("#trade_confirm_balance_"+id).val());
+	$("#form").submit();
+}
+
+</script>
+</body>
+<script>
+    $('#date1').click(function(){
+        $('#date-content1').css('zIndex',20);
+        $('#type-content1').css('zIndex',0);
+        $('#date-content2').hide();
+        $('#type-content2').hide();
+        $('#type-content1').hide();
+    });
+    $('#type1').click(function(){
+    	var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show(); 
+				$("#type-content1").hide();
+				return false;
+			}
+		}
+        $('#date-content1').css('zIndex',0);
+        $('#type-content1').css('zIndex',20);
+        $('#date-content2').hide();
+        $('#type-content2').hide();
+
+    });	
+    $('#date2').click(function(){
+        $('#date-content2').css('zIndex',20);
+        $('#type-content2').css('zIndex',0);
+        $('#date-content1').hide();
+        $('#type-content1').hide();
+        $('#type-content2').hide();
+    });
+    $('#type2').click(function(){
+    	var startDate=$('#startDate2').val().replace(/-/g,"");
+		var endDate=$('#endDate2').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content2").show();
+				return false;
+			}
+		}
+        $('#date-content2').css('zIndex',0);
+        $('#type-content2').css('zIndex',20);
+        $('#date-content1').hide();
+        $('#type-content1').hide();
+    });
+    
+function killorder(trade_acco,allot_no){
+	$("#trade_acco").val(trade_acco);
+	$("#allot_no").val(allot_no);
+	$('#MumberPassword').click();
+} 
+
+function killorderapply(password){
+	var trade_acco=$("#trade_acco").val();
+	var allot_no=$("#allot_no").val();
+	$.ajax({
+		type : "post",
+		data : {
+			"trade_acco" : trade_acco,
+			"original_appno" : allot_no,
+			"password" : password
+		},
+		url : ctx+"/trade/withdraw",
+		success : function(result) {
+			if (result.code == "0000") {
+				//Popbox.sureWithBtn("");
+				msg ="撤单成功!";
+				layer.open({
+				    content: msg,
+				    btn: ['确定'],
+				    yes: function(){
+				    	window.location.reload();
+				    }	    
+				});
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</html>

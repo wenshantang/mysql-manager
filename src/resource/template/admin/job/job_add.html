@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增部门岗位</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+//查询部门下面的岗位
+function selectDeptJobs(){
+	var url="${ctx}/admin/sys/job/queryCurrentDeptJobs";
+	var dept_id=$("#dept_id").val();
+	jQuery.ajax({
+		url : url,
+		data : "dept_id="+dept_id,
+		type : "POST",
+		dataType: "json", 
+		beforeSend: function(){
+			//loadi = layer.load(1);
+			//$("#administrative_sup").empty();
+			//$("#administrative_sup").append("<option value=''>请选择所属行政上级</option>");
+		},
+		success : function(result) {
+			//layer.close(loadi);
+			//$("#xzsj").empty();
+			//$("#xzsj").append('<select id="administrative_sup" name="administrative_sup" class="js-example-basic-single">');//<div class="rule-single-select" id="nselect">
+			$("#administrative_sup").empty();
+			$("#administrative_sup").append("<option value=''>请选择所属行政上级</option>");
+			 for(var i=0;i<result.length;i++){
+				 $("#administrative_sup").append("<option value='"+result[i].id+"'>"+result[i].job_name+"</option>");
+			 }
+			// $("#xzsj").append('</select>');//</div>
+			 //$("#nselect").attr("class", "rule-single-select");
+		}
+	});
+}
+</script>
+</head>
+<body class="mainbody">
+	<div class="content-tab-wrap">
+		<div id="floatHead" class="content-tab">
+			<div class="content-tab-ul-wrap">
+				<ul>
+					<li><a href="javascript:;" onclick="tabs(this);" class="selected">部门岗位基本信息</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>岗位名称</dt>
+				<dd>
+					<input name="job_name" type="text" id="job_name" class="input normal" maxlength="32"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>所属部门</dt>
+				<dd>
+					<div class="rule-single-select">
+						<select id="dept_id" name="dept_id" onchange="selectDeptJobs();">
+						   <option value="">请选择所属部门</option>
+						   <%for(job in deptList!){%>
+						      <option value="${job.id}">${job.dept_name}</option>	
+						   <%}%>
+						</select>
+					</div>
+					<input type="hidden" id="dept_id_hidden" name="dept_id_hidden"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>行政上级</dt>   
+				<dd>
+				    <div id="xzsj">			    
+					    <!-- <div class="rule-single-select"> -->
+							<select id="administrative_sup" name="administrative_sup" class="js-example-basic-single" style="width:250px;">
+							 <option value="" >请选择所属行政上级</option>
+							</select>
+						<!-- </div> -->
+					</div>	
+					<input type="hidden" id="administrative_sup_hidden" name="administrative_sup_hidden"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>岗位描述</dt>
+				<dd>
+                    <textarea name="job_description" rows="3" cols="20" id="job_description" class="input" style="width: 300px;height: 120px;"></textarea>
+                    <span id="Validform_checktip"></span>
+                </dd>
+			</dl>
+			<dl>
+				<dt>角色</dt>
+				<dd>
+					<div class="rule-multi-porp">
+						<span id="cblActionType">
+							<%for(role in roleList){%>
+								<input id="${role.id }" type="checkbox" name="roles" value="${role.id}" />
+								<label for="${role.id }">${role.name}</label>
+							<%}%>
+						</span>
+					</div>
+					<input type="hidden" id="role"/>
+					<span id="Validform_checktip">*角色</span>
+				</dd>
+			</dl>
+		</div>
+	</form>
+	<div class="page-footer">
+		<div class="btn-list">
+			<#permission url="/admin/sys/job/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/sys/job/insert')"/>
+			</#permission>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();"/>
+		</div>
+		<div class="clear"></div>
+	</div>
+</body>
+</html>

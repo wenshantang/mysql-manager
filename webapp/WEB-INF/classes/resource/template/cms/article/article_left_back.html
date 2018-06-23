@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<link href="${ctx}/resource-injar/css?t=/plugin/jquery-treeview/jquery.treeview.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/skin/default/CSS.css" type="text/css" />
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery.tree.js"></script>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<style>
+#browser ul{padding-left:18px;}
+#browser ul li{padding:0px;border-bottom:solid 1px #dcdcdc;}
+/* .folder a{background:#e0e9f7!important;} */
+</style>
+<script type="text/javascript">
+$(function(){
+	$("#browser").treeview({
+		url: "${ctx}/admin/cms/article/tree"
+	});
+	lmenu("lmenu");
+});
+
+function lmenu(id) {
+	var m = $('#' + id);
+	m.addClass('lmenu');
+	m.children().each(function() {
+		$(this).children('a').bind('click', function() {
+			$(this).parent().addClass("lmenu-focus");
+			$(this).blur();
+			var li = m.focusElement;
+			if (li && li!=this) {
+				$(li).parent().removeClass("lmenu-focus");
+			}
+			m.focusElement=this;
+		});
+	});
+}
+function flush(){
+	//parent.location.reload();
+      parent.location.href="${ctx}/admin/cms/article";
+}
+</script>
+</head>
+<body class="lbody">
+<div class="left">
+	<div class="fresh">
+		 <!--<table width="100%" cellspacing="0" cellpadding="0" border="0">
+	          <tbody>
+	          	<tr>
+	            <td height="35" align="center"><img src="${ctx}/resource-injar/image?t=/refresh-icon.png" />&nbsp;&nbsp;<a href="javascript:;" onclick="flush();">刷新</a></td>
+	            <td width="2" valign="middle" height="35"><img src="${ctx}/resource-injar/image?t=/left-line.png"/></td>
+	            <#permission url="/admin/cms/model">
+	            <td height="35" align="center"><img src="${ctx}/resource-injar/image?t=/model-icon.png"/>&nbsp;&nbsp;<a target="articleRightFrame" href="${ctx}/admin/cms/model">文章模型管理</a></td>
+	            </#permission>
+	      	 	</tr>
+	     	  </tbody>
+	     </table>-->
+         <div class="m-shaxin"><a href="javascript:;" onclick="flush();">网页栏目<span style="margin-left:8px">刷新</span></a></div>
+          <#permission url="/admin/cms/model">
+         <div class="m-shaxin"><a target="articleRightFrame" href="${ctx}/admin/cms/model">文章模型管理</a></div>
+          </#permission>
+	</div>
+</div>
+	<ul id="browser" class="filetree"></ul>
+</body>
+</html>

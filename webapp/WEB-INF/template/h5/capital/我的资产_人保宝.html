@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产（人保宝）</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><span class="txt">我的资产</span></h1>
+    <div class="f-topBox">
+      <time class="time">资产日期：2016-06-22</time>
+      <div class="pBox">
+        <p class="p1">20.87</p>
+        <p class="p2">人保宝昨日收益（元）</p>
+      </div>
+      <div class="gt-Box3 gt-Box4">
+        <div class="list">
+          <p class="l1">3.320%</p>
+          <p class="l2">七日年化收益率</p>
+        </div>
+        <div class="list">
+          <p class="l1">0.8814</p>
+          <p class="l2">每万份收益（元）</p>
+        </div>
+        <div class="list">
+          <p class="l1">29.00</p>
+          <p class="l2"> 累计收益（元）</p>
+        </div>
+      </div>
+      <a class="t-goto-btn" href="#"><img class="icon" src="images/tt_03.png"><span class="txt">总资产</span></a> </div>
+  </div>
+</header>
+<div class="main isTop wrap">
+  <ul class="g-box3">
+    <li>
+      <p class="icon"><img src="images/bicon_03.png"></p>
+      <p class="txt">充值</p>
+    </li>
+    <li>
+      <p class="icon"><img src="images/bicon_05.png"></p>
+      <p class="txt">定存工资</p>
+    </li>
+    <li>
+      <p class="icon"><img src="images/bicon_07.png"></p>
+      <p class="txt">取现</p>
+    </li>
+  </ul>
+  <ul class="g-list-li2">
+    <li><a href="#">
+      <p class="list list1"><span class="s1">货币型资产</span><span class="s2">2016-06-22</span></p>
+      <p class="list list2"><span class="s1 c-f25050">10.20</span><span class="s2">浮动收益（元）</span></p>
+      <p class="list list3"><span class="s1">12,000.00</span><span class="s2">总资产（元）</span></p>
+      <p class="list list4"><span class="s1">3,300.00</span><span class="s2">在途资产（元）</span></p>
+      </a></li>
+    <li><a href="#">
+      <p class="list list1"><span class="s1">债券型资产</span><span class="s2">2016-06-22</span></p>
+      <p class="list list2"><span class="s1 c-54b988">-0.20</span><span class="s2">浮动收益（元）</span></p>
+      <p class="list list3"><span class="s1">12,000.00</span><span class="s2">总资产（元）</span></p>
+      <p class="list list4"><span class="s1">3,300.00</span><span class="s2">在途资产（元）</span></p>
+      </a></li>
+  </ul>
+  <ul class="g-list-li m-t20">
+    <li><a href="${ctxPath}/h5/capital/investment"><span class="name">定投管理</span></a></li>
+    <li><a href="${ctxPath}/h5/capital/trade"><span class="name">交易查询</span></a></li>
+  </ul>
+</div>
+<%include("/h5/common/foot.html"){}%>
+</body>
+</html>

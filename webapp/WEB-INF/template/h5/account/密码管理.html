@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-密码管理</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<body>
+<#token/>
+<m m-main="editps_m_number_password"></m> 
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">密码管理</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <ul class="g-list-li new">
+    <li><a href="${ctxPath}/h5/account/editps"><span class="name">修改登录密码</span></a></li>
+   <!--  <li class="g-no-icon"><a href="javascript:void(0);"><span class="name">手势密码</span><label class="g-off-on"><input class="checkbox" name="" type="checkbox" value="" checked></label></a></li>
+    <li><a href="${ctxPath}/h5/account/editgustureps"><span class="name">修改手势密码</span></a></li> -->
+    <li><a href="javascript:void(0);" onclick="editpassword()"><span class="name">修改交易密码</span></a></li>
+    <li><a href="javascript:void(0);"  onclick="resetpassword()"><span class="name">重置交易密码</span></a></li>
+  </ul>
+</div> 
+<#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}" ;mybanks>
+	<%if(mybanks!=null||mybanks!=""){%>
+	<input type="hidden" id="trade_acco" value="${mybanks[0].trade_acco!}">
+	<%}%>
+</#mybanks>
+    <input type="hidden" id="hiddennewpassword">
+    <input type="hidden" id="hiddenpassword">
+	<a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+	<a id="MumberPassword2" style="display:none" m-number-password="MumberPassword2" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定2</a>
+	<a id="MumberPassword3" style="display:none" m-number-password="MumberPassword3" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定2</a>
+<script type="text/javascript">
+function editpassword(){
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var real_name_flag="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+	if(real_name_flag=='1'){
+		layer.open({
+		    content: "您还未设置交易密码,点击确认去设置！",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/account/psmanager";
+		    }, no: function(){
+		    }
+		});
+	}else{
+		$('#MumberPassword').click();
+	}
+}
+function resetpassword(){
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var real_name_flag="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+	if(real_name_flag=='1'){
+		layer.open({
+		    content: "您还未设置交易密码,点击确认去设置！",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard?goto=${ctxPath}/h5/account/psmanager";
+		    }, no: function(){
+		    }
+		});
+	}else{
+		window.location.href="${ctxPath}/h5/account/resettradeps";
+	}
+}
+function edittradeps(password){	
+	var id_kind_gb="${session.customer.data.id_kind_gb}";//证件类型
+	var id_no="${session.customer.data.id_no}";//证件号码
+	var new_password=$("#hiddennewpassword").val();//新交易密码
+	var oldpassword=$("#hiddenpassword").val();//原来的交易密码
+	var trade_acco=$("#trade_acco").val();//交易密码
+	if (id_kind_gb == "" || id_kind_gb == null) {
+		Popbox.sureWithBtn("请选择证件类型");
+		return false;
+	}
+	if (id_no == "" || id_no == null) {
+		Popbox.sureWithBtn("请选择证件号码");
+		return false;
+	}
+	if (oldpassword == "" || oldpassword == null) {
+		Popbox.sureWithBtn("请输入旧的交易密码!");
+		return false;
+	}
+	if (new_password == "" || new_password == null) {
+		Popbox.sureWithBtn("请输入新的交易密码");
+		return false;
+	}
+	if (new_password!=password) {
+		Popbox.sureWithBtn("新交易密码和确认交易密码不一致!");
+		return false;
+	}
+	if (new_password == oldpassword) {
+		Popbox.sureWithBtn("新密码和原始密码一致!");
+		return false;
+	}
+	$.ajax({
+		type : "post",
+		data : {
+			"id_kind_gb" : id_kind_gb,
+			"id_no" : id_no,
+			"new_password" : password,
+			"password" : oldpassword,
+			"trade_acco":trade_acco
+		},
+		url : ctx+"/user/edittradeps",
+		success : function(result) {
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("修改成功!");
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</body>
+
+</html>

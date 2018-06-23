@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>修改预约信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">修改预约信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		
+		<div class="tab-content">
+		<input type="hidden" name="id" id="id" value="${ap.id}" />
+		<dl>
+				<dt>产品名称</dt>
+				<dd>
+				<select  style="width: 300px" id="pro_id" name="pro_id" class="js-example-basic-single"  >
+   		      	    <option value="" code="">请选择</option>
+				<%for(list in pro_id_list!){%>
+					<option  value="${list.pro_id}" ${list.pro_id == ap.pro_id ?'selected':''}>${list.pro_name}</option>
+				<%}%>
+   		      	  </select>
+   		      	</dd>
+			</dl>
+ 			<dl>
+				<dt>预约金额(万元)</dt>
+				<dd>
+					<input name="req_amts" type="text" id="req_amts" value="${ap.req_amts}" maxlength="10" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl> 
+			<dl>
+				<dt>预约人姓名</dt>
+				<dd>
+					<input name="cust_name" type="text" id="cust_name" value="${ap.cust_name}"  maxlength="20" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>手机号码</dt>
+				<dd>
+					<input name="mobile" type="text" id="mobile" value="${ap.mobile}" maxlength="11" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>邮箱</dt>
+				<dd>
+					<input name="email" type="text" id="email" value="${ap.email}" maxlength="50" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>预约时间</dt>
+				<dd>
+					<div class="date-input">
+						<i></i><input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input" value="${ap.req_time}" id="req_time" name="req_time"/>
+					</div>
+					<input type="hidden" id="req_time_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>处理状态</dt>
+				<dd>
+						<div class="rule-multi-radio multi-radio"><div class="boxwrap">
+							<a href="javascript:;" ${'0' == ap.status ?"class='selected'":""}>未处理</a>
+							<input type="radio" id="status" name="status" value="0" ${'0' == ap.status ?'checked':''}  style="display: none;"><label for="" style="display: none;">未处理</label>
+							<a href="javascript:;" ${'1' == ap.status ?"class='selected'":""}>已处理</a>
+							<input type="radio" id="status" name="status" value="1" ${'1' == ap.status ?'checked':''}  style="display: none;"><label for="" style="display: none;">已处理</label>
+					    </div>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>备注</dt>
+				<dd>
+					<input name="memo" type="text" id="memo" value="${ap.memo}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cust/req/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/cust/req/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

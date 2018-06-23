@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>注册</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+
+<body>
+<#token/>
+<header class="header"> 
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">注册</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <div class="m50">
+    <div class="top-e-msg"></div>
+    <div class="g-inputDiv icon-phone"> <span class="g-input-span">
+      <input class="g-input"  id="mobile" maxlength="11"  type="tel" placeholder="请输入您的手机号">
+      </span> </div>
+    <div class="g-inputVeri">
+      <div class="g-inputDiv icon-veri"> <span class="g-input-span"> 
+        <input class="g-input" maxlength="6" id=authcode   type="tel" placeholder="请输入短信验证码">
+        </span> </div>
+      <a class="veri-btn" href="javascript:void(0);"  id="send_authcode"  onclick="sendcode()" style="background:#f25050">发送手机验证码</a> </div>
+    <div class="g-inputDiv icon-pass"> <span class="g-input-span">
+      <input class="g-input" id=loginpassword maxlength="6" type="password" name="tel" placeholder="请输入6位数字的登录密码"><span class="g-pass-eye-btn" id="editpassword"><img src="${ctxPath}/portal/h5/images/reg_nosee.png" onclick="showpassword()" ></span>
+      </span> </div>
+    <div class="g-inputDiv icon-pass"> <span class="g-input-span">
+      <input class="g-input" id=confirmpassword maxlength="6" type="password" placeholder="请确认您的登录密码"><span class="g-pass-eye-btn" id="editconfirmpassword"><img src="${ctxPath}/portal/h5/images/reg_nosee.png" onclick="showconfirmpassword()" ></span>
+      </span> </div>
+      <div class="agreement-btn"><label><input class="m-checkbox" name="" type="checkbox" value="" checked>我已阅读并同意</label><a href="${ctxPath}/h5/regagreement">《注册协议》</a></div>
+      <a class="g-btns g-submit" href="javascript:void(0);" onclick="register()" >注  册</a>
+      <div class="bottom-e-msg"></div>
+      
+      <a class="login-txt-btn" href="${ctxPath}/h5/login">已有帐号，直接登录</a>
+  </div>
+</div>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+function showpassword(){//显示明文密码
+	$("#loginpassword").attr('type','text');
+	$("#editpassword").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hidepassword()' >");
+} 
+function hidepassword(){//隐藏明文密码
+	$("#loginpassword").attr('type','password');
+	$("#editpassword").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='showpassword()' >");
+}
+function showconfirmpassword(){//显示明文密码
+	$("#confirmpassword").attr('type','text');
+	$("#editconfirmpassword").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hideconfirmpassword()' >");
+} 
+function hideconfirmpassword(){//隐藏明文密码
+	$("#confirmpassword").attr('type','password');
+	$("#editconfirmpassword").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='showconfirmpassword()' >");
+}
+var wait =60; 
+function time() {
+	if (wait == 0) {
+		$("#send_authcode").attr("onclick","sendcode();");
+		$("#send_authcode").text("发送手机验证码");
+		$("#send_authcode").css("background","#f25050");
+        wait = 60;
+    } else {
+    	$("#send_authcode").removeAttr("onclick");
+    	$("#send_authcode").css("background","#dcdcdc");
+    	$("#send_authcode").text("重新发送("+wait+")");
+        wait--;
+        setTimeout(function() {
+            time()
+    	}, 1000)
+ 	}
+ }
+
+	function checkmobile() {
+		var mobile = $("#mobile").val();
+		var flag = false;
+		 $.ajax({
+			//校验该手机号是否已被注册()
+			url : '${ctxPath}/user/checkuser',
+			data : {
+				"acco_no" : mobile,"acco_type":"D","system_from":"1"
+			},
+			dataType : 'json',
+			async : false,
+			type : 'post',
+			success : function(data) {
+				if (data.code = "0000") {
+					console.log(eval("("+data.data+")").exist);
+					if(eval("("+data.data+")").exist=='0'){
+						flag = true;
+					}else{
+						flag = false;
+					}
+					
+				}
+			}
+		}); 
+		return flag;
+	}
+	//发送手机验证码
+	function sendcode() {
+		$(".top-e-msg").text("");
+		$(".bottom-e-msg").text("");
+		var mobile = $("#mobile").val();
+		if (mobile == "" || mobile == null) {
+			$(".top-e-msg").text("手机号不能为空")
+			return false;
+		}
+		if (!Regular.REG(Number(mobile), RegexEnum.mobile)) {
+			$(".top-e-msg").text("手机格式错误")
+			return false;
+		}
+		if (checkmobile()) {
+			$.ajax({
+				type : "post",
+				data : {
+					"mobile" : mobile,
+					"template_id":"1",
+					"sms_channel_id":"4"
+				},
+				url : "${ctxPath}/send/sendcode",
+				success : function(result) {
+					if (result.code == "0000") {
+						time();
+						layer.open({
+    		    			content:"验证码发送成功!",
+    		    			shadeClose: true,
+    		    		    btn: ['确定'],
+    		    		    time:5
+    		    		});
+					} else {
+						$(".top-e-msg").text("验证码发送失败!");
+					}
+				}
+			});
+		}else{
+			$(".bottom-e-msg").text("该手机号已注册!");
+			return false;
+		}
+
+	}
+
+	function register() {
+		$(".top-e-msg").text("");
+		$(".bottom-e-msg").text("");
+		var authcode = $("#authcode").val();//验证码
+		var mobile = $("#mobile").val();//验证码
+		var loginpassword = $("#loginpassword").val();//登录密码	
+		var confirmpassword = $("#confirmpassword").val();//确认登录密码
+		if (mobile == "" || mobile == null) {
+			$(".top-e-msg").text("请输入手机号!");
+			return false;
+		}
+		if (!Regular.REG(Number(mobile), RegexEnum.mobile)) {
+			$(".top-e-msg").text("手机格式错误")
+			return false;
+		}
+		if (authcode == "" || authcode == null) {
+			$(".bottom-e-msg").text("请输入验证码!");
+			return false;
+		}
+		if (loginpassword == "" || loginpassword == null) {
+			$(".bottom-e-msg").text("请输入登录密码!");
+			return false;
+		}
+		if (confirmpassword == "" || confirmpassword == null) {
+			$(".bottom-e-msg").text("请输入确认登录密码!");
+			return false;
+		}
+		if (!Regular.REG(loginpassword, RegexEnum.num)) {
+			$(".top-e-msg").text("请输入6位数字密码")
+			return false;
+		}
+		if (!Regular.REG(confirmpassword, RegexEnum.num)) {
+			$(".top-e-msg").text("请输入6位数字密码")
+			return false;
+		}
+		if (loginpassword != confirmpassword) {
+			$(".bottom-e-msg").text("两次输入的密码不一致!");
+			return false;
+		}
+		var checkStatus=$("input:checkbox").is(':checked');
+		if(checkStatus=="false" || checkStatus == false){
+			$(".bottom-e-msg").text("请阅读注册协议");
+			return false;
+		}
+		$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"authcode" : authcode
+			},
+			url : "${ctxPath}/send/checkmobilecode",
+			success : function(result) {
+				console.log(result);
+				if (result.code == "0000") {
+					$.ajax({
+						type : "post",
+						data : {
+							"mobile" : mobile,
+							"password" : loginpassword,
+							"system_from" : "1",
+							"cust_type" : "1"
+						},
+						url : "${ctxPath}/user/register",
+						success : function(result) {
+							if (result.code == "0000") {
+								layer.open({
+		    		    			content:"注册成功!",
+		    		    			shadeClose: true,
+		    		    		    btn: ['确定']
+		    		    		});
+								window.location.href="${ctxPath}/h5/index";
+							} else {
+								$(".bottom-e-msg").text(result.msg);
+							}
+						}
+					}); 
+				} else {
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+
+	}
+</script>
+</body>
+</html>
+

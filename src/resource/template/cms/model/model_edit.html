@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑CMS模型</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+$(function(){
+	$("#itemAddButton").click(function(){
+		var nodeId = Math.ceil(Math.random()*10000000);
+		var html = "<dl id="+nodeId+">";
+			html += "<dt></dt>";
+			html += "<dd style=\"margin-left: 40px;\">";
+			html += "字段：<input name=\"other_attr_field_"+nodeId+"\" type=\"text\" class=\"input big\"/>";
+			html += "&nbsp;&nbsp;&nbsp;&nbsp;";
+			html += "字段名：<input name=\"other_attr_name_"+nodeId+"\" type=\"text\" class=\"input big\"/>";
+			html += "&nbsp;&nbsp;&nbsp;&nbsp;";
+			html += "数据类型：<select name=\"other_attr_type_"+nodeId+"\" class=\"js-example-basic-single\" style=\"width: 120px;\"><option value=\"text\">text</option><option value=\"textarea\">textarea</option><option value=\"image\">image</option><option value=\"file\">file</option></select>";
+			html += "&nbsp;";
+			html += "<span class=\"Validform_checktip\"><a title=\"删除\" class=\"img-btn del operator\" onclick=\"delNode('"+nodeId+"');\">删除</a></span>";
+			html += "</dd>";
+			html += "</dl>";
+		$("#other").append(html);
+		$(".js-example-basic-single").each(function(){
+			$(this).select2({
+				minimumResultsForSearch: -1,
+				language: "zh-CN"
+			});
+		});
+	});
+});
+
+function delNode(id){
+	var text = $("#"+id).remove();
+	text.appendTo("other");
+}
+
+function show_pcEditTemplate(obj){
+	if(obj.value != ''){
+		$('#itemAddButton_pc').css("display","");
+		$('#itemAddButton_pc').click(function(){
+			fullWithBar('${ctx}/admin/cms/template/edit/'+obj.value);
+		});
+	}else{
+		$('#itemAddButton_pc').css("display","none");
+	}
+}
+
+function show_mobileEditTemplate(obj){
+	if(obj.value != ''){
+		$('#itemAddButton_mobile').css("display","");
+		$('#itemAddButton_mobile').click(function(){
+			fullWithBar('${ctx}/admin/cms/template/edit/'+obj.value);
+		});
+	}else{
+		$('#itemAddButton_mobile').css("display","none");
+	}
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">模型基本信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">模型附加信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>是否启用</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="status" type="checkbox" name="status" value="1" ${model.status==1 ? 'checked':''} />
+					</div>
+					<span id="Validform_checktip">*不启用则无法使用</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>排列顺序</dt>
+				<dd>
+					<input name="idx" type="text" id="idx" value="${model.idx}" class="input small" style="text-align: center;"/>
+					<span id="Validform_checktip">*数字，越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>模型代码</dt>
+				<dd>
+					<input name="code" type="text" id="code" value="${model.code}" class="input normal" readonly="readonly"/>
+					<span id="Validform_checktip">*全局唯一</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>模型名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" value="${model.name}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			
+			<dl>
+				<dt>PC端模板</dt>
+				<dd>
+                    <select id="template_id" class="js-example-basic-single" style="width: 60%" onchange="show_pcEditTemplate(this);" name="pc_template_id">
+				  	  <option value="">请选择模板</option>
+					  <%for(template in templates){%>
+					  	<option value="${template.id}" ${model.pc_template_id==template.id?'selected':''}>${template.name}-->${template.path}</option>
+					  <%}%>
+					</select>
+                    <input type="hidden" id="pc_template_id_tip"/><span id="Validform_checktip">*</span>
+					<a id="itemAddButton_pc" class="icon-btn edit" style="display: none"><i></i><span>修改模板</span></a>
+                </dd>
+			</dl>
+			
+			
+			<dl>
+				<dt>移动端模板</dt>
+				<dd>
+                    <select id="template_id" class="js-example-basic-single" style="width: 60%" onchange="show_mobileEditTemplate(this);" name="mobile_template_id">
+				  	  <option value="">请选择模板</option>
+					  <%for(template in templates){%>
+					  	<option value="${template.id}" ${model.mobile_template_id==template.id?'selected':''}>${template.name}-->${template.path}</option>
+					  <%}%>
+					</select>
+                    <input type="hidden" id="mobile_template_id_tip"/><span id="Validform_checktip">*</span>
+					<a id="itemAddButton_mobile" class="icon-btn edit" style="display: none"><i></i><span>修改模板</span></a>
+                </dd>
+			</dl>
+			
+			
+			<dl>
+				<dt>栏目标题图</dt>
+				<dd>
+					宽: <input name="title_img_width" type="text" id="title_img_width" value="${model.title_img_width}" class="input small" style="text-align: center;"/>
+					高: <input name="title_img_height" type="text" id="title_img_height" value="${model.title_img_height}" class="input small" style="text-align: center;"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>栏目内容图</dt>
+				<dd>
+					宽: <input name="content_img_width" type="text" id="content_img_width" value="${model.content_img_width}" class="input small" style="text-align: center;"/>
+					高: <input name="content_img_height" type="text" id="content_img_height" value="${model.content_img_height}" class="input small" style="text-align: center;"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>模块说明</dt>
+				<dd>
+                    <textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 500px;height: 100px;">${model.memo}</textarea>
+                    <span id="Validform_checktip">*</span>
+                </dd>
+			</dl>
+		</div>
+		
+		<div class="tab-content" style="display: none">
+			<dl>
+				<dd style="margin-left: 40px;">
+					<a id="itemAddButton" class="icon-btn add"><i></i><span>添加字段</span></a>
+				</dd>
+			</dl>
+			
+			<div id="other">
+				<%for(cma in modelAttrs){%>
+					<dl id="${cmaLP.index}">
+						<dt></dt>
+						<dd style="margin-left: 40px;">
+							字段：<input name="other_attr_field_${cmaLP.index}" type="text" value="${cma.field}" class="input big"/>
+							&nbsp;&nbsp;
+							字段名：<input name="other_attr_name_${cmaLP.index}" type="text" value="${cma.name}" class="input big"/>
+							&nbsp;&nbsp;
+							数据类型：<select name="other_attr_type_${cmaLP.index}" class="js-example-basic-single" search="-1" style="width: 120px;"><option value="text" ${cma.type=='text'?'selected':''}>text</option><option value="textarea" ${cma.type=='textarea'?'selected':''}>textarea</option><option value="image" ${cma.type=='image'?'selected':''}>image</option><option value="file" ${cma.type=='file'?'selected':''}>file</option></select>
+							<span class="Validform_checktip"><a title="删除" class="img-btn del operator" onclick="delNode('${cmaLP.index}');">删除</a></span>
+						</dd>
+					</dl>
+				<%}%>
+			</div>
+		</div>
+		
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/model/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/cms/model/update')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

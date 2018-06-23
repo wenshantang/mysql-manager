@@ -1,0 +1,69 @@
+<div class="bm-right">
+          <div class="p-about">
+                <div class="p-about-img">
+                    <img src="${ctxPath}/portal/pc/images/about_01.jpg" style="width:100%;height: auto;" />
+                </div>
+                <div class="p-about-mian">
+                 <div class="p-select">                    
+                       <div class="p-slect-input">
+                           <span class="p-select-title">招聘部门</span>
+                           <span class="p-select-kuang">
+                           	<select class="kuang" id="zpbu">
+                           		  <option value="" >全部</option>
+                           		  <#cms_properties type="department" ; dicts>
+							           <%for(dict in dicts){%>
+							            		<option  value="${dict.name}">${dict.value}</option>
+									    <%}%> 
+        						 </#cms_properties>
+                            </select>
+                           </span>
+                       </div>                      
+                       <div class="p-slect-input">
+                           <span class="p-select-title">工作地点</span>
+                           <span class="p-select-kuang">
+                               <select class="kuang" id="address">
+                               	<option value="">全部</option>
+                               	 <#cms_properties type="city"; dicts>
+							           <%for(dict in dicts){%>
+							            		<option  value="${dict.value}">${dict.value}</option>
+									    <%}%> 
+        						 </#cms_properties>
+                               </select>
+                           </span>
+                       </div>
+                       <div class="p-sousuo"><a href="javascript:void(0);" onclick="gotoPage('1')">搜索</a></div>                       
+                    </div>
+                	<div id="zxnsList"></div>
+                </div>
+          </div>
+  </div>
+  
+<script type="text/javascript"> 
+  function gotoPage(p){ 
+	//var topicCode = $("#topicCode").val();
+	var depart=$("#zpbu").val();
+	var workPlace=$("#address").val();
+	//var depart=$("#zpbu option:selected").val();
+	//var workPlace=$("#adress option:selected").val();
+	$("#zxnsList").load("${ctxPath}/pc/about/recruitPages?p="+p+"&depart="+depart+"&workPlace="+workPlace);
+  }
+  $(function(){
+	gotoPage('1');
+  });
+  
+  function jumpPage(){
+	  var pagenum=$("#pagenum").val();
+	  if(!isNaN(pagenum)){
+		}else{
+		  alert("请输入数字!");
+		  return false;
+		}
+	  var  totalPagenum=$("#totalPage").val();
+	  if(pagenum-totalPagenum>0){
+		  alert("当前页大于总页数!");
+		  return false;
+	  }
+	  gotoPage(pagenum);
+
+  }
+</script>

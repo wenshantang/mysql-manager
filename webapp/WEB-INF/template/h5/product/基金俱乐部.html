@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>基金俱乐部</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript">
+	function noLogin(){
+		window.location.href="${ctxPath}/h5/login"
+		
+	}
+</script>
+</head>
+<#token/>
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title">
+      <p class="switchBox" m-switch-tab="top">
+      	<a class="m-on" href="javascript:$(window).scrollTop(0);" >全部</a>
+      	<%if(session.customer!=null){%>
+      		<a href="javascript:$(window).scrollTop(0);">自选</a>
+      	<%}else{%>
+      		<a href="javascript:noLogin();" style="width:47%;">自选</a>
+      	<%}%>
+      </p>
+    </h1>
+  </div>
+</header>
+<div class="main wrap">
+  <div class="switchList" m-switch-con="top">
+    <div class="list">
+      <nav class="sonNav wrap" m-switch-tab="son">
+      	<a class="m-on" href="javascript:$(window).scrollTop(0);">全部</a>
+      	 <#APPFundType ;list> 
+      	 	<%if(list!=null){ for(data in list){%>
+      	 		
+      			<a href="javascript:$(window).scrollTop(0);">${data.value}</a>
+      			
+      	 	<%}}%>
+      	</#APPFundType>
+     </nav>
+      <div class="sonCon" m-switch-con="son">
+      <#QuerSuperFundList customerid='${session.customer.data.mobile_tel!""}' page='1' pagesize='100';pageRecord> 
+      <div class="sonList">
+          <ul class="g-list-2">
+   	 		<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+    			
+            <li name="${fund.fundcode}_li1">
+              <div class="left">
+              	<%if(fund.pro_type!='4'){%>
+              	 <%if(strutil.contain(fund.i_fluctuateper+"","-")){%>
+      				<p class="p1" style="color:#008000;"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"####0.00")}%<%}else{%>--<%}%></p>
+                <%}else{%>
+                	<p class="p1"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"####0.00")}%<%}else{%>--<%}%></p>
+                <%}%>
+                	<p class="p2">日涨幅</p>
+      			<%}else{%>
+      			<%if(strutil.contain(fund.i_incomdepercent+"","-")){%>
+      				<p class="p1" style="color:#008000;">${NumberFunction(fund.i_incomdepercent!,"####0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+                <%}else{%>
+                    <p class="p1">${NumberFunction(fund.i_incomdepercent!,"####0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+                <%}%>
+                	<p class="p2">七日年化</p>
+      			<%}%>
+                
+              </div>
+              <div class="mid">
+                <p class="p1">
+	                <%if(fund.pro_type!='4'){%>
+	      				<a href="${ctxPath}/h5/product/detail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+	      			<%}else{%>
+	      				<a href="${ctxPath}/h5/product/coindetail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+	      			<%}%>
+                </p>
+                <p class="p2">${fund.fundcode!'--'}</p>
+              </div>
+              <div class="right">
+              	<%if(fund.recommand_reson!=null){%>
+                	<p class="img"><img src="${fund.recommand_reson!}"></p>
+      			<%}else{%>
+                	
+      			<%}%>
+                
+              </div>
+              <div class="down">
+              	<div class="bleft">${fund.c_funddate!'--'}</div>
+              	<%if(fund.pro_type!='4'){%>
+                	<div class="bright">单位净值（元）：${NumberFunction(fund.i_fundvalue!,"####0.0000")}</div>
+      			<%}else{%>
+                	<div class="bright">万份收益（元）：${NumberFunction(fund.i_dividendamount!,"####0.0000")}</div>
+      			<%}%>
+                
+              </div> 
+              <div class="btns">
+              	<%if(session.customer!=null){%>
+                	<%if(fund.customerid!=null){%>
+	                	<a class="collection-btn on" name="${fund.fundcode}" href="javascript:optional(1,'${fund.fundcode!''}');">收藏</a><%}else{%>
+	                	<a class="collection-btn" name="${fund.fundcode}" href="javascript:optional(0,'${fund.fundcode!''}');">收藏</a><%}%><a class="buy-btn" href="${ctxPath}/h5/capital/buy?fundcode=${fund.fundcode!''}" >购买</a>
+      			<%}else{%>
+                	<a class="collection-btn" href="javascript:noLogin();">收藏</a><a class="buy-btn" href="javascript:noLogin();" >购买</a>
+      			<%}%>
+              	
+      			
+               </div>
+            </li>
+            
+         
+        <%}}%>
+         </ul>
+        </div>
+    </#QuerSuperFundList>
+      	<#APPFundType ;list> 
+      	 	<%if(list!=null){ for(data in list){%>
+	      	 		<#QuerSuperFundList customerid='${session.customer.data.mobile_tel!}' page='1' pagesize='100' fundtype='${data.name}';pageRecord> 
+	      	 		<div class="sonList">
+			          <ul class="g-list-2">
+			   	 		<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+			    			
+			           <li name="${fund.fundcode}_li1">
+			              <div class="left">
+			              	<%if(fund.pro_type!='4'){%>
+			              	<%if(strutil.contain(fund.i_fluctuateper+"","-")){%>
+			      				<p class="p1" style="color:#008000;"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+			                	<%}else{%>
+			                	<p class="p1"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+			                	 <%}%>
+			                	<p class="p2">日涨幅</p>
+			      			<%}else{%>
+			      			<%if(strutil.contain(fund.i_incomdepercent+"","-")){%>
+			      				<p class="p1" style="color:#008000;">${NumberFunction(fund.i_incomdepercent!,"###0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+			                	<%}else{%>
+			                	<p class="p1" >${NumberFunction(fund.i_incomdepercent!,"###0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+			                	<%}%>
+			                	<p class="p2">七日年化</p>
+			      			<%}%>
+			                
+			              </div>
+			              <div class="mid">
+			                <p class="p1">
+				                <%if(fund.pro_type!='4'){%>
+				      				<a href="${ctxPath}/h5/product/detail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+				      			<%}else{%>
+				      				<a href="${ctxPath}/h5/product/coindetail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+				      			<%}%>
+			                </p>
+			                <p class="p2">${fund.fundcode!'--'}</p>
+			              </div>
+			              <div class="right">
+			                <%if(fund.recommand_reson!=null){%>
+                				<p class="img"><img src="${fund.recommand_reson!}"></p>
+      						<%}else{%>
+                	
+      						<%}%>
+			              </div>
+			              <div class="down">
+			              	<div class="bleft">${fund.c_funddate!'--'}</div>
+			              	<%if(fund.pro_type!='4'){%>
+			                	<div class="bright">单位净值（元）：${NumberFunction(fund.i_fundvalue!,"###0.0000")}</div>
+			      			<%}else{%>
+			                	<div class="bright">万份收益（元）：${NumberFunction(fund.i_dividendamount!,"####0.0000")}</div>
+			      			<%}%>
+			                
+			              </div> 
+			              <div class="btns">
+			              	<%if(session.customer!=null){%>
+			                	<%if(fund.customerid!=null){%>
+				                	<a class="collection-btn on" name="${fund.fundcode}" href="javascript:optional(1,'${fund.fundcode!''}');">收藏</a><%}else{%>
+				                	<a class="collection-btn" name="${fund.fundcode}" href="javascript:optional(0,'${fund.fundcode!''}');">收藏</a><%}%><a class="buy-btn" href="${ctxPath}/h5/capital/buy?fundcode=${fund.fundcode!''}" >购买</a>
+			      			<%}else{%>
+			                	<a class="collection-btn" href="javascript:noLogin();">收藏</a><a class="buy-btn" href="javascript:noLogin();" >购买</a>
+			      			<%}%>
+			              	
+			      			
+			               </div>
+			            </li>
+			            
+			        
+			        <%}}%>
+			          </ul>
+			        </div>
+			    </#QuerSuperFundList>
+      	 	<%}}%>
+      	</#APPFundType>
+        
+        
+      </div>
+    </div>
+    <div class="list">
+    
+    
+    <ul class="g-list-2 notop">
+    <%if(session.customer!=null){%>
+		<!-- 说明已登录 -->
+		<#QuerSuperFundList customerid='${session.customer.data.mobile_tel}' querytype='1' page='1' pagesize='100';pageRecord> 
+   	 		<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+              <li class="${fund.fundcode}_li2">
+	              <div class="left">
+	              	<%if(fund.pro_type!='4'){%>
+	              	<%if(strutil.contain(fund.i_fluctuateper+"","-")){%>
+	      				<p class="p1" style="color:#008000;"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"####0.00")}%<%}else{%>--<%}%></p>
+                   <%}else{%>
+                	    <p class="p1"><%if(fund.i_fluctuateper!=null){%>${NumberFunction(fund.i_fluctuateper*100,"####0.00")}%<%}else{%>--<%}%></p>
+                   <%}%>
+	                	<p class="p2">日涨幅</p>
+	      			<%}else{%>
+	      				<%if(strutil.contain(fund.i_incomdepercent+"","-")){%>
+		      				<p class="p1" style="color:#008000;">${NumberFunction(fund.i_incomdepercent!,"####0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+		                <%}else{%>
+		                    <p class="p1">${NumberFunction(fund.i_incomdepercent!,"####0.000")}<%if(fund.i_incomdepercent!=null){%>%<%}%></p>
+		                <%}%>
+	                	<p class="p2">七日年化</p>
+	      			<%}%>
+	                
+	              </div> 
+	              <div class="mid">
+	                <p class="p1">
+		                <%if(fund.pro_type!='4'){%>
+		      				<a href="${ctxPath}/h5/product/detail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+		      			<%}else{%>
+		      				<a href="${ctxPath}/h5/product/coindetail?fundcode=${fund.fundcode!}">${fund.pro_name!'--'}</a>
+		      			<%}%>
+	                </p>
+	                <p class="p2">${fund.fundcode!'--'}</p>
+	              </div>
+	              <div class="right">
+	                <%if(fund.recommand_reson!=null){%>
+         				<p class="img"><img src="${fund.recommand_reson!}"></p>
+					<%}else{%>
+         	
+					<%}%>
+	              </div>
+	              <div class="down">
+	              	<div class="bleft">${fund.c_funddate!'--'}</div>
+	              	<%if(fund.pro_type!='4'){%>
+	                	<div class="bright">单位净值（元）：${NumberFunction(fund.i_fundvalue!,"####0.0000")}</div>
+	      			<%}else{%>
+	                	<div class="bright">万份收益（元）：${NumberFunction(fund.i_dividendamount!,"####0.0000")}</div>
+	      			<%}%>
+	                
+	              </div> 
+	              <div class="btns">
+	              	<%if(session.customer!=null){%>
+	                	<%if(fund.customerid!=null){%>
+		                	<a class="collection-btn on" name="${fund.fundcode}" href="javascript:optional(1,'${fund.fundcode!''}');">收藏</a><%}else{%>
+		                	<a class="collection-btn" name="${fund.fundcode}" href="javascript:optional(0,'${fund.fundcode!''}');">收藏</a><%}%><a class="buy-btn" href="${ctxPath}/h5/capital/buy?fundcode=${fund.fundcode!''}" >购买</a>
+	      			<%}else{%>
+	                	<a class="collection-btn" href="javascript:noLogin();">收藏</a><a class="buy-btn" href="javascript:noLogin();" >购买</a>
+	      			<%}%>
+	              	
+	      			
+	               </div>
+	            </li>
+        <%}}%>
+    </#QuerSuperFundList>
+	<%}else{%>
+	<%}%>
+          </ul>
+    </div>
+  </div>
+</div>
+<%include("/h5/common/foot.html",{nav:'fund'}){}%>
+<script type="text/javascript">
+	$(function(){
+		
+	});
+	function optional(status,fundcode){
+		$.ajax({
+			type : "post",
+			data : {
+				"customerid":'${session.customer.data.mobile_tel!}',"fundcode":fundcode,"status":status
+			},
+			url : "${ctxPath}/user/optional",
+			success : function(result) {
+				if (result.code == "0000") { 
+					//alert($("*[name="+fundcode+"_li1]").html())
+					if(status=='0'){
+						$("*[name="+fundcode+"]").addClass("on");
+						$("*[name="+fundcode+"]").attr('href','javascript:optional(1,"'+fundcode+'");'); 
+						$(".notop").append("<li class='"+fundcode+"_li2'>"+$("*[name="+fundcode+"_li1]").html()+"</li>");
+					}else{
+						$("*[name="+fundcode+"]").removeClass("on");
+						$("*[name="+fundcode+"]").attr('href','javascript:optional(0,"'+fundcode+'");'); 
+						$("."+fundcode+"_li2").hide();
+					}
+				} else {
+					alert('失败!');
+				}
+			}
+		});
+	}
+</script>
+</body>
+</html>

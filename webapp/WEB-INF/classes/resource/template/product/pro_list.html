@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>操作员列表</title>
+<%include("resource/template/common/resource.html"){}%> 
+</head>
+<script type="text/javascript">
+function removeCache(url){
+	$.layer({
+	    shade: [0.5, '#888'],
+	    border: [0.2, 0.1, '#000'],
+	    area: ['auto','auto'],
+    	title:'清除缓存',
+	    dialog: {
+	        msg: '确定要清除缓存吗？',
+	        btns: 2,                    
+	        type: 4,
+	        btn: ['确定','取消'],
+	        yes: function(index){
+	        	layer.close(index);
+	        	var v = loading("清除中！");
+	        	jQuery.ajax({
+	        		url : url,
+	        		type : "POST",
+	        		success : function(result) {
+	        			    layer.close(v);
+	        				pagination();
+	        				popStatus(1, '清除缓存成功！！！', 1);
+	        		}
+	        	});
+	        }, no: function(){
+	            
+	        }
+	    }
+	});
+}
+</script>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+            <td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+			<td>{{row.code}}</td>
+			<td>{{row.name}}</td>
+			<td>{{row.type | decode:'1','自组网产品','2','有中心产品','3','自组网+有中心双网合一产品'}}</td>
+			
+			<td>{{row.public_time}}</td>
+			<td>{{row.item}}</td>
+			<td>{{row.isHot | decode:'1','热推'}}</td>
+			<td>{{row.sort_num}}</td>
+			
+			<td>
+			{{if row.status=='2'}}
+			                    审核通过			
+			{{/if}}
+			{{if row.status!='2'}}
+				<a id="edit{{row.id}}" href="javascript:;"   onclick="audit('${ctx}/admin/product/audit/{{row.id}}')">审核</a>				
+			{{/if}}	
+			</td>
+			<td>
+				<a id="edit{{row.id}}" href="javascript:;" class="img-btn edit operator"  onclick="edit('${ctx}/admin/product/edit/{{row.id}}')">编辑</a>				
+			</td>
+		</tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+	<div class="toolbar-wrap">
+		<div id="floatHead" class="toolbar">
+			<div class="l-list">
+				<ul class="icon-list">
+					<#permission url="/admin/product/insert">
+						<li>
+							<a class="add" onclick="add('${ctx}/admin/product/add')" href="javascript:;">
+								<i></i><span>新增</span>
+							</a>
+						</li>
+					</#permission>
+					 <#permission url="/admin/product/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/product/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                     <#permission url="/admin/product/removeCache">
+                       <li><a onclick="removeCache('${ctx}/admin/product/removeCache')" id="removeCache" class="del" href="javascript:;"><i></i><span>清除缓存</span></a>
+                       </li>
+                     </#permission> 
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="searchbar">
+		<div class="searchForm">
+			<form id="search_form">
+				<dl>
+					<dt>产品代码：</dt>
+					<dd>
+						<input class="input middle" type="text" name="code" id="code"/>
+					</dd>
+				</dl>
+				<dl>
+					<dt>产品名称：</dt>
+					<dd>
+						<input class="input middle" type="text" name="name" id="name"/>
+					</dd>
+				</dl>
+				<dl>
+					<dt style="width: 80px;">产品状态：</dt>
+					<dd style="margin-left: 100px;">
+						<select name="status" id="status" class="js-example-basic-single"  style="width: 80px;">
+							<option value="">请选择</option>
+							<option value="1">待审核</option>
+							<option value="2">审核通过</option>
+						</select>
+					</dd>
+				</dl>
+				<dl>
+					<dt style="width: 80px;">产品类型：</dt>
+					<dd style="margin-left: 100px;">
+						<select name="type" id="type" class="js-example-basic-single"  style="width: 80px;">
+							<option value="">请选择</option>
+							<option value="1">自组网产品</option>
+							<option value="2">有中心产品</option>
+							<option value="3">自组网+有中心双网合一产品</option>
+						</select>
+					</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="searchButton">
+			<input id="searchBtn" class="btn" type="button" value="搜索"/>
+			<input id="clearBtn" class="btn yellow" type="button" value="重置"/>
+		</div>
+	</div>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/product/json">
+		<tr>
+		    <th>选择</th>
+			<th>产品代码</th>
+			<th>产品名称</th>
+			<th>产品类型</th>
+			<th>发布时间</th>
+			<th>产品简介</th>
+			<th>是否热推</th>
+			<th>热推排序</th>
+			<th>审核操作</th>
+			<th>操作</th>
+		</tr>
+		<tbody id="tablelist"></tbody>
+	</table>
+	<div class="pagelist"></div>
+</body>
+</html>

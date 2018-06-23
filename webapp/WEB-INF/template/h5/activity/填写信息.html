@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>填写信息</title>
+<script src="${ctxPath}/portal/h5/js/jquery-2.2.4.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/swiper-3.3.1.jquery.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/M-v1.0.3.min.js"></script>
+<script src="${ctxPath}/portal/h5/activity/js/M-public.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/swiper-3.3.1.min.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/style.css" />
+<link rel="stylesheet" type="text/css" href="${ctxPath}/portal/h5/activity/css/select2.min.css" />
+<script type="text/javascript" src="${ctxPath}/portal/h5/activity/js/select2.full.js"></script>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+</head>
+<style>
+  
+  body.bg-fff .wrap{ background: #fff;}
+  .yl-tianxBox h6.title{ font-size: 1.4814814814815rem; text-align: center; color: #333; padding-top:2.2222222222222rem; padding-bottom: 0.86rem;}
+  .yl-tianxBox .tip{ font-size: 0.98765432098765rem; text-align: center; color: #999; margin-bottom: 2.2222222222222rem;}
+
+  .yl-tianxBox .inputBox{ overflow: hidden; height: 3.9506172839506rem;}
+  .yl-tianxBox .name{ width: 6.628395061728rem; float: left; height: 2.962962962963rem; line-height: 2.962962962963rem; margin-right: 1rem; font-size: 0.98765432098765rem; color: #666;}
+  .yl-tianxBox .inputDiv{ width: 16.0666666666667rem; float: left;height: 2.962962962963rem;line-height: 1.562963rem; border: 1px solid #d2d2d2; border-radius: 3px;}
+  .yl-tianxBox .inputDiv input,.yl-tianxBox .inputDiv select{ width: 100%; height:2.9rem; line-height: 2.9rem; border: none; text-indent: 0.5rem;}
+
+  .yl-tianxBox .xqhyList{ overflow: hidden;}
+  .yl-tianxBox .xqhyList li{ float: left; /*width:4.4444444444444rem; */ line-height:2.2222222222222rem; height: 2.2222222222222rem; border: 1px solid #d2d2d2; border-radius: 3px; font-size:0.98765432098765rem; color: #999; text-align: center; margin-right: 0.49382716049383rem; padding: 0.1rem 0.6rem;margin-top:0.5rem}
+  .yl-tianxBox .xqhyList li.on{ border: 1px solid #f25050; background:url("${ctxPath}/portal/h5/activity/images/tian/on.png") no-repeat left top; background-size: 0.64197530864198rem  0.59259259259259rem ;}
+
+  .yl-tianxBox .inputBox.height{ height: auto;}
+  .yl-tianxBox .xqhyList{ margin-top:  1rem; margin-bottom: 2.3rem;}
+  /* .icon-rr-wrong {
+    background: rgba(0, 0, 0, 0) url("${ctxPath}/portal/h5/activity/images/alert.png") no-repeat scroll 0 0 / 120px auto;
+    background-position: -54px -280px;
+   /*  display: inline-block; */
+    height: 54px;
+    vertical-align: middle;
+    width: 54px; */
+}
+</style>
+
+<body class="bg-fff">
+<#token/>
+<div class="main wrap nofooter noheader yl-tianxBox">
+  <h6 class="title" style="">个人信息</h6>
+  <p class="tip">（星号标识为必填项）</p>
+  <div class="m50">
+    <div class="inputBox">
+      <div class="name">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text" placeholder="请填写姓名" id="name">
+      </div>
+    </div>
+
+    <div class="inputBox">
+      <div class="name">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="sex">
+          <option value="" >请选择性别</option>
+          <option value="1">男</option>
+          <option value="0">女</option>
+        </select>
+       <!--  <input type="text" placeholder=""> -->
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text" placeholder="请填写年龄" type="number"  id="age" maxlength="3" >
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">手&nbsp;&nbsp;&nbsp;机&nbsp;&nbsp;&nbsp;号<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <input type="text" placeholder="请填写手机号码" type="number" id="mobile" maxlength="11">
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">本&nbsp;科&nbsp;专&nbsp;业<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="undergraduatemajor" class="js-example-placeholder-single">
+          <option value="">请选择本科专业</option>
+          <#cms_properties type="discipline_specialty" ; dicts>
+           <%for(dict in dicts){%>
+            		<option  value="${dict.name}">${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+        </select>
+      </div>
+    </div>
+    <div class="inputBox">
+      <div class="name">现&nbsp;修&nbsp;专&nbsp;业<span class="c-f25050">*</span>：</div>
+      <div class="inputDiv">
+        <select id="presentmajor"  class="js-example-placeholder-single" >
+          <option value="">请选择现修专业</option>
+        <#cms_properties type="discipline_specialty" ; dicts>
+           <%for(dict in dicts){%>
+            	<option  value="${dict.name}">${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+        </select>
+      </div>
+    </div>
+
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">感兴趣的研究方向<span class="c-f25050">*</span>：</div>
+      <div class="clear"></div>
+      <div class="xqhyList">
+        <ul>
+        <#cms_properties type="research_direction" ; dicts>
+           <%for(dict in dicts){%>
+            	<li id="${dict.name}" onclick="selectresearchdirection('${dict.name}')" value="${dict.name}">${dict.value}</li>
+		    <%}%>
+         </#cms_properties>
+        </ul>
+      </div>
+    </div>
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">本科毕业院校：</div>
+      <div class="clear"></div>
+      <div class="xqhyList inputDiv" style="width: 99%;">
+        <select id="undergraduateschool"   class="js-example-placeholder-single" >
+          <option value="">请选择本科毕业院校</option>
+          <#cms_properties type="graduate_institutions" ; dicts>
+           <%for(dict in dicts){%>
+            		<option  value="${dict.name}">${dict.value}</option>
+		    <%}%>
+         </#cms_properties>
+
+        </select>
+      </div>
+    </div>
+    <div class="inputBox height">
+      <div class="name" style="width: 100%;">备注</div>
+      <div class="clear"></div>
+      <div class="xqhyList">
+        <textarea id="remarks" style="width: 23.9rem; height:9.1358024691358rem; resize: none; border:1px solid #d2d2d2; outline: none;"></textarea>
+      </div>
+    </div>
+      <a class="g-btns g-submit"  href="javascript:void(0);" onclick="activitybooking()"  style="margin-bottom: 1.2rem;">提 交</a>
+  </div>
+</div> 
+<script type="text/javascript"> 
+$(function(){
+	$(".js-example-placeholder-single").select2({});
+});
+function selectresearchdirection(id){
+	var calssattr= $('#'+id).attr('class');
+	if(calssattr=='on'){
+		$('#'+id).attr('class', '')
+	}else{
+		$('#'+id).attr('class', 'on')
+	}
+}
+function activitybooking() { 
+	  var interestedindustry="";
+	    $("ul .on").each(function(i){
+	    	if(i<=0){
+	    		interestedindustry=$(this).attr("id");
+	    	}else{
+	    		interestedindustry=interestedindustry+","+$(this).attr("id");
+	    	}
+	    });
+	    console.log(interestedindustry);
+		var name = $("#name").val();//姓名
+		var sex = $("#sex").val();//性别
+		var age = $("#age").val();//年龄 
+		var mobile = $("#mobile").val();//手机号
+		var undergraduatemajor = $("#undergraduatemajor").val();//本科专业
+		var presentmajor = $("#presentmajor").val();//现修专业
+		//var interestedindustry = $("#interestedindustry").val();//感兴趣的研究方向
+		var undergraduateschool = $("#undergraduateschool").val();//本科毕业学校
+		var remarks = $("#remarks").val();//备注
+		var source = "微信活动";//用户来源
+		var sourcedescription = "1";//来源说明
+		if (name == "" || name == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[姓名]还未填写");
+			return false;
+		}
+		if (sex == "" || sex == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[性别]还未选择");
+			return false;
+		}	
+		if (age == "" || age == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[年龄]还未填写");
+			return false;
+		}
+		if (isNaN(age)){
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[年龄]格式不正确");
+			return false;
+		}
+		if(parseInt(age)!=age){ 
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[年龄]格式不正确");
+			return false;
+		}
+		if(age>90||age<=0||age.toString().indexOf('.')>=0){ 
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[年龄]格式不正确");
+			return false;
+		}
+		if (mobile == "" || mobile == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[手机号]还未填写");
+			return false;
+		}
+		if (!Regular.REG(Number(mobile), RegexEnum.mobile)) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[手机号]格式不正确")
+			return false; 
+		}
+		if (undergraduatemajor == "" || undergraduatemajor == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[本科专业]还未选择");
+			return false;
+		}
+		if (presentmajor == "" || presentmajor == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[现修专业]还未选择");
+			return false;
+		}
+		if (interestedindustry == "" || interestedindustry == null) {
+			Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>[感兴趣的研究方向]还未选择");
+			return false;
+		}
+		$.ajax({
+			type : "post",
+			data : {
+				"name" : name,
+				"sex" : sex,
+				"age" : age,
+				"mobile" : mobile,
+				"undergraduatemajor" : undergraduatemajor,
+				"presentmajor" : presentmajor,
+				"interestedindustry" : interestedindustry,
+				"undergraduateschool" : undergraduateschool,
+				"remarks" : remarks,
+				"source" : source,
+				"sourcedescription" : sourcedescription,
+			},
+			url : "${ctxPath}/activity/insert",
+			success : function(result) {
+				console.log(result);
+				if (result.code == "0000") {
+					Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/success.png' /><br/>提交成功");
+					window.setTimeout("gotowindow()",3000);
+					
+				} else {
+					Popbox.sureWithBtn("<img src='${ctxPath}/portal/h5/activity/images/alert.png' /><br/>"+result.msg);
+				}
+			}
+		});
+	}
+	function gotowindow(){
+		window.location.href="${ctxPath}/h5/courseintroduction";
+	}
+</script>
+</body>
+</html>

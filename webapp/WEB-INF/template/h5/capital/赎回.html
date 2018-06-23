@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>赎回</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+ 
+<body> 
+<m m-main="redemption_m_number_password"></m>
+<#sharedetail client_id="${session.customer.data.client_id}" fund_code="${fundcode!}" trade_acco="${trade_acco!}" cust_no="${session.customer.data.cust_no}";sharedetail>
+<%if(sharedetail[0].dataList.~size>0){%>
+<%for(myshare in sharedetail[0].dataList){%>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">赎回</span></h1>
+    <div class="f-topBox2 f-topBox3">
+      <p class="p p1">基金简称：${myshare.fund_name}</p>
+      <p class="p p2">基金代码：${myshare.fund_code}</p>
+      <p class="p p3">持有份额 : ${NumberFunction(myshare.current_share!,"#,###,##0.00")}份</p>
+       <input type="hidden" id="pro_shortname" value="${myshare.fund_name}" >
+    </div>
+  </div>
+</header>
+<div class="main isTop3 wrap nofooter">
+  <div class="g-box54">
+  <div class="g-inputBox g-m-t70">
+      <h6 class="title"><span class="name">赎回份额（份）</span><span class="info" onclick="fullredemption()"><img class="icon" src="${ctxPath}/portal/h5/images/idc2_03.png">全部赎回</span><!-- <span class="g-emsg">未结转收益将一并带出</span> --></h6>
+      <div class="g-inputDiv"> <span class="g-input-span">
+        <input class="g-input" type="text" onkeyup='this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/gi,"")' placeholder="最多${NumberFunction(myshare.enable_shares!,"#,###,##0.00")}" value="" id="redemptionshare">
+        </span> </div>
+    </div>
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">赎回至</span><span class="info" id="current_share">可用份额：${NumberFunction(myshare.enable_shares!,"#,###,##0.00")}</span></h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select"  id="trade_acco" >
+           <#mybanks client_id="${session.customer.data.client_id}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+           <%for(bank in mybanks){%>  
+           <%if(bank.trade_acco==myshare.trade_acco){%>
+            <option type="${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}(${bank.capital_mode_name})"  name="${myshare.enable_shares}" value="${bank.trade_acco}">${bank.bank_name}****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+            <%}}%>
+           </#mybanks>
+          </select>
+        </div>
+      </div>
+    </div>
+<div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">遇到巨额赎回时</span></h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="" id="fund_exceed_flag" >
+            <option value="0">放弃超额部分</option>
+            <option value="1">继续赎回</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <#redeemablelist trade_acco="${myshare.trade_acco}" fund_code="${fundcode!}"  isFilter="1";redeemablelist>
+    <%if(redeemablelist.ReturnCode=='0000'){%>
+    <%if(redeemablelist.data.~size>0){%>
+      <a class="g-btns g-submit g-m-t70" href="javascript:void(0);" onclick="checkredemption()">确定</a>
+    <%}else{%>
+       <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可赎回</a>
+    <%}%>
+    <%}else{%>
+       <a class="g-btns g-submit g-m-t70"   style="background:#acacac;border-bottom-color: #9b9b9b;"   href="javascript:void(0);"  >不可赎回</a>
+    <%}%>
+    </#redeemablelist>
+   
+    <a id="MumberPassword" m-number-password="MumberPassword" style="display:none;" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+    
+    <div class="bottom-e-msg"></div>
+     
+  
+       	  <input type="hidden"  id="fund_code" name="fund_code" value="${myshare.fund_code}">
+       	  <input type="hidden"  id="share_type" value="${myshare.share_type}"  name="share_type">
+       	  <input type="hidden" id="trade_acco_hidden"  name="trade_acco">
+       	  <input type="hidden" id="hiddenredemptionshare"  name="share">
+       	  <input type="hidden" id="hidden_fund_exceed_flag"  name="fund_exceed_flag">
+  </div>
+</div>
+<%}}%>
+</#sharedetail>
+<script type="text/javascript">
+var trade_acco=$("#trade_acco").val();
+//选择对应的银行卡、显示该银行卡下份额的多少
+/* $(function(){
+	var current_share=$("select option:checked").attr("name");
+	$("#redemptionshare").attr("placeholder","最多"+current_share+"份");
+	$("#current_share").html("可用份额："+current_share+"份");
+}) */
+/* function getcurrent_share(){
+	var current_share=$("select option:checked").attr("name");
+	$("#redemptionshare").attr("placeholder","最多"+current_share+"份");
+	$("#current_share").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最大份额："+current_share+"份");
+} */
+function checkredemption(){
+	$(".bottom-e-msg").text("");
+	var redemptionshare=$("#redemptionshare").val();//赎回份额
+    trade_acco=$("#trade_acco").val();//交易账号
+    var current_share=$("select option:checked").attr("name");//该交易账号下可赎回的份额
+    var fund_exceed_flag=$("#fund_exceed_flag").val();//赎回标志
+    if (redemptionshare == "" || redemptionshare == null) {//购买金额
+			$(".bottom-e-msg").text("请输入赎回份额!");
+			return false;
+	}
+    if (trade_acco == "" || trade_acco == null) {//购买金额
+		$(".bottom-e-msg").text("请选择赎回的交易账号!");
+		return false;
+	}
+    if(redemptionshare-current_share>0){
+    	$(".bottom-e-msg").text("可赎回份额不足!");
+		return false;
+    }
+    if(fund_exceed_flag == "" || fund_exceed_flag == null){
+    	$(".bottom-e-msg").text("请选择赎回标志!");
+		return false;
+    }
+    $('#MumberPassword').click();
+}
+//点击全部赎回
+function fullredemption(){
+	var current_share=$("select option:checked").attr("name");
+	$("#redemptionshare").val(current_share);
+}
+function redemptionfund(tradepassword){
+	 $(".bottom-e-msg").text("");
+	var fund_code=$("#fund_code").val();//基金代码
+	//var fund_code="3Q0108";//基金代码
+	var share_type=$("#share_type").val();//付款方式
+	var share=$("#redemptionshare").val();//份额
+	trade_acco=$("#trade_acco").val();//交易账号
+	var fund_exceed_flag=$("#fund_exceed_flag").val();//赎回标志
+/* 	var tradepassword=$("#tradepassword").val(); */
+	if (fund_code == "" || fund_code == null) {
+		$(".bottom-e-msg").text("请选择对应的基金!");
+		return false;
+	}
+	if (share_type == "" || share_type == null) {
+		$(".bottom-e-msg").text("请选择付费方式!");
+		return false;
+	}
+	if (share == "" || share == null) {
+		$(".bottom-e-msg").text("请填写赎回份额!");
+		return false;
+	}
+	if (trade_acco == "" || trade_acco == null) {
+		$(".bottom-e-msg").text("请选择支付方式!");
+		return false;
+	}
+	
+	if (fund_exceed_flag == "" || fund_exceed_flag == null) {
+		$(".bottom-e-msg").text("请选择赎回标志!");
+		return false;
+	}
+	if (tradepassword == "" || tradepassword == null) {
+		$(".bottom-e-msg").text("请输入交易密码!");
+		return false;
+	}
+	var capital_way=$("#trade_acco").find("option:selected").attr("type");
+		$.ajax({
+			type : "post", 
+			data : {
+				"shares" : share,
+				"fund_code" : fund_code,
+				"password":tradepassword,
+				"share_type" : share_type,
+				"trade_acco" : trade_acco,
+				"fund_exceed_flag" : fund_exceed_flag,
+				"pro_shortname" : $("#pro_shortname").val(),
+				"capital_way" : capital_way
+			},
+			url : "${ctxPath}/trade/redemption",
+			success : function(result) { 
+				if("0000"==result.code){
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					window.location.href="${ctxPath}/h5/capital/redemptionsuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+				}else{
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+}
+
+</script>
+</body>
+</html>

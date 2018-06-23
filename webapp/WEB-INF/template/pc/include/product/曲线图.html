@@ -1,0 +1,119 @@
+<div class="m-bb g-borders">
+      <input id="fund_code" type="hidden" value="${fund_code!}"/>
+      <input id="fund_type" type="hidden" value="${fund_type!}">
+      <input id="startDate" type="hidden"/>
+      <ul class="m-tagtitle" m-switch-tab="bb">
+        <li class="m-on" id="m"><a onclick="fundnavsearch('m')">近1月</a></li>
+        <li class="m-on" id="now"><a onclick="fundnavsearch('now')">今年来</a></li>
+        <li class="m-on" id="y"><a onclick="fundnavsearch('y')">近1年</a></li>
+        <li class="m-on" id="old"><a onclick="fundnavsearch('old')">成立来</a></li>
+      </ul>
+      <div class="tu-dates">
+        <p>开始日期
+          <input id="q_starttime" class="date" type="text" value="" onclick="WdatePicker({dateFmt:&quot;yyyy-MM-dd&quot;})" readonly="readonly"/>
+        </p>
+        <p>结束日期
+          <input id="q_endtime" class="date" type="text" value=""  onclick="WdatePicker({dateFmt:&quot;yyyy-MM-dd&quot;})" readonly="readonly"/>
+        </p>
+        <p><a href="#" class="g-btn-2" onclick="fundnavsearch('old')">确定</a></p>
+      </div>
+      <div class="m-tagcons" m-switch-con="bb">
+       <div class="tagcon">
+            <div id="container_nav" ></div>
+        </div>
+    </div>
+</div>
+<!-- 曲线图 -->
+<script> 
+  $(function(){
+	 gethighcharts('old');
+  });
+  //七日年化
+  function incomdepercent(){
+	  var startDate = $("#startDate").val();
+	  fundnavsearch(startDate);
+  }
+  //万份收益
+  function dividendamount(){
+	  var startDate = $("#startDate").val();
+	  fundnavsearch(startDate);
+  }
+  function fundnavsearch(startDate){
+	 var StrStarttime=($("#q_starttime").val()).replace(/-/g,"/");//将日期转换成yyyy/MM/dd格式，便于比较 
+	 var StrEndtime=($("#q_endtime").val()).replace(/-/g,"/");
+	 if(StrStarttime>StrEndtime){
+		alert("开始时间不能大于结束时间！");
+		return false;
+	 }
+	 $("#startDate").val(startDate);
+	 gethighcharts(startDate);
+  }
+  function gethighcharts(startDate){
+		var fundcode = $("#fund_code").val();
+		var starttime = $("#q_starttime").val();
+		var endtime = $("#q_endtime").val();
+		var $ul = $('.m-tagtitle');
+		if(startDate!='custom'){
+			$("#q_starttime").val("");
+			$("#q_endtime").val("");
+		}
+		$.ajax({
+			url :"${ctxPath}/productnav/queryProductChart",
+			type : "POST",
+			dataType:"json",
+			data:{fundcode:fundcode,startDate:startDate,starttime:starttime,endtime:endtime},
+			success : function(data) {
+				var result = eval('(' + data + ')');
+				if(result.code!="0000"){
+					Popbox.error(result.msg);
+				}else{	var categoriesData = [],navData=[],fundtotalnetval=[],tickPositionsdata=[];
+				var data = result.data;
+				if(data.length==0){
+					$("#container_nav").html("<br><br><br><br><br><br><div style='text-align: center'>暂无数据！</div>");
+					$("#q_starttime").val("");
+					$("#q_endtime").val("");
+				}else{
+					var size=data.length;
+					if(size>3){
+						 tickPositionsdata.push(0); 
+					     tickPositionsdata.push(parseInt(parseInt(size)/4)*1);
+					     tickPositionsdata.push(parseInt(parseInt(size)/4)*2);
+					     tickPositionsdata.push(parseInt(parseInt(size)/4)*3);
+					     tickPositionsdata.push(size-1);
+					}else{
+						 tickPositionsdata.push(size-1);
+					}
+					//趋势图显示的时间，插件时间没法设置
+					var type = $("#fund_type").val(); // 4货币;
+					//如果是货币型
+					if(type == '4'){
+						$(data).each(function(i){
+							var date = data[i].c_funddate;
+							categoriesData.push(date);
+							var ndata = data[i].i_dividendamount; //    万份收益
+							var tdata = data[i].i_incomdepercent;//  年化收益率
+							navData.push(parseFloat(ndata));
+							fundtotalnetval.push(parseFloat(tdata));
+						});
+					}else{
+						$(data).each(function(i){
+							var date = data[i].c_funddate;
+							categoriesData.push(date);
+							var ndata = data[i].i_fundvalue; //单位净值    
+							var tdata = data[i].i_fundtotalnetval;//累计净值  
+							navData.push(parseFloat(ndata));
+							fundtotalnetval.push(parseFloat(tdata));
+						});
+					}
+					highcharts(categoriesData,navData,fundtotalnetval,tickPositionsdata,size);
+				}
+			
+			}
+			},
+			error:function(){
+				$("#container_nav").html("<br><br><br><br><br><br><div style='text-align: center'>显示错误！</div>");
+			}
+		});
+	}
+</script>
+    

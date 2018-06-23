@@ -1,0 +1,31 @@
+ <div class="cc-con">
+    <div class="md-list-g">
+      <#productProxy  fund_code="${fund_code!}" ;proxyRecord>
+        <div class="cc-con">
+    	<div class="md-list-g">
+            <div class="wai-box-c">
+                <%if(proxyRecord.~size>0){%>
+                <%
+                   var size = proxyRecord.~size;
+                %>
+                  <%for(var i =0 ; size > i ; i){%>
+                  <ul class="md-xqc-box">
+                    <li><a href="${@proxyRecord.get(i).getString('web')}">${@proxyRecord.get(i).getString("name")}</a></li>
+                    <%if(size>i+1){%>
+                      <li><a href="${@proxyRecord.get(i+1).getString('web')}">${@proxyRecord.get(i+1).getString("name")}</a></li>
+                    <%}%>
+                    <%if(size>i+2){%>
+                      <li><a href="${@proxyRecord.get(i+2).getString('web')}">${@proxyRecord.get(i+2).getString("name")}</a></li>
+                    <%}%>
+                    <%i=i+3;%>
+                  </ul>
+                  <%}%>
+                <%}else{%>
+                  ...暂无更新数据...
+                <%}%>
+            </div>
+        </div>
+        </div>
+      </#productProxy>
+    </div>
+ </div>

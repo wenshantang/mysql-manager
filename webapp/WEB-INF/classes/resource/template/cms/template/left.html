@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<link type="text/css" href="${ctx}/resource-injar/css?t=/plugin/bootstrup/css/bootstrap.css" rel="stylesheet" /> 
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/bootstrup/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/bootstrup/js/bootstrap-treeview.js"></script>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<style>
+a{text-decoration:none;}
+.lbody{ margin:0px;}
+.lbody .left{ border-right:1px solid #b9d4e9;}
+.m-shaxin{line-height:37px;}
+.m-shaxin a{ display:block;color: #fff;
+    font-size: 12px;
+    border-bottom: solid 1px #f0f0f0; text-indent:45px; font-weight:bold;background:url(${ctx}/resource-injar/image?t=title-pic.png) no-repeat #75dce5;}
+
+</style>
+<script type="text/javascript">
+$(function(){  	
+	$.ajax({  
+	   	type: "GET",
+	   	url: "${ctx}/admin/cms/template/tree",
+	   	data: {root:"source"},    
+	   	success: function(data, status){  
+		   if(data.code=='0000'){
+			   initTree(data.topics);
+		   }else{
+			   popStatus(1, "操作失败", 1);
+		   }
+	   	},   
+	   	error: function(err){  
+			errCallback && errCallback(err);
+	   	}
+	});  
+});
+var articleBaseUrl = "${ctx}/admin/cms/template/list/";
+function initTree(data){
+	 $('#treeview').treeview({
+      	color: "#395d7c",
+        expandIcon: 'glyphicon glyphicon-plus',
+        collapseIcon: 'glyphicon glyphicon-minus',
+       	nodeIcon:'glyphicon glyphicon-list-alt',
+      	data: data,
+        onNodeSelected: function(event, node) {
+        	$("#hiddenlink").parent().attr("href",articleBaseUrl+node.href);
+        	$("#hiddenlink").click();
+        },
+        onNodeUnselected: function (event, node) {
+        	$('#treeview').treeview('collapseNode',node);
+        }
+    });
+}
+function flush(){
+	parent.location.reload();
+}
+</script>
+</head>
+<body class="lbody">
+	<div class="left">
+		<div class="fresh">
+	        <div class="m-shaxin"><a href="javascript:;" onclick="flush();">网页栏目<span style="margin-left:8px">刷新</span></a></div>	       
+		</div>
+	</div>
+	<div id="treeview" class="" style="color:red;"></div>
+	<a href='#' target='templateRightFrame' style="visibility: hidden;"><span id="hiddenlink"></span></a>
+</body>
+</html>

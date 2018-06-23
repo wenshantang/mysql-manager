@@ -1,0 +1,25 @@
+			<#fundnav fundcode="${fundcode!}" page="${p!}" pagesize="14" ;fundnav>
+		 <%if(fundnav.code=='0000'){%>
+          <%if(fundnav.data.dataList.~size>0){for(nav in fundnav.data.dataList){%>
+            <tr>
+              <td>${nav.c_funddate}</td>
+              <td>
+              <%if(strutil.contain(nav.i_incomdepercent+"","-")){%
+              <span style="color:#008000;" >${NumberFunction(nav.i_incomdepercent!,"###0.0000")}<%if(nav.i_incomdepercent!=null){%>%<%}%></span>
+              <%}else{%>
+              <span class="c-f25050" >${NumberFunction(nav.i_incomdepercent!,"###0.0000")}<%if(nav.i_incomdepercent!=null){%>%<%}%></span>
+              <%}%>
+              </td>
+              <%if(strutil.contain(nav.i_dividendamount+"","-")){%>
+              <td style="color:#008000;">${NumberFunction(nav.i_dividendamount!,"###0.0000")}</td>
+              <%}else{%>
+              <td>${NumberFunction(nav.i_dividendamount!,"###0.0000")}</td>
+              <%}%>
+            </tr>
+            <%}}else{%> 
+              <tr><td colspan="3" style="text-align: center;">暂无相关信息</td></tr>
+            <%}%>
+         <%}else{%>
+           <tr><td colspan="3" style="text-align: center;">暂无相关信息</td></tr>
+         <%}%>
+            </#fundnav>

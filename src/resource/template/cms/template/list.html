@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>模板列表管理</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+function delTemplate(url,tipMsg){
+	$.layer({
+		shade: [0.5, '#888'],
+		border: [0.2, 0.1, '#000'],
+		area: ['auto','auto'],
+		title:'确定删除吗？',
+		dialog: {
+			msg: tipMsg||'确定要删除选择的记录吗？这将无法恢复。',
+			btns: 2,                    
+			type: 4,
+			btn: ['确定','取消'],
+			yes: function(index){
+				layer.close(index);
+				jQuery.ajax({
+					url : url,
+					type : "POST",
+					success : function(result) {
+						if (result.code == '0000') {
+							parent.parent.location.reload();
+							popStatus(1, '操作成功！！！', 1);
+						}else{
+							popStatus(4, result.msg, 2);
+						}
+					}
+				});
+			}, no: function(){
+				
+			}
+		}
+	});
+}
+</script>
+<body class="mainbody">
+	<div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                        <li>
+                        	<#permission url="/admin/cms/template/insert_dir">
+                        	<a class="add" onclick="small('${ctx}/admin/cms/template/add_dir/${parent_id}')" href="javascript:;"><i></i><span>新建文件夹</span></a>
+							</#permission>
+		                    <#permission url="/admin/cms/template/insert">
+                        	<a class="add" onclick="fullWithBar('${ctx}/admin/cms/template/add/${parent_id}')" href="javascript:;"><i></i><span>新建模板</span></a>
+							</#permission>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+        <thead>
+          <tr>
+            <th width="2%"></th>
+            <th width="10%">文件名</th>
+            <th width="10%">类型</th>
+            <th width="20%">路径</th>
+            <th width="8%">创建人</th>
+            <th width="10%">创建时间</th>
+            <th width="10%">最后修改时间</th>
+            <th width="10%"></th>
+          </tr>
+        </thead>
+        <tbody>
+       	<%for(template in templates){%>
+       		<tr>
+      			<%if(template.dir!=null && template.dir!=''){%>
+      				<td style="padding-right: 5px; text-align: right;"><img src="${ctx}/resource-injar/image?t=/folder.gif" /></td>
+      				<td class="tdleft">${template.dir}</td>
+      			<%}else{%>
+      				<td style="padding-right: 5px; text-align: right;"><img src="${ctx}/resource-injar/image?t=/html.gif" /></td>
+      				<td class="tdleft">${template.name}</td>
+      			<%}%>
+           	<td>
+           	<%if(template.dir!=null && template.dir!=''){%>
+           		文件夹
+           	<%}else{%>
+           		${template.type == '1'?'大模版':'小模块'}
+           	<%}%>
+           	</td>
+           	<td class="tdleft">${template.path}</td>
+           	<td>${template.create_user}</td>
+           	<td>${template.create_time}</td>
+           	<td>${template.last_modify_time!template.create_time}</td>
+           	<td>
+           		<%if(template.dir!=null && template.dir!=''){%>
+           		<#permission url="/admin/cms/template/delete_dir">
+           			<a href="javascript:;" onclick="delTemplate('${ctx}/admin/cms/template/delete_dir/${template.id}','确定要删除该文件夹下所有文件吗？无法恢复')">删除文件夹</a>
+           		</#permission>
+      			<%}else{%>
+      			<#permission url="/admin/cms/template/update">
+           			<a href="javascript:;" onclick="fullWithBar('${ctx}/admin/cms/template/edit/${template.id}')">修改</a>
+           		</#permission>
+           		<#permission url="/admin/cms/template/delete">	
+           			<a href="javascript:;" onclick="delTemplate('${ctx}/admin/cms/template/delete/${template.id}','确定要删除该文件吗？无法恢复')">删除文件</a>
+           		</#permission>
+      			<%}%>
+           	</td>
+         	</tr>
+       	<%}elsefor{%>
+       		<tr><td height="40px;" colspan="100"><span>抱歉！没有记录 。。。</span></td></tr>
+       	<%}%>
+        </tbody>
+      </table>
+</body>
+</html>

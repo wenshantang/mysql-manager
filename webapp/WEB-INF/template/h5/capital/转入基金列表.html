@@ -1,0 +1,12 @@
+ <h6 class="title"><span class="name">转入基金</span></h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" id="target_fund_code_select" class="m-select" name="">
+          <#convertinlistTag  trade_acco="0013" client_id="${session.customer.data.client_id}" fund_code="3Q0108";convertinlist>
+	          <%if(convertinlist.~size>0){ for(convertin in convertinlist){%>
+	          	<option value="${convertin.fund_code}"  a="${convertin.share_type}">${convertin.fund_name}</option> 
+	          <%}}%>
+		 </#convertinlistTag>
+          </select>
+        </div>
+      </div>

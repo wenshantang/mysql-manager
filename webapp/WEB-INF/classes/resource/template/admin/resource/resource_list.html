@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>资源管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+    $(function () {
+    	$(".ltable tr").hover(function() {
+    		$(this).find("span.nav_tool").css("display",""); 
+    	}, function() {
+    		$(this).find("span.nav_tool").css("display","none"); 
+    	});
+    	
+    	$("#subBtn").click(function(){
+    		$("#search_form").submit();
+    	});
+    });
+    var rows = '${pg.pageSize}';
+    var page = '${pg.page}';
+    
+    function success(msg){
+		var open = $("#open").val();
+		var url ='${ctx}/admin/sys/resource?rows='+rows+'&page='+page+'&open='+open;
+		popStatus(1, msg, 1, url, true);
+    }
+    
+    function delRes(url){
+    	$.layer({
+    	    shade: [0.5, '#888'],
+    	    border: [0.2, 0.1, '#000'],
+    	    area: ['auto','auto'],
+        	title:'确定删除吗？',
+    	    dialog: {
+    	        msg: '确定要删除该资源下所有资源吗？这将无法恢复。',
+    	        btns: 2,                    
+    	        type: 4,
+    	        btn: ['确定','取消'],
+    	        yes: function(index){
+    	        	layer.close(index);
+    	        	jQuery.ajax({
+    	        		url : url,
+    	        		type : "GET",
+    	        		success : function(result) {
+    	        			if (result.code == '0000') {
+    	        				var open = $("#open").val();
+    	        				var url ='${ctx}/admin/sys/resource?rows='+rows+'&page='+page+'&open='+open;
+    	        				popStatus(1, '删除成功！！！', 1, url, true);
+    	        			}else{
+    	        				popStatus(4, result.msg, 2);
+    	        			}
+    	        		}
+    	        	});
+    	        }, no: function(){
+    	            
+    	        }
+    	    }
+    	});
+    }
+    
+    function open_close(id){
+    	$("tr[name='"+id+"']").each(
+			function(){
+				$(this).toggle();
+			}
+		);
+    }
+    
+    function setOpen(id){
+    	$("#open").val(id);
+    }
+    
+</script>
+<style type="text/css">
+.nav_tool{
+	padding-left: 10px;
+}
+</style>
+</head>
+
+<body class="mainbody">
+	<div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/sys/resource/insert">
+                        <li><a class="add" onclick="add('${ctx}/admin/sys/resource/add')" href="javascript:;"><i></i><span>新增</span></a>
+	                     </li>
+					</#permission>
+					<#permission url="/admin/sys/resource/insert/quick">
+                        <li><a class="add" onclick="small('${ctx}/admin/sys/resource/add/quick')" href="javascript:;"><i></i><span>快速添加</span></a>
+	                     </li>
+                    </#permission>					
+                    </ul>
+                </div>
+            </div>
+    </div>
+    
+    <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form" action="${ctx}/admin/sys/resource">
+			<dl>
+				<dt>资源名称</dt>
+				<dd>
+					<select name="id" id="id" class="js-example-basic-single" style="width: 250px;">
+                    <option value="">请选择</option>
+				  	<%for(ts in topMenu!){%>
+					<option value="${ts.id}" ${ts.id == res.id?'selected':''}>${ts.name}</option>
+				  	<%}%>
+				   </select>
+				</dd>
+			</dl>
+			</form>
+          </div>
+          <div class="searchButton">
+             <input id="subBtn" class="btn" type="submit" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+		<input id="open" value="${open!}" type="hidden"/>
+        <thead>
+          <tr>
+            <th width="30%">资源名称</th>
+            <th width="30%">URL地址</th>
+            <th width="40%">备注</th>
+          </tr>
+        </thead>
+        <tbody>
+        <%for(res in pg.dataList!){%>
+        	<tr style="cursor: pointer">
+	            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+	              <span class="folder-open" onclick="open_close('${res.id}')"></span>
+	              <span onclick="open_close('${res.id}')">${res.name}</span>
+	              <span class="nav_tool" style="display: none">
+	              		<#permission url="/admin/sys/resource/insert">
+                   		<a title="添加" class="img-btn add operator" onclick="setOpen('${res.id}');add('${ctx}/admin/sys/resource/add/${res.id}')">添加</a>
+                   		</#permission>
+                   		<#permission url="/admin/sys/resource/update">
+                    	<a title="编辑" class="img-btn edit operator" onclick="edit('${ctx}/admin/sys/resource/edit/${res.id}')">编辑</a>
+                    	</#permission>
+                    	<#permission url="/admin/sys/resource/delete">
+                       	<a title="删除" class="img-btn del operator" onclick="delRes('${ctx}/admin/sys/resource/delete/${res.id}');">删除</a>
+                       	</#permission>
+	              </span>
+	            </td>
+	            <td class="tdleft" onclick="open_close('${res.id}')">
+	              ${res.url}
+	            </td>
+            	<td class="tdleft" onclick="open_close('${res.id}')">
+	              ${res.memo}
+	            </td>
+          	</tr>
+          	<%for(son in res.sons!){%>
+          	<tr name="${res.id}" ${res.id ==open! ?'':'style="display:none"'}>
+            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+              <span style="display:inline-block;width:48px;"></span><span class="folder-line"></span><span class="folder-open"></span>
+              ${son.name}
+              <span class="nav_tool level_one" style="display: none">
+              		<#permission url="/admin/sys/resource/update">
+	              	<a title="编辑" class="img-btn edit operator" onclick="setOpen('${res.id}');edit('${ctx}/admin/sys/resource/edit/${son.id}')">编辑</a>
+	              	</#permission>
+	              	<#permission url="/admin/sys/resource/delete">
+			        <a title="删除" class="img-btn del operator" onclick="setOpen('${res.id}');delRes('${ctx}/admin/sys/resource/delete/${son.id}');">删除</a>
+			        </#permission>
+	          </span>
+            </td>
+            <td class="tdleft">
+ 				${son.url}
+             </td>
+            <td class="tdleft">
+            	${son.memo}
+            </td>
+          	</tr>
+          	<%}%>
+         <%}%>
+        </tbody>
+      </table>
+      <div class="pagelist">
+      <% var href = {%>/admin/sys/resource?rows=10<%};%>
+      <%include("resource/template/common/page.html",{uri:href,pageRecord:pg}){}%>
+      </div>
+</body>
+</html>

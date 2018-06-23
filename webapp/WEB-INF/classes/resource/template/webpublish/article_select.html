@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>选择文章</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+				<input id="id_{{row.id}}" type="radio" name="_ckid" value="{{row.id}}" {{if '${article.id}' == row.id }} checked {{/if}} onclick="selectarticle('{{row.id}}','{{row.topic_id}}','{{row.title}}');"/>
+            </td>
+            <td>{{row.topic_id}}</td>   
+			<td>{{row.title}}</td>       
+            <td>{{row.publish_time}}</td>
+         </tr>
+	{{/each}}
+</script>
+
+<script>
+
+	function selectarticle(articleid,topicid,articletitle){
+		//var paramkey = "${paramkey}";
+		$("#${paramkey}",window.parent.document).val(articleid);
+		$("#${paramkey}_show",window.parent.document).val(articletitle);
+		var index = parent.layer.getFrameIndex(window.name); //获取当前窗体索引
+		parent.layer.close(index); //执行关闭
+	}
+
+</script>
+<body class="mainbody">
+ <div class="toolbar-wrap">
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+        		<dl>
+				<dt>文章栏目：</dt>
+				<dd>
+					<select  id="topic_id" name="topic_id" class="js-example-basic-single" style="width: 100px;">
+   		      			<option value="">请选择</option>
+						<%for(list in topics!){%>
+						<option value="${list.id}"  ${article.topic_id == list.id ?'selected':''} >${list.menu_name}</option>
+						<%}%>
+   		      	    </select>
+				</dd>
+				</dl>	
+				<dl>
+					<dt>文章标题：</dt>
+					<dd>
+	   		      	    <input class="input middle" name="title" type="text" value="${article.title}" style="width:250px;" id="title"/> 
+					</dd>
+				</dl>
+			</form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/webpublish/baseconfig/selectArticleList">
+            <tr>
+                <th>选择</th>
+                <th>文章栏目</th>
+                <th sort="title">文章标题</th>
+                <th sort="publish">发布时间</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

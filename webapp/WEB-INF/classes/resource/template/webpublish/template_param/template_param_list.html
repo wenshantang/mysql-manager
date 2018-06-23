@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>页面参数列表</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.template_name}}</td>
+            <td>{{row.display_name}}</td>
+			<td>{{row.param_type}}</td>
+			<td>{{row.param_key}}</td>
+			<td>{{row.param_value}}</td>
+			<td>{{row.param_link}}</td>
+            <td>
+                <a href="javascript:;" class="img-btn edit operator" onclick="big('${ctx}/admin/webpublish/template_param/edit/{{row.id}}')">修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+  <div class="toolbar-wrap">
+ 		<div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/webpublish/template_param/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/webpublish/template_param/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/webpublish/template_param/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/webpublish/template_param/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                    </ul>
+                </div>
+          </div>
+          <div class="searchbar">
+          	<div class="searchForm">
+          		<form id="search_form">
+					<dl>
+						<dt>模板名称：</dt>
+						<dd>
+							<select  id="template_name" name="template_name" class="js-example-basic-single" style="width: 150px;">
+		   		      			<option value="">请选择</option>
+		   		      			<option value="base">基本信息</option>
+								<%for(list in flist!){%>
+									<option value="${list.template_name}">${list.show_name}</option>
+									<%for(son in list.sons!){%>
+									<option value="${son.template_name}" >&nbsp;&nbsp;${son.show_name}</option>
+									<%}%>
+							  	<%}%>
+		   		      	    </select>
+						</dd>
+					</dl>
+					
+					<dl>
+						<dt>参数类型：</dt>
+						<dd>
+							<select  id="param_type" name="param_type" class="js-example-basic-single" style="width: 150px;">
+		   		      			<option value="">请选择</option>
+								<option value="label">label</option>
+								<option value="textarea">textarea</option>
+								<option value="image">image</option>
+								<option value="article">article</option>
+								<option value="bean">bean</option>
+		   		      	    </select>
+						</dd>
+					</dl>	
+				</form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+     </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/webpublish/template_param/json">
+            <tr>
+                <th width="5%">选择</th>
+                <th width="10%" sort="template_name">模板名称</th>
+                <th width="10%">显示名字</th>
+                <th width="5%">参数类型</th>
+                <th width="10%">参数名</th>
+                <th width="35%">参数值</th>
+                <th width="20%">链接</th>       
+                <th width="5%">操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

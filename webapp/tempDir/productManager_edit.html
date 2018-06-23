@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<%include("resource/template/common/resource.html"){}%>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+</head>
+<script type="text/javascript">
+var CTX = '${ctx}';
+
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+
+KindEditor.ready(function(K) {
+	var editor = K.editor({
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/file/upload',
+	});
+	
+	K('#select_bigpicurl_image').click(function() {
+		editor.loadPlugin('upimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					K('#photo').val(url);
+					if (K('#bigpicurl_image')) {
+						if(url.startWith("http")){
+							 K('#bigpicurl_image').attr('src', url);
+						}else{
+							 K('#bigpicurl_image').attr('src', CTX+url);
+						}
+						 K('#bigpicurl_image').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	
+	K('#select_smallpicurl_image').click(function() {
+		editor.loadPlugin('upimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					K('#BU_photo').val(url);
+					if (K('#smallpicurl_image')) {
+						 if(url.startWith("http")){
+							 K('#smallpicurl_image').attr('src', url);
+						 }else{
+							 K('#smallpicurl_image').attr('src', CTX+url);
+						 }
+						 K('#smallpicurl_image').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+});
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">更新基金经理</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>		
+
+		<form id="data_form">
+		
+		<div class="tab-content">
+		<input type="hidden" name="id" id="id" value="${ap.id}" />
+		
+		<input type="hidden" name="isdelete" id="isdelete" value="${ap.isdelete}" />
+			 <dl>
+				<dt>人员名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" value="${ap.name}" maxlength="10" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>人员职务</dt>
+				<dd>
+                 <select  style="width: 300px" id="position" name="position" class="js-example-basic-single" >
+                 	<option class="position" value="" >请选择</option>
+   		      	   <%for(list in fund_gm_manager_job!){%>
+					<option class="position" value="${list.name}" ${list.name == ap.position ?'selected':''}>${list.value}</option>
+				   <%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="position_tip"/><span id="Validform_checktip"></span>	 
+				</dd>
+			</dl> 		
+			<dl>
+				<dt>个人简介</dt>
+				<dd>
+					<textarea name="synosis" rows="3" cols="20" id="synosis"  class="input " >${ap.synosis}</textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>投资理念</dt>
+				<dd>
+					<textarea name="investIdea" rows="3" cols="20" id="investIdea"  class="input" >${ap.investIdea}</textarea>
+					
+				</dd>
+			</dl>
+			<dl>
+				<dt>照片</dt>
+					<dd>
+						<img id="bigpicurl_image" src="${ctx}${ap.photo}" style="max-height:100px;" />
+						 <input id="photo" type="hidden" name="photo" value="${ap.photo}"/>
+	                        <span class="help-inline"><a id="select_bigpicurl_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="big_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			<dl>
+				<dt>事业部照片</dt>
+					<dd>
+						<img id="smallpicurl_image" src="${ctx}${ap.BU_photo}" style="max-height:100px;" />
+						 <input id="BU_photo" type="hidden" name="BU_photo" value="${ap.BU_photo}"/>
+	                        <span class="help-inline"><a id="select_smallpicurl_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="big_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			
+			<!-- <dl>
+				<dt>照片</dt>
+				<dd>
+					<img id="photo" src="${ap.photo}" style="max-height:100px;display: none" />
+					<input name="photo" type="text" id="photo" class="input normal" value="${ap.photo}" />
+					<span id="Validform_checktip"></span>
+					<div id="upload-img2" class="upload-box upload-img"  style="margin-left: 30px;" ></div>
+				</dd>
+			</dl>
+>
+			<dl>
+			    <dt>事业部照片</dt>
+				<dd>
+					<img id="BU_photo" src="${ap.BU_photo}" style="max-height:100px;display: none" />
+					<input name="BU_photo" type="text" id="BU_photo" class="input normal" value="${ap.BU_photo}" />
+					<span id="Validform_checktip"></span>
+					<div id="upload-img" class="upload-box upload-img"  style="margin-left: 30px;" ></div>
+				</dd>
+			</dl> -->
+					
+			<dl>
+				<dt>性别</dt>
+				<dd>
+                 <select  style="width: 300px" id="sex" name="sex"  class="js-example-basic-single" >
+   		      	    <option class="sex" value="" >请选择</option>
+   		      	    <option class="sex" value="1"  ${'1'== ap.sex ?'selected':''}>男</option>
+   		      	    <option class="sex" value="0"  ${'0' == ap.sex ?'selected':''}>女</option>
+   		      	  </select>
+   		      	  <input type="hidden" id="sex_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+ 			<dl>
+				<dt>介绍页面地址</dt>
+				<dd>
+					<input name="url" type="text" id="url" name="url" value="${ap.url}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>索引</dt>
+				<dd>
+					<input name="i_index" type="text" id="i_index" name="i_index" value="${ap.i_index}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>人员代码</dt>
+				<dd>
+					<input name="code" type="text" id="code" name="code" value="${ap.code}" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/product/manager/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/product/manager/update')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

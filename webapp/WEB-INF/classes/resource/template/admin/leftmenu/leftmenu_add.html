@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增菜单</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+function delNode(id){
+	var text = $("#"+id).remove();
+	text.appendTo("other");
+}
+
+function typeChange(type){
+	if(type == 1){
+		$("#res").hide();
+	}else{
+		$("#res").show();
+	}
+}
+
+
+function ajaxInsert(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				parent.success('新增成功！！！');
+				Public.closeDialog();
+			}else if (result.errMsg) {
+				$("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+
+
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">菜单基本信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>上级菜单</dt>
+				<dd>
+					<div class="rule-single-select">
+			          	<select disabled="disabled">
+			          	<option value="${menu.id!'888888888888888888'}">${menu.name!'无父级菜单'}</option>
+						</select>
+				    </div>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>排序</dt>
+				<dd>
+					<input type="hidden" name="parentId" value="${pid}"/>
+					<input type="hidden" name="level" value="${level}"/>
+					<input type="text" style="text-align: center" class="input small" id="idx" name="idx" />
+					<span id="Validform_checktip">*数字，越小越靠前</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>菜单名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<%if(level =='1'){%>
+			<dl>
+				<dt>菜单类型</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="type" type="radio" value="1" onclick="typeChange('1')" checked/><label for="">有子菜单</label>
+			      		<input name="type" type="radio" value="2" onclick="typeChange('2')"/><label for="">iframe菜单</label>
+				    </div>
+				</dd>
+			</dl>
+			<%}%>
+			<div id="res" ${level != '3' ?'style="display: none"':''}>
+			<dl>
+				<dt>导航资源</dt>
+				<dd>
+		          	<select name="resourceId" id="resourceId" class="js-example-basic-single" style="width: 80%">
+		          	<option value="">--请选择--</option>
+					  <%for(res in resources){%>
+			          	<%if(res.sons == null){%>
+			          		<option value="${res.id}">${res.name}(${res.url})</option>
+			          	<%}else{%>
+			          	<%for(son in res.sons){%>
+			          		<option value="${son.id}">
+			          			<%if(sonLP.index == 1){%>
+			          				${res.name}-->
+			          			<%}else{%>
+			          				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			          			<%}%>
+			          			${son.name}(${son.url})
+			          		</option>
+			          	<%}%>
+			          	<%}%>
+					  <%}%>
+					</select>
+				    <input type="hidden" id="rssource_id"/>
+				    <span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>菜单URL</dt>
+				<dd>
+					<input name="url" type="text" id="url" class="input" style="width: 400px;"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			</div>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/sys/leftmenu/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="ajaxInsert('${ctx}/admin/sys/leftmenu/insert')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

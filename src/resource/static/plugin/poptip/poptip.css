@@ -1,0 +1,66 @@
+/*弹窗函数样式*/
+.pop {
+	position: fixed;
+	left: 200px;
+	top: 400px;
+	width: auto;
+	height: 38px;
+	line-height: 38px;
+	background: #fff;
+	border: solid 4px #e5e5e5;
+	padding: 5px;
+	z-index: 9999
+}
+
+.pop_base {
+	width: 38px;
+	height: 38px;
+	float: left;
+}
+
+.pop_true {
+	background: url(${ctx}/resource-injar/image?t=/poptip/ico.png) no-repeat left top;
+}
+
+.pop_tip {
+	background: url(${ctx}/resource-injar/image?t=/poptip/ico.png) no-repeat left bottom;
+}
+
+.pop_loadding {
+	background: url(${ctx}/resource-injar/image?t=/poptip/loading.gif) no-repeat center;
+}
+
+.pop_fail {
+	background: url(${ctx}/resource-injar/image?t=/poptip/ico.png) no-repeat left -38px;
+}
+
+.pop_info {
+	padding: 0 6px 0 6px;
+	text-align: left;
+	font-size: 14px;
+	color: #333;
+	font-family: "微软雅黑";
+}
+/*遮照*/
+.pop_remove {
+	width: 100%;
+	height: 100%;
+	background: #000;
+	opacity: 0.3;
+	filter: alpha(opacity = 30);
+	z-index: 900;
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+#loading {
+	position: absolute;
+	background: #000000 none repeat scroll 0 0;
+	width: 159px;
+	color: #999;
+	font-size: 16px;
+	height: 40px;
+	font-weight: 300;
+	padding-top: 14px;
+}

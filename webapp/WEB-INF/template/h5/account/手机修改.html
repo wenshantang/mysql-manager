@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>手机号变更</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">手机号变更</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <ul class="g-list-li">
+    <li><a  onclick="editablemobile()" ><span class="name">原手机号可以接收短信</span></a></li>
+    <li><a  onclick="editunablemobile()"><span class="name">原手机号不能接收短信</span></a></li>
+  </ul>
+</div>
+</body>
+<script type="text/javascript">
+function editablemobile(){
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var real_name_flag="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+	if(real_name_flag=='1'){
+		window.location.href="${ctxPath}/h5/account/phoneable";
+	}else{
+		var invest_risk_tolerance="${session.customer.data.invest_risk_tolerance!}";//风险评测
+		if(invest_risk_tolerance==null||invest_risk_tolerance==""){
+			layer.open({
+			    content: "您还未风险评测,点击确认去设置！",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk";
+			    }, no: function(){
+			    }
+			});
+		}else{
+			window.location.href="${ctxPath}/h5/account/phoneable";
+		}
+	}
+}
+function editunablemobile(){
+	var id_kind_gb="${session.customer.data.id_kind_gb!}";//证件类型
+	var id_no="${session.customer.data.id_no!}";//证件号码
+	var real_name_flag="${session.customer.data.real_name_flag!}";//是否实名认证0：已实名认证
+	if(real_name_flag=='1'){
+		layer.open({
+		    content: "您还未实名,点击确认去设置！",
+		    btn: ['确认', '取消'],
+		    yes: function(){
+		    	window.location.href="${ctxPath}/h5/account/addcard";
+		    }, no: function(){
+		    }
+		});
+	}else{
+		var invest_risk_tolerance="${session.customer.data.invest_risk_tolerance!}";//风险评测
+		if(invest_risk_tolerance==null||invest_risk_tolerance==""){
+			layer.open({
+			    content: "您还未风险评测,点击确认去设置！",
+			    btn: ['确认', '取消'],
+			    yes: function(){
+			    	window.location.href="${ctxPath}/h5/account/risk";
+			    }, no: function(){
+			    }
+			});
+		}else{
+			window.location.href="${ctxPath}/h5/account/phoneunable";
+		}	
+	}
+}
+</script>
+</html>

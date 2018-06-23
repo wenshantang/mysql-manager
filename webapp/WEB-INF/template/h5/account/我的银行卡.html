@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-我的银行卡</title>
+<%include("/h5/common/assets.html"){}%> 
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">我的银行卡</span></h1>
+  </div>
+</header>
+<#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+<div class="main wrap nofooter">
+  <div class="tt-topBox">
+       <%for(bank in mybanks){%>
+       <%if(bankLP.index<=1){%>
+       		<%if(bank.isdefault!="1"){%>
+			     <div class="g-box4">
+			      <p class="icon"><img src="${ctxPath}/portal/h5/images/banks/${bank.bank_no}.png"></p>
+			      <p class="txt"><span class="name">${strutil.subStringTo(bank.bank_name,0,4)}<b>****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</b></span><span class="info">单笔限额${bank.limit_per_payment}${bank.unit}，当日限额${bank.limit_per_day}${bank.unit}，当月限额${bank.limit_per_month}${bank.unit}  </span></p>
+			      <p class="type"><img src="${ctxPath}/portal/h5/images/hh_03.png"></p>
+			      </div>	
+		      <%}else{%>
+			      <div class="g-box4">
+			      <p class="icon"><img src="${ctxPath}/portal/h5/images/banks/${bank.bank_no}.png"></p>
+			      <p class="txt"><span class="name">${strutil.subStringTo(bank.bank_name,0,4)}<b>****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</b></span><span class="info">单笔限额${bank.limit_per_payment}${bank.unit}，当日限额${bank.limit_per_day}${bank.unit}，当月限额${bank.limit_per_month}${bank.unit}  </span></p>
+			      <p class="type"><img src="${ctxPath}/portal/h5/images/hh_03.png"></p>
+			      <input type="hidden" value="${bank.bank_account}" id="bankaccount_${bank.trade_acco}">
+			      <input type="hidden" value="${bank.bank_name}" id="bankname_${bank.trade_acco}">
+			      <input type="hidden" value="${bank.bank_no}" id="bankno_${bank.trade_acco}">
+			      <a class="btn" href="javascript:void(0);" onclick="setbank('${bank.trade_acco}')" >设为默认</a> 
+			      </div>
+		      <%}%>
+		<%}%>
+         <%}%> 
+  </div> 
+   <%if(mybanks.~size>=2){%>
+  <div class="g-box4-list">
+       <%for(bank in mybanks){%>
+       <%if(bankLP.index>=2){%>
+		     <div class="g-box4">
+		      <p class="icon"><img src="${ctxPath}/portal/h5/images/banks/${bank.bank_no}.png"></p>
+		      <p class="txt"><span class="name">${strutil.subStringTo(bank.bank_name,0,4)}<b>****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</b></span><span class="info">单笔限额${bank.limit_per_payment}${bank.unit}，当日限额${bank.limit_per_day}${bank.unit}，当月限额${bank.limit_per_month}${bank.unit}  </span></p>
+		      <p class="type"><img src="${ctxPath}/portal/h5/images/hh_03.png"></p>
+		      <input type="hidden" value="${bank.bank_account}" id="bankaccount_${bank.trade_acco}">
+		      <input type="hidden" value="${bank.bank_name}" id="bankname_${bank.trade_acco}">
+		      <input type="hidden" value="${bank.bank_no}" id="bankno_${bank.trade_acco}">
+		      <a class="btn" href="javascript:void(0);" onclick="setbank('${bank.trade_acco}')" >设为默认</a> 
+		      </div>
+		      <%}%>	
+         <%}%>
+  
+  </div>
+  <%}%>
+     </#mybanks>
+     <#token/>
+  <a href="${ctxPath}/h5/account/bindbank" class="g-c-btn">添加银行卡</a> </div>
+<script type="text/javascript">
+	function setbank(trade_acco){
+		var bankaccount=$("#bankaccount_"+trade_acco).val();
+		//var customerid=$("#bankaccount_"+trade_acco).val();
+		var customerid="${session.customer.data.mobile_tel}";
+		var bankname=$("#bankname_"+trade_acco).val();
+		var bankno=$("#bankno_"+trade_acco).val();
+		
+		$.ajax({
+			type : "post",
+			data : { 
+				"bankaccount" : bankaccount,
+				"customerid":customerid,
+				"bankname":bankname,
+				"bankno":bankno,
+				"trade_acco":trade_acco
+			},
+			url : "${ctxPath}/user/setbank",
+			success : function(result) {
+				if (result.code == "0000") {
+					window.location.href="${ctxPath}/h5/account/mybanks";
+				} else {
+					alert(result.msg);
+				}
+			}
+		}); 
+	}
+</script>
+</body>
+</html>

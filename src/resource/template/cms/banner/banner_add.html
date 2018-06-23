@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增BANNER</title>
+<%include("resource/template/common/resource.html"){}%>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+</head>
+<script type="text/javascript">
+
+$(function(){
+	$("#title_color").colorPicker();
+});
+
+
+var CTX = '${ctx}';
+String.prototype.startWith=function(s){
+	if(s==null||s==""||this.length==0||s.length>this.length)
+		return false;
+	if(this.substr(0,s.length)==s)
+		return true;
+	else
+		return false;
+	return true;
+}
+KindEditor.ready(function(K) {
+	var editor = K.editor({
+		allowFileManager : true,
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list'
+	});
+
+	K('#select_big_image').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					if (K('#image_show_big')) {
+						if(url.startWith("http://")||url.startWith("https://")){
+							 K('#image_show_big').attr('src', url);
+							 K('#big_picurl').val(url);
+						}else{
+							 K('#image_show_big').attr('src', CTX+url);
+							 K('#big_picurl').val(CTX+url);
+						}
+						 K('#image_show_big').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+	K('#select_small_image').click(function() {
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+					if (K('#image_show_small')) {
+						if(url.startWith("http")){
+							 K('#image_show_small').attr('src', url);
+							 K('#small_picurl').val(url);
+						}else{
+							 K('#image_show_small').attr('src', CTX+url);
+							 K('#small_picurl').val(CTX+url);
+						}
+						 K('#image_show_small').show();
+					}
+					editor.hideDialog();
+				}
+			});
+		});
+	});
+});
+
+function changeLoc(id){
+	$(".click").hide();
+	$("#click-"+id).show();
+}
+
+function setArticle(name,url){
+	$("#article").html(name+"&nbsp;&nbsp;&nbsp;&nbsp;");
+	$("#href_url").val(url);
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">BANNER信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			
+			<dl>
+				<dt>是否启用</dt>
+				<dd>
+					<div class="rule-single-checkbox">
+						<input id="status" type="checkbox" name="status" value="1" checked="checked" />
+					</div>
+					<span id="Validform_checktip">*不启用则无法显示</span>
+				</dd>
+			</dl>
+		
+			<dl>
+				<dt>BANNER分类</dt>
+				<dd>
+				<%if(types!=null){%>
+				<div class="rule-single-select">
+			          	<select onchange="javascript:document.getElementById('type').value=(this.value);">
+							<%for(type in types){%>
+								<option value="${type}">${type}</option>
+							<%}%>
+						</select>
+				</div>
+				<%}%>
+				    <input name="type" type="text" id="type" value="" class="input normal" style="width:150px;"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>索引</dt>
+				<dd>
+					<input name="idx" type="text" id="idx" class="input normal" style="width:60px;"/>
+					<span id="Validform_checktip">*数字、越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>轮播时间(秒)</dt>
+				<dd>
+					<input name="stop_time" type="text" id="stop_time" class="input normal" style="width:60px;"/>
+					<span id="Validform_checktip">*数字</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>BANNER名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>BANNER标题</dt>
+				<dd>
+					<textarea name="title" rows="3" cols="20" id="title" class="input" style="width: 500px;height: 50px;"></textarea>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			
+			<dl>
+				<dt>标题颜色</dt>
+				<dd>
+					<input name="title_color" type="text" id="title_color" class="input" style="width: 167px"/>
+					<div class="rule-multi-porp" style="float: left;">
+						<span id="cblActionType">
+							<input id="bold" type="checkbox" name="bold" value="1" />
+							<label for="bold">加粗</label>
+						</span>
+					</div>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			
+			
+			<dl>
+				<dt>点击跳转</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="click_type" type="radio" value="1" onclick="changeLoc('1')"/><label for="">栏目</label>
+			      		<input name="click_type" type="radio" value="2" onclick="changeLoc('2')"/><label for="">文章</label>
+			      		<input name="click_type" type="radio" value="3" onclick="changeLoc('3')" checked="checked" /><label for="">指定URL</label>
+				    </div>
+				</dd>
+			</dl>
+			
+			<dl class="click" id="click-1" style="display: none">
+				<dt>跳转栏目</dt>
+				<dd>
+					<select class="js-example-basic-single" style="width: 66%" name="topic_id" onchange="javascript:document.getElementById('href_url').value=(this.value);">
+				  	  <option value="">请选择栏目</option>
+					  <%for(topic in topics!){%>
+					  	<option value="${topic.location}">${topic.name}-->${topic.location}</option>
+					  <%}%>
+					</select>
+				</dd>
+			</dl>
+			
+			<dl class="click" id="click-2" style="display: none">
+				<dt>跳转文章</dt>
+				<dd>
+					<span id="article"></span><span class="help-inline"><a class="icon-btn add" href="javascript:;" onclick="add('${ctx}/admin/cms/banner/article')"><i></i><span>选择文章</span></a></span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>跳转URL</dt>
+				<dd>
+					<textarea name="href_url" rows="3" cols="20" id="href_url" class="input" style="width: 500px;height: 30px;"></textarea>
+					<span id="Validform_checktip"></span>
+				</dd>			
+			</dl>
+			
+			<dl>
+				<dt>打开方式</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="open_type" type="radio" value="" checked/><label for="">当前窗口</label>
+			      		<input name="open_type" type="radio" value="_blank"/><label for="">新窗口</label>
+				    </div>
+					<span id="Validform_checktip"></span>
+				</dd>			
+			</dl>
+			
+			<dl>
+				<dt>轮播大图片</dt>
+					<dd>
+						<img id="image_show_big" src="" style="max-height:100px;display: none" />
+						 <input id="big_picurl" type="hidden" name="big_picurl" />
+	                     <span class="help-inline"><a id="select_big_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="big_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			
+			<dl>
+				<dt>轮播小图片</dt>
+					<dd>
+						<img id="image_show_small" src="" style="max-height:100px;display: none" />
+						 <input id="small_picurl" type="hidden" name="small_picurl" />
+	                        <span class="help-inline"><a id="select_small_image" class="icon-btn add" href="javascript:;"><i></i><span>选择图片</span></a></span>
+						<input type="hidden" id="small_picurl_tip"/><span id="Validform_checktip"></span>
+					</dd>
+			</dl>
+			
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cms/banner/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/cms/banner/insert')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

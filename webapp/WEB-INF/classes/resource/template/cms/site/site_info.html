@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>CMS站点设置</title>
+<%include("resource/template/common/resource.html"){}%>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+</head>
+<script type="text/javascript">
+
+
+$(function(){
+	$(".js-example-basic-multiple").select2();
+});
+
+KindEditor.ready(function(K) {
+	var editor = K.create('textarea[name="email_content"]', {
+		allowFileManager : true,
+		allowFlashUpload : true,
+		allowMediaUpload : true,
+		allowFileUpload : true,
+		uploadJson : '${ctx}/kindeditor/upload',
+		fileManagerJson : '${ctx}/kindeditor/list',
+		afterBlur: function(){this.sync();}
+	});
+	
+	
+	var editor = K.editor({
+		themeType: "simple",
+		allowFileManager : true,
+		uploadJson : '${ctx}/kindeditor/upload',
+		fileManagerJson : '${ctx}/kindeditor/list'
+	});
+});
+function submit_form(form_id,url){
+	jQuery.ajax({
+		url  : url,
+		data : $('#'+form_id).serialize(),
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				var url ='${ctx}/admin/cms/siteconfig?target='+result.data;
+				popStatus(1, result.msg, 1, url, true);
+			}else if (result.errMsg) {
+				$('#'+form_id).children("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+function showOrHidden(obj,id){
+	if(obj.checked){
+		$("#"+id).css("display","block");
+	}else{
+		$("#"+id).css("display","none");
+	}
+}
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+					<%if(target == 'basic'){%>
+						<li><a href="javascript:;" onclick="tabs(this);"${target == 'basic'?'class="selected"':''}>基本信息</a></li>
+					<%}%>
+					<%if(target == 'email'){%>
+				        <li><a href="javascript:;" onclick="tabs(this);"${target == 'email'?'class="selected"':''}>邮件设置</a></li>
+					<%}%>
+					<%if(target == 'sms'){%>
+				        <li><a href="javascript:;" onclick="tabs(this);"${target == 'sms'?'class="selected"':''}>短信设置</a></li>
+					<%}%>
+					<%if(target == 'login'){%>
+				        <li><a href="javascript:;" onclick="tabs(this);"${target == 'login'?'class="selected"':''}>登录设置</a></li>
+					<%}%>
+					<%if(target == 'register'){%>
+				        <li><a href="javascript:;" onclick="tabs(this);"${target == 'register'?'class="selected"':''}>注册设置</a></li>
+					<%}%>
+					<%if(target == 'upload'){%>
+				        <li><a href="javascript:;" onclick="tabs(this);"${target == 'upload'?'class="selected"':''}>文件上传设置</a></li>
+					<%}%>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="basicConfig">
+			<div class="tab-content"${target != 'basic'?'style="display:none"':''}>
+				<dl>
+					<dt>站点名称</dt>
+					<dd>
+						<input name="site_name" type="text" id="site_name" value="${site.basicConfig.site_name!}" class="input normal" />
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>站点简称</dt>
+					<dd>
+						<input name="simple_name" type="text" id="simple_name" value="${site.basicConfig.simple_name!}" class="input normal"/>
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>站点域名</dt>
+					<dd>
+						<input name="site_domain" type="text" id="site_domain" value="${site.basicConfig.site_domain!}" class="input normal"/>
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>访问路径</dt>
+					<dd>
+						<input name="location" type="text" id="location" value="${site.basicConfig.location!}" class="input normal"/>
+						<span id="Validform_checktip">*站点访问路径(多站点用到)</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>访问方式</dt>
+					<dd>
+						<div class="rule-single-select">
+				          	<select name="visit_protocol">
+								<option value="http://" ${site.basicConfig.visit_protocol! == 'http://'?'selected':''}>HTTP</option>
+								<option value="https://"${site.basicConfig.visit_protocol! == 'https://'?'selected':''}>HTTPS</option>
+							</select>
+					    </div>					
+					    <span id="Validform_checktip"></span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>站点标题</dt>
+					<dd>
+						<textarea name="html_meta_title" rows="3" cols="20" id="html_meta_title" class="input" style="width: 600px;height: 30px;">${site.basicConfig.html_meta_title!}</textarea>
+						<span id="Validform_checktip">*meta title</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>站点关键字</dt>
+					<dd>
+						<textarea name="html_meta_keywords" rows="3" cols="20" id="html_meta_keywords" class="input" style="width: 600px;height: 45px;">${site.basicConfig.html_meta_keywords!}</textarea>
+						<span id="Validform_checktip">*meta keywords</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>站点描述</dt>
+					<dd>
+						<textarea name="html_meta_description" rows="3" cols="20" id="html_meta_description" class="input" style="width: 600px;height: 60px;">${site.basicConfig.html_meta_description!}</textarea>
+						<span id="Validform_checktip">*meta description</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt></dt>
+					<dd>
+						<div class="btn-list">
+							<#permission url="/admin/cms/siteconfig/update/basic">
+							<input type="button" name="btnSubmit" value="修改基本设置" id="btnSubmit" class="btn" onclick="submit_form('basicConfig','${ctx}/admin/cms/siteconfig/update/basic')"/> 
+							</#permission>
+						</div>
+					</dd>
+				</dl>
+			</div>
+		</form>
+		
+		<!-- 邮件设置 -->
+		<div class="tab-content" ${target != 'email'?'style="display:none"':''}>
+		<form id="emailConfig">
+		  <dl>
+		    <dt>邮件服务器地址</dt>
+		    <dd>
+		      <input name="smtp_server" type="text" id="smtp_server" value="${site.emailConfig.smtp_server!}" class="input normal"/>
+		      <span id="Validform_checktip">*邮件服务器地址</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>邮件服务器端口</dt>
+		    <dd>
+				<input name="smtp_port" type="text" id="smtp_port" value="${site.emailConfig.smtp_port!}" class="input middle"/>
+		      	<span id="Validform_checktip">*SMTP服务器的端口，大部分服务商都支持25端口</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>发件人</dt>
+		    <dd>
+				<input name="originator" type="text" id="originator" value="${site.emailConfig.originator!}" class="input middle"/>
+		      	<span id="Validform_checktip"></span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>发件人邮箱</dt>
+		    <dd>
+				<input name="email" type="text" id="email" value="${site.emailConfig.email!}" class="input normal"/>
+		      	<span id="Validform_checktip">*发件人邮箱地址</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>发件人邮箱密码</dt>
+		    <dd>
+				<input name="password" type="password" id="password" value="${site.emailConfig.password!}" class="input normal"/>
+		      	<span id="Validform_checktip">*发件人邮箱密码</span>
+		    </dd>
+		  </dl>
+		  
+		  <dl>
+		    <dt>发件人昵称</dt>
+		    <dd>
+				<input name="nick_name" type="text" id="nick_name" value="${site.emailConfig.nick_name!}" class="input normal"/>
+		      <span id="Validform_checktip"></span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>邮件编码</dt>
+		    <dd>
+				<input name="encoding" type="text" id="encoding" value="${site.emailConfig.encoding!'UTF-8'}" class="input normal"/>
+		      <span id="Validform_checktip">*</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>备注</dt>
+		    <dd>
+			  	<textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 600px;height: 100px;">${site.emailConfig.memo!}</textarea>
+		      	<span id="Validform_checktip"></span>
+		    </dd>
+		  </dl>
+		  
+		  <dl>
+			<dt></dt>
+			<dd>
+				<div class="btn-list">
+					<#permission url="/admin/cms/siteconfig/update/email">
+					<input type="button" name="btnSubmit" value="修改邮件设置" id="btnSubmit" class="btn" onclick="submit_form('emailConfig','${ctx}/admin/cms/siteconfig/update/email')"/> 
+					</#permission>
+				</div>
+			</dd>
+		  </dl>
+		  </form>
+	</div>
+		<!-- 短信设置 -->
+		<div class="tab-content" ${target != 'sms'?'style="display:none"':''}>
+		<form id="smsConfig">
+		  <dl>
+		    <dt>短信发送器</dt>
+		    <dd>
+		      	<span id="Validform_checktip">*必须实现cn.aresoft.cms.common.SmsSender接口</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt></dt>
+		    <dd>
+			  	<textarea name="realize_class_name" rows="1" cols="20" id="realize_class_name" class="input" style="width: 600px;height: 50px;">${site.smsConfig.realize_class_name!}</textarea>
+		      	<span id="Validform_checktip">*</span>
+		    </dd>
+		  </dl>
+		  
+		  <dl>
+			<dt></dt>
+			<dd>
+				<div class="btn-list">
+					<#permission url="/admin/cms/siteconfig/update/sms">
+					<input type="button" name="btnSubmit" value="修改短信设置" id="btnSubmit" class="btn" onclick="submit_form('smsConfig','${ctx}/admin/cms/siteconfig/update/sms')"/> 
+					</#permission>
+				</div>
+			</dd>
+		  </dl>
+		  </form>
+	</div>
+	
+	<!-- 登录设置 -->
+		<div class="tab-content" ${target != 'login'?'style="display:none"':''}>
+		  <form id="loginConfig">
+		  <dl>
+		    <dt>显示验证码</dt>
+		    <dd>
+		      <input name="fail_show_authcode" type="text" id="fail_show_authcode" value="${site.loginConfig.fail_show_authcode!}" class="input middle"/>
+		      <span id="Validform_checktip">*达到错误次数后显示验证码(0表示不限制)</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>累计错误时间</dt>
+		    <dd>
+				<input name="fail_time" type="text" id="fail_time" value="${site.loginConfig.fail_time!}" class="input middle"/>
+		      	<span id="Validform_checktip">*登录错误时间 (分钟)。超过时间重新计数</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>失败锁定</dt>
+		    <dd>
+				<input name="fail_lock" type="text" id="fail_lock" value="${site.loginConfig.fail_lock!}" class="input middle"/>
+		      <span id="Validform_checktip">*达到错误次数后锁定(0表示不锁定)</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>锁定时间(分钟)</dt>
+		    <dd>
+				<input name="lock_time" type="text" id="lock_time" value="${site.loginConfig.lock_time!}" class="input middle"/>
+		      <span id="Validform_checktip">*登录失败锁定时间</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>短信提醒？</dt>
+		    <dd>
+				<div class="rule-single-checkbox">
+					<input id="send_sms" type="checkbox" name="send_sms" value="true" ${site.loginConfig.send_sms ?'checked':'' }  onclick="showOrHidden(this,'login_sms_content')"/>
+				    <span id="Validform_checktip">*失败次数过多发送短信提醒客户</span>
+				</div>
+			</dd>
+		  </dl>
+		  <dl id="login_sms_content" ${site.loginConfig.send_sms ?'':'style="display: none"' }>
+		    <dt>短信内容</dt>
+		    <dd>
+			  <textarea name="sms_content" rows="3" cols="20" id="sms_content" class="input" style="width: 600px;height: 100px;">${site.loginConfig.sms_content!}</textarea>
+		      <span id="Validform_checktip">*提醒短信内容</span>
+		    </dd>
+		  </dl>
+		  <dl>
+			<dt></dt>
+			<dd>
+				<div class="btn-list">
+					<#permission url="/admin/cms/siteconfig/update/login">
+					<input type="button" name="btnSubmit" value="修改登录设置" id="btnSubmit" class="btn" onclick="submit_form('loginConfig','${ctx}/admin/cms/siteconfig/update/login')"/> 
+					</#permission>
+				</div>
+			</dd>
+		  </dl>
+		  </form>
+	</div>
+		
+		<!-- 注册设置 -->
+		<div class="tab-content" ${target != 'register'?'style="display:none"':''}>
+		<form id="registerConfig">
+		  <dl>
+		    <dt>开启注册</dt>
+		    <dd>
+		    	<div class="rule-single-checkbox">
+					<input id="allow_reg" type="checkbox" name="allow_reg" value="true" ${site.registerConfig.allow_reg ?'checked=checked':'' }/>
+			      	<span id="Validform_checktip">*关闭后系统无法注册用户</span>
+				</div>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>用户名最小长度</dt>
+		    <dd>
+				<input name="min_username" type="text" id="min_username" value="${site.registerConfig.min_username}" class="input middle"/>
+		      	<span id="Validform_checktip">*0表示不限制</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>用户名最大长度</dt>
+		    <dd>
+				<input name="max_username" type="text" id="max_username" value="${site.registerConfig.max_username}" class="input middle"/>
+		      	<span id="Validform_checktip">*</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>短信验证码？</dt>
+		    <dd>
+		    	<div class="rule-single-checkbox">
+					<input id="send_smscode" type="checkbox" name="send_smscode" value="true" ${site.registerConfig.send_smscode ?'checked=checked':''} onclick="showOrHidden(this,'sms_config')"/>
+			      	<span id="Validform_checktip">*是否发送短信验证码</span>
+				</div>
+		    </dd>
+		  </dl>
+		  <div id="sms_config" ${site.registerConfig.send_smscode ?'':'style="display:none"'}>
+		  <dl>
+		    <dt>验证码格式</dt>
+		    <dd>
+				<div class="rule-multi-radio">
+			      	<input type="radio" id="smscode_format" name="smscode_format" value="1" ${site.registerConfig.smscode_format == 1 ?'checked=checked':'' }/><label for="">数字</label>
+		      		<input type="radio" id="smscode_format" name="smscode_format" value="2" ${site.registerConfig.smscode_format == 2 ?'checked=checked':'' }/><label for="">字母</label>
+		      		<input type="radio" id="smscode_format" name="smscode_format" value="3" ${site.registerConfig.smscode_format == 3 ?'checked=checked':'' }/><label for="">数字+字母</label>
+		      		<span id="Validform_checktip">*</span>
+			    </div>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>短信内容</dt>
+		    <dd>
+			  	<textarea name="sms_content" rows="3" cols="20" id="sms_content" class="input" style="width: 600px;height: 100px;">${site.registerConfig.sms_content}</textarea>
+		      	<span id="Validform_checktip">*支持变量smscode</span>
+		    </dd>
+		  </dl>
+		  </div>
+		  <dl>
+		    <dt>邮件激活？</dt>
+		    <dd>
+		    	<div class="rule-single-checkbox">
+				   	<input id="email_activate" type="checkbox" name="email_activate" value="true" ${site.registerConfig.email_activate ?'checked=checked':'' } onclick="showOrHidden(this,'email_config')"/>
+			      	<span id="Validform_checktip">*是否发送激活邮件</span>
+		      	</div>
+		    </dd>
+		  </dl>
+		  <div id="email_config"${site.registerConfig.email_activate ?'':'style="display:none"'}>
+		  <dl>
+		    <dt>邮箱件主题</dt>
+		    <dd>
+				<textarea name="email_subject" rows="3" cols="20" id="email_subject" class="input" style="width: 600px;height: 40px;">${site.registerConfig.email_subject}</textarea>
+		        <span id="Validform_checktip">*</span>
+		    </dd>
+		  </dl>
+		  <dl>
+		    <dt>邮件内容</dt>
+		    <dd>
+			  	<textarea name="email_content" rows="3" cols="20" id="email_content" class="input" style="width: 800px;height: 500px;">${site.registerConfig.email_content}</textarea>
+		      	<span id="Validform_checktip">*</span>
+		    </dd>
+		  </dl>
+		  </div>
+		  <dl>
+			<dt></dt>
+			<dd>
+				<div class="btn-list">
+				<#permission url="/admin/cms/siteconfig/update/register">
+					<input type="button" name="btnSubmit" value="修改注册设置" id="btnSubmit" class="btn" onclick="submit_form('registerConfig','${ctx}/admin/cms/siteconfig/update/register')"/> 
+				</#permission>
+				</div>
+			</dd>
+		  </dl>
+		  </form>
+	</div>
+	
+	
+	<div class="tab-content"${target != 'upload'?'style="display:none"':''}>
+	<form id="uploadConfig">
+	  <dl>
+	    <dt>允许文件上传</dt>
+	    <dd>
+		  <div class="rule-single-checkbox">
+		  	<input id="allow_upload" type="checkbox" name="allow_upload" value="1" ${site.uploadConfig.allow_upload==1?'checked':''} />
+		  </div>
+	      <span id="Validform_checktip">*是否允许前台上传</span>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件上传目录</dt>
+	    <dd>
+		  <input name="save_dir" type="text" id="save_dir" value="${site.uploadConfig.save_dir}" class="input normal"/>
+	      <span id="Validform_checktip">*文件保存的目录名，自动创建在WebRoot目录下</span>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件保存方式</dt>
+	    <dd>
+	      <div class="rule-single-select">
+	        <select id="save_type" name="save_type">
+	          <option value="1" ${site.uploadConfig.save_type=='1'?'selected':''}>按年月日每天一个目录</option>
+	          <option value="2" ${site.uploadConfig.save_type=='2'?'selected':''}>按年月/日/存入不同目录</option>
+	        </select>
+	      </div>
+	    </dd>
+	  </dl>
+	  <dl>
+	    <dt>文件上传类型</dt>
+		    <dd>
+		    	<span style="color: red">文件后缀(允许上传文件的类型，多个用,分隔，例如'jpg,bmp,jpeg,gif')   大小限制(允许上传的文件最大容量，单位KB,0代表不限制)</span>
+		    </dd>
+	    <dd>
+		  <table width="100%" cellspacing="0" cellpadding="0" border="0" class="border-table">
+	        <thead>
+	          <tr>
+	            <th width="6%">文件类型</th>
+	            <th width="6%">文件代码</th>
+	            <th>文件后缀</th>
+	            <th width="8%">大小限制</th>
+	            <%if(ftp_support){%>
+	            	<th width="40%">同步到FTP服务器</th>
+	            <%}%>
+	          </tr>
+	        </thead>
+	    	<tbody>
+				<tr>
+					<td align="center">图片</td>
+					<td align="center">image</td>
+					<td align="center"><input name="image_suffix" type="text" id="image_suffix" value="${image_suffix}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="image_max" type="text" id="image_max" value="${image_max}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					 <%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="image_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(image_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">音频</td>
+					<td align="center">music</td>
+					<td align="center"><input name="music_suffix" type="text" id="music_suffix" value="${music_suffix}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="music_max" type="text" id="music_max" value="${music_max}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="music_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(music_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">多媒体</td>
+					<td align="center">media</td>
+					<td align="center"><input name="media_suffix" type="text" id="media_suffix" value="${media_suffix}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="media_max" type="text" id="media_max" value="${media_max}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="media_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(media_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+				<tr>
+					<td align="center">文件</td>
+					<td align="center">file</td>
+					<td align="center"><input name="file_suffix" type="text" id="file_suffix" value="${file_suffix}" class="input" style="width: 100%;min-height: 38px;"/></td>
+					<td align="center"><input name="file_max" type="text" id="file_max" value="${file_max}" class="input big" style="width: 100%;min-height: 38px;text-align: center;"/></td>
+					<%if(ftp_support){%>
+					 <td>
+						<select class="js-example-basic-multiple" multiple="multiple" style="width: 100%" name="file_ftp">
+						  <%for(fs in ftpServers!){%>
+						  	<option value="${fs.id}" ${strutil.contain(file_ftp,fs.id) ? "selected":""}>${fs.server_name}</option>
+						  <%}%>
+						</select>
+					</td>
+					 <%}%>
+				</tr>
+			</tbody>       			
+		  </table>
+		  
+	    </dd>
+	  </dl>
+  <dl>
+	<dt></dt>
+	<dd>
+		<div class="btn-list">
+		<#permission url="/admin/cms/siteconfig/update/upload">
+			<input type="button" name="btnSubmit" value="确 认 修 改" id="btnSubmit" class="btn" onclick="submit_form('uploadConfig','${ctx}/admin/cms/siteconfig/update/upload')"/> 
+		</#permission>
+		</div>
+	</dd>
+  </dl>
+  </form>
+</div>
+</body>
+</html>

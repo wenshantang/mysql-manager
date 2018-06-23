@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>基金俱乐部(货币)-基金详情-历史明细展开</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/zepto.js"></script>
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">历史明细</span>    </h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+ <#fundnav fundcode="${fundcode!}" page="1" pagesize="14";fundnav>
+  <div class="m-tableBox no-bottom-border bg-fff">
+    <table class="m-table" width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr>
+          <th scope="col">净值日期</th>
+          <th scope="col">七日年化</th>
+          <th scope="col">万份收益</th>
+        </tr>
+      </thead>
+      <tbody  class="fundnavlist">
+       <%if(fundnav.code=='0000'){%>
+          <%for(nav in fundnav.data.dataList){%>
+            <tr>
+              <td>${nav.c_funddate}</td>
+              <td>
+              <%if(strutil.contain(nav.i_incomdepercent+"","-")){%>
+              <span  style="color:#008000;">${NumberFunction(nav.i_incomdepercent!,"###0.0000")}<%if(nav.i_incomdepercent!=null){%>%<%}%></span>
+              <%}else{%>
+              <span class="c-f25050" >${NumberFunction(nav.i_incomdepercent!,"###0.0000")}<%if(nav.i_incomdepercent!=null){%>%<%}%></span>
+              <%}%>
+              </td>
+              <%if(strutil.contain(nav.i_dividendamount+"","-")){%>
+              <td style="color:#008000;">${NumberFunction(nav.i_dividendamount!,"###0.0000")}</td>
+              <%}else{%>
+              <td>${NumberFunction(nav.i_dividendamount!,"###0.0000")}</td>
+              <%}%>
+            </tr>
+            <%}%>
+         <%}else{%>
+           <tr><td colspan="3" style="text-align: center;">暂无相关信息</td></tr>
+         <%}%>
+      </tbody>
+    </table>
+    <p class="g-upss-btn">上拉查看更多数据</p>
+  </div>
+  <div id="fund_nav_list" style="display: none;">
+ </div> 
+ 
+ <script type="text/javascript">
+ var page=1;//当前页(交易记录查询)
+ var totalPage=${fundnav.data.totalPage!};//总页数（交易记录查询）
+ var pagesize=14;//每页的条数	
+Zepto(function($){ 
+	$(window).scroll(function(){
+		 //滚动条拉到离底10像素内，而且没超过总页数
+		 console.info(($(window).scrollTop() + $(window).height() > $(document).height()-10));
+      if(($(window).scrollTop() + $(window).height() > $(document).height()-10)){
+        	 if(totalPage>page){
+        		page++; 
+        		var url ="${ctxPath}/h5/product/fundnav_coinPage?p="+page+"&fundcode=${fundcode!}";
+        		$("#fund_nav_list").load(url, function(response, status, xhr) {
+        			console.info($("#fund_nav_list").html());
+        			$('.fundnavlist').append($("#fund_nav_list").html());
+        		});
+        	}
+       }
+  });
+});
+</script>
+</#fundnav>
+</div>
+</body>
+</html>

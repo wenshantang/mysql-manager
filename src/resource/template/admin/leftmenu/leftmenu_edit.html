@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑菜单</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+
+function typeChange(type){
+	if(type == 1){
+		$("#res").hide();
+	}else{
+		$("#res").show();
+	}
+}
+
+
+function ajaxUpdate(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				parent.success('修改成功！！！');
+				Public.closeDialog();
+			}else if (result.errMsg) {
+				$("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">菜单基本信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			
+			<dl>
+				<dt>排序</dt>
+				<dd>
+					<input type="hidden" name="id" value="${pid}"/>
+					<%if(level != '1'){%>
+						<input type="hidden" name="parentId" value="${menu.parentId!}"/>
+					<%}%>
+					<input type="hidden" name="level" value="${level}"/>
+					<input type="text" style="text-align: center" class="input small" id="idx" name="idx" value="${menu.idx!menu.idx!'1'}" />
+					<span id="Validform_checktip">*数字，越小越靠前</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>菜单名称</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" value="${menu.name!menu.name!''}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<%if(level == '1'){%>
+				<dl>
+				<dt>菜单类型</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="type" type="radio" value="1" onclick="typeChange('1')" ${menu.type! == '1' ?'checked':''}/><label for="">有子菜单</label>
+			      		<input name="type" type="radio" value="2" onclick="typeChange('2')" ${menu.type! == '2' ?'checked':''}/><label for="">iframe菜单</label>
+				    </div>
+				</dd>
+			</dl>
+			<%}%>
+			<%if(level == '1'||level == '3'){%>
+				<div id="res" ${level == '1' && menu.type! == '2' || level == '3' ?'':'style="display: none"'} >
+				<dl>
+				<dt>导航资源</dt>
+				<dd>
+		          	<select name="resourceId" id="resourceId" class="js-example-basic-single" style="width: 80%">
+		          	<option value="">--请选择--</option>
+					<%for(res in resources){%>
+						<%if(res.sons != null){%>
+				          	<%for(son in res.sons!){%>
+				          		<option value="${son.id}" ${menu.resourceId!menu.resourceId!'' == son.id?'selected':''}>
+				          			<%if(sonLP.index == 1){%>
+				          				${res.name}-->
+				          			<%}else{%>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				          			<%}%>
+				          		${son.name}(${son.url})
+				          	</option>
+				          	<%}%>
+						<%}%>
+					<%}%>
+					</select>
+				    <input type="hidden" id="rssource_id"/>
+				    <span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>菜单URL</dt>
+				<dd>
+					<input name="url" type="text" id="url" class="input" value="${menu.url}" style="width: 400px;"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			</div>
+			<%}%>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/sys/leftmenu/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="ajaxUpdate('${ctx}/admin/sys/leftmenu/update')"/> 
+			</#permission>
+			<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

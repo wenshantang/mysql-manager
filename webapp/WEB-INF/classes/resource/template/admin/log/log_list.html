@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>后台调用日志列表</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	{{row.id}}
+            </td>
+            <td>{{row.user_id}}</td>
+            <td>{{row.login_name}}</td>
+            <td>{{row.log_time}}</td>
+            <td>{{row.req_url}}</td>
+			<td>{{row.rparent_name}}--{{row.rname}}</td>
+            <td>{{row.ip}}</td>
+            <td>
+				<a href="javascript:;" class="img-btn edit operator" onclick="edit('${ctx}/admin/sys/log/detail/{{row.id}}')">详情</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+      <!--   <div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+        
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+			<!-- <dl>
+				<dt>字典项分类</dt>
+				<dd>
+					<select name="type" id="type" class="js-example-basic-single" style="width: 200px;">
+                    <option value="">请选择</option>
+				  	<%for(dict in dictTypes!){%>
+					<option value="${dict}">${dict}</option>
+				  	<%}%>
+				   </select>
+				</dd>
+			</dl> -->
+			<dl>
+				<dt>用户ID</dt>
+				<dd>
+					<input type="text" class="input normal big" id="user_id" name="user_id"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>用户登陆名</dt>
+				<dd>
+					<input type="text" class="input normal big" id="login_name" name="login_name"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>请求地址</dt>
+				<dd>
+					<input type="text" class="input normal big" id="req_url" name="req_url"/>
+				</dd>
+			</dl>							
+			<dl>
+				<dt>调用时间段</dt>
+				<dd>
+					<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input"  id="begin_time" name="begin_time" />
+					~<input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input"  id="end_time" name="end_time" />
+				</dd>
+			</dl>
+			</form>
+          </div>
+          
+          <div class="searchButton">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+          
+		</div>
+          
+        
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/sys/log/json">
+            <tr>
+                <!-- <th width="5%">选择</th> -->
+                <th sort="id" width="10%">流水号</th>
+                <th sort="user_id" width="15%">用户id</th>
+                <th  width="15%">用户登录名</th>
+                <th sort="log_time" width="25%">日志发生时间</th>
+                <th  width="5%">请求地址</th>
+                <th width="5%">请求资源</th>
+                <th width="15%">用户ip</th>
+                <th width="10%">详情</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

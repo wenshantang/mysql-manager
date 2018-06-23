@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>风险评测信息</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+			<td>{{row.cust_id}}</td>  
+            <td>{{row.short_name}}</td>  
+			<td>{{row.totalscore}}</td>
+			<td>{{row.risk_level}}</td>  
+            <td>
+				<a href="javascript:;" onclick='edit("${ctx}/admin/cust/risk/show/{{row.id}}")'>查看明细</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+ <div class="toolbar-wrap">
+ 			<div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/cust/risk/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/cust/risk/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/cust/risk/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/cust/risk/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+          <div class="searchbar">
+          <div class="searchForm">
+          	<form id="search_form">
+				<dl>
+					<dt>客户号：</dt>
+					<dd>
+	   		      	    <input class="input middle" name="cust_id" type="text" style="width:133px;" id="cust_id"/> 
+					</dd>
+				</dl>
+			</form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cust/risk/json">
+            <tr>
+                <th>选择</th>
+                <th sort="cust_id">客户号</th>
+                <th sort="short_name">客户名称</th>
+                <th sort="totalscore">测评分数</th>
+                <th sort="risk_level">评测结果</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

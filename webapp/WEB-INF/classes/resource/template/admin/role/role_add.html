@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增角色</title>
+<%include("resource/template/common/resource.html"){}%>
+<script>
+	function selectSon(id){
+		$("td[name='"+id+"']").each(
+			function(){
+				$(this).find("input").attr('checked', 'checked');
+			}
+		);
+		$("tr[name='"+id+"']").each(
+			function(){
+				$(this).show();
+			}
+		);
+	}
+	 function open_close(id){
+    	$("tr[name='"+id+"']").each(
+			function(){
+				$(this).toggle();
+			}
+		);
+    }
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">角色基本信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">角色权限</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>角色代码</dt>
+				<dd>
+					<input name="code" type="text" id="code" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>角色名</dt>
+				<dd>
+					<input name="name" type="text" id="name" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>角色说明</dt>
+				<dd>
+                    <textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 300px;height: 120px;"></textarea>
+                    <span id="Validform_checktip"></span>
+                </dd>
+			</dl>
+		</div>
+		<div class="tab-content" style="display:none;">
+	      <table border="0" cellspacing="0" cellpadding="0" class="border-table" width="100%">
+	        <thead>
+	          <tr>
+	            <th width="25%">资源名称</th>
+	            <th>访问URL</th>
+	            <th width="10%">选择</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	        <%for(res in resources!){%>
+	        	<%if(!isEmpty(res.sons)){%>
+	        	<tr style="cursor: pointer">
+		            <td style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+		              <span class="folder-open" onclick="open_close('${res.id}')"></span>
+		              <span>${res.name}</span>
+		            </td>
+		            <td onclick="open_close('${res.id}')">
+		            </td>
+		            <td align="center">
+		            	<a onclick="selectSon('${res.id}');" href="javascript:;" class="all"><i></i><span>全选</span></a>
+		            </td>
+	              <%if(res.sons==null||res.sons.~size==0){%>
+	             	<td>
+	              	${res.url}
+	            	</td>
+		            <td align="center">
+		              <input id="res" type="checkbox" name="res" value="${res.id}" />
+		            </td>
+	              <%}%>
+	          	</tr>
+		         <%for(son in res.sons!){%>
+		         	<tr name="${res.id}" style="display:none">
+		            <td style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+		              <span style="display:inline-block;width:48px;"></span><span class="folder-line"></span><span class="folder-open"></span>
+		              ${son.name}
+		            </td>
+		            <td>
+		 				${son.url}
+		             </td>
+		            <td align="center" name="${res.id}">
+		            	<input id="res" type="checkbox" name="res" value="${son.id}" />
+		            </td>
+		          </tr>
+		         <%}%>
+	        	<%}%>
+	       	<%}%>
+	        </tbody>
+	      </table>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/sys/role/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/sys/role/insert')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

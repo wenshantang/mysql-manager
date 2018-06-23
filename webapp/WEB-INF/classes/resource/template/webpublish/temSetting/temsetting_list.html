@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>前台菜单配置管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+    $(function () {
+    	$(".ltable tr").hover(function() {
+    		$(this).find("span.nav_tool").css("display",""); 
+    	}, function() {
+    		$(this).find("span.nav_tool").css("display","none"); 
+    	});
+    });
+    
+    function delRes(url){
+    	$.layer({
+    	    shade: [0.5, '#888'],
+    	    border: [0.2, 0.1, '#000'],
+    	    area: ['auto','auto'],
+        	title:'确定删除吗？',
+    	    dialog: {
+    	        msg: '确定要删除该菜单下所有菜单吗？这将无法恢复。',
+    	        btns: 2,                    
+    	        type: 4,
+    	        btn: ['确定','取消'],
+    	        yes: function(index){
+    	        	layer.close(index);
+    	        	jQuery.ajax({
+    	        		url : url,
+    	        		type : "GET",
+    	        		success : function(result) {
+    	        			if (result.code == '0000') {
+    	        				success('删除成功！！！');
+    	        			}else{
+    	        				popStatus(4, result.msg, 2);
+    	        			}
+    	        		}
+    	        	});
+    	        }, no: function(){
+    	            
+    	        }
+    	    }
+    	});
+    }
+    
+
+    function success(msg){
+		var leve1_open = $("#leve1_open").val();
+		var url ='${ctx}/admin/webpublish/templatesetting?leve1_open='+leve1_open;
+		popStatus(1, msg, 1, url, true);
+	}
+    
+    function open_close(id,level){
+    	if(level){
+    		$("tr[name='"+id+"']").each(
+   				function(){
+   					var hid = $(this).is(":hidden");
+   					if(!hid){
+   						$(this).hide();
+   						$("tr[parent='"+id+"']").each(
+			   				function(){
+			   					$(this).hide();
+			   				}
+			   			);
+   					}else{
+   						$(this).show();
+   					}
+   				}
+   			);
+    	}else{
+    		$("tr[name='"+id+"']").each(
+   				function(){
+   					$(this).toggle();
+   				}
+   			);
+    	}
+    }
+    
+    function setOpen(id,level){
+    	$("#leve"+level+"_open").val(id);
+    }
+    
+</script>
+<script type="text/javascript">
+var _edit = 
+{
+ IN: function (obj, act) {
+    var tag = obj.firstChild.tagName;
+    if (typeof(tag) != "undefined" && (tag == "INPUT" || tag == "TEXTAREA"))return;
+    var org = obj.innerHTML;
+    var orglen = org.replace(/[^\x00-\xff]/g,'**').length;
+    var val = window.ActiveXObject ? obj.innerText : obj.textContent;
+	  var txt = document.createElement("INPUT");
+	  txt.value = val;
+	  txt.class="input normal";
+	  txt.style.width = obj.offsetWidth+20 + "px" ;
+	  obj.innerHTML = "";
+	  obj.appendChild(txt);
+	  txt.focus();
+	  txt.onblur = function(e){
+		obj.innerHTML = txt.value;
+		if(org != txt.value){
+			act=act+"-"+txt.value;
+			_edit.QUERY(act,txt.value);
+		}
+		return false;
+	  }
+	  return false;
+ },
+ QUERY: function (url,postData) {
+	var req = (window.XMLHttpRequest) ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false);
+	if (!req) alert("Unable to creat an XMLHttpRequest");
+	var method = (postData) ? "POST" : "GET";
+	req.open(method,url,true);
+	if(postData)req.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	req.onreadystatechange = function () {
+		if (req.readyState == 4) {
+			if(req.status == 200) {
+				alert("修改成功!");
+				//var message = req.responseText;
+				//if(message) alert(message);
+			}else{
+				alert("There was a problem with the request " + req.status);
+			}
+		}
+	}
+	req.send(postData);
+ }
+}
+var editContent = _edit.IN;
+</script>
+
+<script type="text/javascript">
+function editIsused(url){
+	//var checkedvalue = $("input[name='isused_707407770390183936'][checked]").val();
+	jQuery.ajax({
+		url  : url,
+		data : null,
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				popStatus(1, result.msg, 1);
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+</script>
+<style type="text/css">
+.nav_tool{
+	padding-left: 10px;
+}
+</style>
+</head>
+
+<body class="mainbody">
+	<div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/webpublish/templatesetting/insert">
+                        <li>
+                        	<a class="add" onclick="add('${ctx}/admin/webpublish/templatesetting/add/1-1')" href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable">
+		<input id="leve1_open" value="${leve1_open!}" type="hidden"/>
+        <thead>
+          <tr>
+            <#permission url="/admin/webpublish/templatesetting/insert">
+            <th width="30%">模板名称</th>
+            </#permission>	
+            <th width="20%">菜单显示名称</th>
+            <th width="20%">预览地址</th>
+            <th width="10%">是否使用</th>
+            <th width="10%">排序</th>
+            <#permission url="/admin/webpublish/templatesetting/updatePageInfo">
+            <th width="10%">编辑</th>
+            </#permission>
+          </tr>
+        </thead>
+        <tbody>
+        <%for(menu in menus!){%>
+        	<tr style="cursor: pointer">
+        	<#permission url="/admin/webpublish/templatesetting/insert">
+	            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+	              <span class="folder-open" onclick="open_close('${menu.id}','1')"></span>
+	              <span onclick="open_close('${menu.id}','1')">${menu.template_name}</span>
+	              <span class="nav_tool" style="display: none">
+	              <%if(menu.menu_level == '1'){%>
+	              <#permission url="/admin/webpublish/templatesetting/insert">
+	              	<a title="添加" class="img-btn add operator" onclick="setOpen('${menu.id}','1');add('${ctx}/admin/webpublish/templatesetting/add/${menu.id}-2')">添加</a>
+	              </#permission>	
+	              <%}%>
+	              <#permission url="/admin/webpublish/templatesetting/update">
+                    <a title="编辑" class="img-btn edit operator" onclick="edit('${ctx}/admin/webpublish/templatesetting/edit/${menu.id}-1')">编辑</a>
+                  </#permission>
+                  <#permission url="/admin/webpublish/templatesetting/delete">
+			        <a title="删除" class="img-btn del operator" onclick="delRes('${ctx}/admin/webpublish/templatesetting/delete/${menu.id}');">删除</a>
+	          	  </#permission>
+	              </span>
+	            </td>
+	       </#permission>
+	            <td class="tdleft" onclick="open_close('${menu.id}','1')">
+	              <span class="folder-open"></span>
+	              <span style="width: 100px" onclick="_edit.IN(this,'${ctx}/admin/webpublish/templatesetting/updateSet/${menu.id}-1')">${menu.show_name}</span>
+	            </td>
+	            <td class="tdleft" onclick="open_close('${menu.id}','1')">
+	              <a href='${ctx}${menu.menu_link}' target="_blank" />${menu.menu_link}</a>
+	            </td>
+            	<td class="tdleft" onclick="open_close('${menu.id}','1')">
+            	  <div>
+			      	<input name="isused_${menu.id}" type="radio" value="0" ${menu.isused=='0'?'checked':''} onclick="editIsused('${ctx}/admin/webpublish/templatesetting/updateSet/${menu.id}-3-0');"/><label for="">使用</label>
+		      		<input name="isused_${menu.id}" type="radio" value="1" ${menu.isused=='1'?'checked':''} onclick="editIsused('${ctx}/admin/webpublish/templatesetting/updateSet/${menu.id}-3-1');"/><label for="">不使用</label>
+			      </div>
+	            </td>
+	            <td class="tdleft" onclick="open_close('${menu.id}','1')">
+            	  <span style="width: 30px" onclick="_edit.IN(this,'${ctx}/admin/webpublish/templatesetting/updateSet/${menu.id}-2')">${menu.idx}</span>
+	            </td>
+	            <#permission url="/admin/webpublish/templatesetting/updatePageInfo">
+	            <td class="tdleft" onclick="open_close('${menu.id}','1')">
+	            <%if(menu.param_count > 0){%>
+	              	<a title="编辑内容" onclick="setOpen('${menu.id}','1');edit('${ctx}/admin/webpublish/templatesetting/showPageInfo/${menu.template_name}-${menu.show_name}')">编辑内容</a>
+	            <%}%>
+	            </td>
+	            </#permission>
+          	</tr>
+          	<%for(son in menu.sons!){%>
+          	<tr name="${menu.id}" ${menu.id == leve1_open!?'style="cursor: pointer"':'style="display:none;cursor: pointer"'}>
+            <#permission url="/admin/webpublish/templatesetting/insert">
+            <td class="tdleft" style="white-space:nowrap;word-break:break-all;overflow:hidden;">
+              <span style="display:inline-block;width:38px;"></span><span class="folder-line"></span>
+              <span>${son.template_name}</span>
+              <span class="nav_tool" style="display: none">
+              	<#permission url="/admin/webpublish/templatesetting/update">
+	              	<a title="编辑" class="img-btn edit operator" onclick="setOpen('${menu.id}','1');edit('${ctx}/admin/webpublish/templatesetting/edit/${son.id}-2')">编辑</a>
+	            </#permission>
+	            <#permission url="/admin/webpublish/templatesetting/delete">
+			        <a title="删除" class="img-btn del operator" onclick="setOpen('${menu.id}','1');delRes('${ctx}/admin/webpublish/templatesetting/delete/${son.id}');">删除</a>
+			    </#permission>
+	          </span>
+            </td>
+            </#permission>
+            <td class="tdleft" >
+            	<span style="display:inline-block;width:38px;"></span><span class="folder-line"></span>
+            	<span style="width: 100px" onclick="_edit.IN(this,'${ctx}/admin/webpublish/templatesetting/updateSet/${son.id}-1')">${son.show_name}</span>
+            </td>
+            <td class="tdleft">
+            	<a href='${ctx}${son.menu_link}' target="_blank">${son.menu_link}</a>
+            </td>
+            <td class="tdleft">
+           	    <div>
+			      	<input name="isused_${son.id}" type="radio" value="0" ${son.isused=='0'?'checked':''} onclick="editIsused('${ctx}/admin/webpublish/templatesetting/updateSet/${son.id}-3-0');"/><label for="">使用</label>
+		      		<input name="isused_${son.id}" type="radio" value="1" ${son.isused=='1'?'checked':''} onclick="editIsused('${ctx}/admin/webpublish/templatesetting/updateSet/${son.id}-3-1');"/><label for="">不使用</label>
+			    </div>
+            </td>
+            <td class="tdleft">
+            	<span style="width: 30px" onclick="_edit.IN(this,'${ctx}/admin/webpublish/templatesetting/updateSet/${son.id}-2')">${son.idx}</span>
+            </td>
+            <#permission url="/admin/webpublish/templatesetting/updatePageInfo">
+            <td class="tdleft">
+            <%if(son.param_count > 0){%>
+	            <a title="编辑内容" onclick="setOpen('${menu.id}','1');edit('${ctx}/admin/webpublish/templatesetting/showPageInfo/${son.template_name}-${son.show_name}')">编辑内容</a>
+	        <%}%>
+            </td>
+             </#permission>
+          </tr>
+          	<%}%>
+       <%}%>
+        </tbody>
+      </table>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>修改前台菜单</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script type="text/javascript">
+
+function ajaxUpdate(url){
+	var idx = loading('操作中。。。');
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			layer.close(idx);
+			if (result.code == '0000') {
+				parent.success('修改成功！！！');
+				Public.closeDialog();
+			}else if (result.errMsg) {
+				$("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				popStatus(4, result.msg, 2);
+			}
+		}
+	});
+}
+
+</script>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">菜单基本信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>排序</dt>
+				<dd>
+					<input type="hidden" name="id" value="${pid}"/>
+					<%if(level != '1'){%>
+					<input type="hidden" name="parent_Id" value="${menu.parent_id}"/>
+					<%}%>
+					<input type="hidden" name="level" value="${level}"/>
+					<input type="text" style="text-align: center" class="input small" value="${menu.idx}" id="idx" name="idx" />
+					<span id="Validform_checktip">*数字，越小越靠前</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>菜单名称</dt>
+				<dd>
+					<input name="template_name" type="text" id="template_name" value="${menu.template_name}" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>菜单显示名称</dt>
+				<dd>
+					<input name="show_name" type="text" id="show_name" value="${menu.show_name}" class="input normal"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>菜单链接地址</dt>
+				<dd>
+					<input name="menu_link" type="text" id="menu_link" class="input" value="${menu.menu_link}" style="width: 400px;"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>是否使用</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="isused" type="radio" value="0" ${menu.isused=='0'?'checked':''}/><label for="">使用</label>
+			      		<input name="isused" type="radio" value="1" ${menu.isused=='1'?'checked':''}/><label for="">不适用</label>
+				    </div>
+				    <span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/webpublish/templatesetting/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="ajaxUpdate('${ctx}/admin/webpublish/templatesetting/update')"/> 
+			</#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

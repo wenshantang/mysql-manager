@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>预约信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js"></script>
+<script type="text/javascript">
+var map_list = ${map_list!''};
+template.helper('maplistVal', function (key,type) {
+	var result = "";
+	$(map_list[type]).each(function(){
+		 if(this.name == key){
+			 result = this.value;
+			 return false;
+		 }
+	});
+	return result;
+});
+</script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.pro_id | maplistVal:'pro_id_list'}}</td>   
+			<td>{{row.req_amts}}</td>       
+			<td>{{row.status | decode:'0','未处理','1','已处理'}}</td>    
+			<td>{{row.cust_name}}</td>
+			<td>{{row.mobile}}</td>
+            <td>{{row.email}}</td>
+			<td>{{row.req_time}}</td>
+            <td>
+				<a href="javascript:;" onclick='edit("${ctx}/admin/cust/req/edit/{{row.id}}")'>修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+ <div class="toolbar-wrap">
+ 			<div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/cust/req/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/cust/req/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/cust/req/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/cust/req/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+			<dl>
+				<dt>产品名称</dt>
+				<dd>
+				<input type="text" class="input normal big"  id="pro_id" name="pro_id" >
+				</dd>
+			</dl>
+			<dl>
+				<dt>预约时间</dt>
+				<dd>
+		   		      <input type="text" value="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input" id="begin_date" name="begin_date"/>
+						~
+					  <input type="text" value="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="input rule-date-input" id="end_date" name="end_date"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>预约人姓名</dt>
+				<dd>
+				<input type="text" class="input normal big"  id="cust_name" name="cust_name" >
+				</dd>
+			</dl>
+			<dl>
+				<dt>手机号码</dt>
+				<dd>
+				<input type="text" class="input normal big"  id="mobile" name="mobile" >
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>状态</dt>
+				<dd>
+					<select  id="status" name="status" search="-1"  class="js-example-basic-single" style="width: 100px;">
+   		      			<option value="">请选择</option>
+				    	<option value="0">未处理</option>
+				    	<option value="1">已处理</option>
+   		      	    </select>
+				</dd>
+			</dl>		
+		  </form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cust/req/json">
+            <tr>
+                <th>选择</th>
+                <th sort="pro_id">产品名称</th>
+                <th sort="req_amts">预约金额(万元)</th>
+                <th sort="status">状态</th>
+                <th sort="cust_name">预约人姓名</th>
+                <th sort="mobile">手机号码</th>
+                <th sort="email">邮箱</th>
+                <th sort="req_time">预约时间</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

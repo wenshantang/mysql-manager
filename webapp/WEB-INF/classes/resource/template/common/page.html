@@ -1,0 +1,38 @@
+<%
+    uri =ctxPath+uri;
+    var page = pageRecord.page;   // 当前页
+    var totalPage = pageRecord.totalPage;     // 总页数
+    var num_display_entries = 11;       // 每次显示多少页
+    var num_edge_entries = 2;           // 前后各多少页
+    var ellipse_text = "...";
+    var b = strutil.contain(uri,"?");
+    uri = uri+ (b?'&page=':'?page=');
+%>
+
+<%if(totalPage>0){%>
+    <div class="default">
+        <%
+            if(page!=1){
+               printf("<a href='%s%s'>首页</a>",uri,1);
+               printf("<a href='%s%s'>«上一页</a>",uri,page-1);
+            }
+            for(var i=1,k=totalPage;i<=k;i++){
+               if(i==page){
+                printf("<span class='current'>%s</span>",i);
+               }else{			      
+				  if(totalPage>=8){ 
+				     if(page-4<=i &&i<=page+4){
+					  printf("<a href='%s%s'>%s</a>",uri,i,i);
+					 }
+				  }else{
+				     printf("<a href='%s%s'>%s</a>",uri,i,i);
+				  }
+			   }
+            }
+            if(page!=totalPage){
+               printf("<a href='%s%s'>下一页»</a>",uri,page+1);
+               printf("<a href='%s%s' >末页</a>",uri,totalPage);
+            }
+        %>
+    </div>
+<%}%>

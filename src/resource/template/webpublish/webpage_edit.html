@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑内容</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctx}/resource-injar/script?t=/plugin/webuploader/upload.js"></script>
+<script>
+function loadimg(paramkey){
+	var imgid = "#"+paramkey+"_upload-img";
+	$(imgid).InitUploader({btntext:'选择文件...',sendurl: "${ctx}/admin/sys/file/upload", swf: "${ctx}/resource-injar/swf?t=/plugin/webuploader/Uploader.swf",paramkeyname:paramkey});
+}
+
+function uploadError(data){
+	popStatus(2, data.message, 2);
+}
+
+function uploadSuccess(data,paramkey){
+	$("#"+paramkey).val(data.http_url);
+	$("#"+paramkey+"_http_url").attr('src',"${ctx}"+data.http_url); 
+}
+
+
+function updateBase(url){
+	jQuery.ajax({
+		url  : url,
+		data : $('#data_form').serialize(),
+		type : "POST",
+		success : function(result) {
+			if (result.code == '0000') {
+				alert("更新成功！！！");
+				//popStatus.popStatus(1, '更新成功！！！', 1);
+			}else if (result.errMsg) {
+				$("span[id='Validform_checktip']").each(function() {
+					$(this).html('');
+					$(this).attr("class", "Validform_right");
+				});
+				$.each(result.errMsg, function(tag, msg) {
+					$obj = $("#" + tag).next('span');
+					$obj.attr("class", "Validform_wrong");
+					$obj.html(msg);
+				});
+			}else{
+				//popStatus(4, result.msg, 2);
+				alert("更新失败！！！");
+			}
+		}
+	});
+}
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">编辑${show_name}</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+		    <% i=0;%>
+			<%for(param in listParams!){i++;%>
+				<%if(param.param_type=='image'){%>
+				<input type="hidden" name="${param.param_key}_old" id="${param.param_key}_old" value="${param.param_value}"/>
+				<input type="hidden" name="${param.param_key}" id="${param.param_key}" value="${param.param_value}"/>
+				<dl>
+					<dt>${param.display_name}</dt>
+					<dd>
+						<div id="${param.param_key}_upload-img" class="upload-box upload-img" ></div>
+						<span id="Validform_checktip">${param.memo}</span>
+					</dd>
+				</dl>
+				<dl>
+					<dt>${param.display_name}链接</dt>
+					<dd>
+						<input type="text" name="${param.param_key}_link" id="${param.param_key}_link" value="${param.param_link}" class="input normal" style="width: 500px;"/>
+					</dd>
+				</dl>
+				<dl>
+					<dt>${param.display_name}预览</dt>
+					<dd>
+						<img id="${param.param_key}_http_url" name="${param.param_key}_http_url" src="${param.param_value}" style="max-width: 600px;"/>
+					</dd>
+				</dl>
+				<script>
+					$(function () {
+						loadimg("${param.param_key}");
+				    });
+				</script>
+				<%}%>
+				<%if(param.param_type=='label'){%>
+				<dl>
+					<dt>${param.display_name}</dt>
+					<dd>
+						<input name="${param.param_key}_old" type="hidden" id="${param.param_key}_old" value="${param.param_value}" class="input normal" />
+						<input name="${param.param_key}" type="text" id="${param.param_key}" value="${param.param_value}" class="input normal" />
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<%}%>
+				<%if(param.param_type=='textarea'){%>
+				<dl>
+					<dt>${param.display_name}</dt>
+					<dd>
+					    <textarea name="${param.param_key}_old" rows="6" cols="20" id="${param.param_key}_old" style="display: none">${param.param_value}</textarea>
+						<textarea name="${param.param_key}" rows="6" cols="20" id="${param.param_key}" class="input" style="width: 550px;height: 150px;">${param.param_value}</textarea>
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<%}%>
+				<%if(param.param_type=='article'){%>
+				<dl>
+					<dt>${param.display_name}文章</dt>
+					<dd>
+					    <input name="${param.param_key}_old" type="hidden" id="${param.param_key}_old" value="${param.param_value}" class="input normal" />
+					    <input name="${param.param_key}_show" type="text" disabled="disabled" id="${param.param_key}_show" value="${param.article_title}" class="input normal" style="width: 400px;"/>
+						<input name="${param.param_key}" type="hidden" id="${param.param_key}" value="${param.param_value}"/>
+						<input type="button" name="btn_${param.param_key}" value="选择文章" class="btn" id="btn_${param.param_key}" onclick="big('${ctx}/admin/webpublish/baseconfig/selectArticle/${param.param_key}-${param.param_value}')"/>
+						<span id="Validform_checktip">*</span>
+					</dd>
+				</dl>
+				<%}%>
+			<%}%>
+			<%if(i==0){%>
+		   		 此页面不能编辑
+		   	<%}%>
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/webpublish/templatesetting/updatePageInfo">
+				<%if(template_name=='base'){%>
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="updateBase('${ctx}/admin/webpublish/baseconfig/updateBase/${template_name}')"/>
+				<%} else {%>
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/webpublish/templatesetting/updatePageInfo/${template_name}')"/>
+				<%}%>
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

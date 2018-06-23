@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>新增客户信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/kindeditor.js"></script>
+<script src="${ctx}/resource-injar/script?t=/plugin/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<link rel="stylesheet" href="${ctx}/resource-injar/css?t=/plugin/kindeditor-4.1.10/themes/default/default.css" />
+</head>
+<script type="text/javascript">
+function addImg(){
+
+	var $h=$(".ImgAdd:hidden");
+	var size=$h.size();
+	if(size>0)
+	{
+		$(".ImgAdd:hidden:first").show();
+	}else{
+		alert("最多添加5个附件");
+	}
+	
+}
+
+function delFile($div){	
+	
+	var $div1=$div.next();
+	if($div1.length==0 ||$div1.is(":hidden")){
+		$div.find("input[name='auth_desc']").val('');
+		$div.find("input[name='auth_attach']").val('');
+		$div.find(".auth_attach_preview").attr("href","#");
+		$div.find(".auth_attach_preview").hide();
+		$div.hide();
+	}else{
+		var auth_desc=$div1.find("input[name='auth_desc']").val();
+		var auth_attach=$div1.find("input[name='auth_attach']").val();
+		var href=$div1.find(".auth_attach_preview").attr("href");
+		$div.find("input[name='auth_desc']").val(auth_desc);
+		$div.find("input[name='auth_attach']").val(auth_attach);
+		$div.find(".auth_attach_preview").attr("href",href);
+		if(href!="#"){
+			$div.find(".auth_attach_preview").show();
+		}
+		delFile($div1);
+	}
+}
+
+$(function(){
+	$(".del").click(function(){
+		var $div=$(this).parent().parent().parent().parent();
+		delFile($div);
+	})
+});
+
+var CTX = '${ctx}';
+KindEditor.ready(function(K) {
+	var editor = K.editor({
+		allowFileManager : true,
+		themeType: "simple",
+		uploadJson : '${ctx}/admin/sys/file/upload',
+		fileManagerJson : '${ctx}/admin/sys/file/list'
+	});
+
+	K('.select_image').click(function() {
+		var $selImg=$(this);
+		editor.loadPlugin('smimage', function() {
+			editor.plugin.imageDialog({
+				clickFn : function(url, title, width, height, border, align) {
+						var $dl=$selImg.parent().parent().parent().next();
+						$dl.find("input").val(url);  
+						$dl.find("a").attr("href",url);
+						$dl.find("a").show();
+						editor.hideDialog();
+				}
+			});
+		});
+	});
+	
+});
+
+</script>
+
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">客户信息</a></li>
+						<li><a href="javascript:;" onclick="tabs(this);">添加附件</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+		    <dl>
+				<dt>客户名称</dt>
+				<dd>
+					<input name="cust_name" type="text" id="cust_name" maxlength="160" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+ 			<dl>
+				<dt>客户简称</dt>
+				<dd>
+					<input name="short_name" type="text" id="short_name" maxlength="50" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl> 
+			<dl>
+				<dt>客户类别</dt>
+				<dd>
+                 <select  style="width: 300px" id="cust_kind" name="cust_kind" class="js-example-basic-single" >
+   		      	    <option class="cust_kind" value="" >请选择</option>
+				<%for(list in cust_kind_list!){%>
+					<option class="cust_kind" value="${list.name}">${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_kind_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户类型</dt>
+				<dd>
+                 <select  style="width: 300px" id="cust_type" name="cust_type" class="js-example-basic-single" >
+   		      	    <option class="cust_type" value="" >请选择</option>
+				<%for(list in cust_type_list!){%>
+					<option class="cust_type" value="${list.name}">${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_type_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>性别</dt>
+				<dd>
+                 <select  style="width: 300px" id="sex" name="sex" class="js-example-basic-single" >
+   		      	    <option class="sex" value="" >请选择</option>
+   		      	    <option class="sex" value="0" >男</option>
+   		      	    <option class="sex" value="1" >女</option>
+   		      	  </select>
+   		      	  <input type="hidden" id="sex_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>手机号码</dt>
+				<dd>
+					<input name="mobile" type="text" id="mobile" maxlength="11" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>座机号码</dt>
+				<dd>
+					<input name="telnum" type="text" id="telnum" maxlength="20" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>电子邮件</dt>
+				<dd>
+					<input name="email" type="text" id="email" maxlength="50" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>邮政编码</dt>
+				<dd>
+					<input name="postcode" type="text" id="postcode" maxlength="10" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>联系地址</dt>
+				<dd>
+					<input name="address" type="text" id="address" maxlength="200" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>证件类型</dt>
+				<dd>
+                 <select  style="width: 300px" id="cer_type" name="cer_type" class="js-example-basic-single" >
+   		      	    <option class="cer_type" value="" >请选择</option>
+				<%for(list in certificationtype_list!){%>
+					<option class="cer_type" value="${list.name}">${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cer_type_tip"/><span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>证件号码</dt>
+				<dd>
+					<input name="cer_num" type="text" id="cer_num" maxlength="100" class="input normal" />
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户状态</dt>
+				<dd>
+                 <select  style="width: 300px" id="cust_status" name="cust_status" class="js-example-basic-single" >
+   		      	    <option class="cust_status" value="" >请选择</option>
+				<%for(list in cust_status_list!){%>
+					<option class="cust_status" value="${list.name}">${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_status_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>客户等级</dt>
+				<dd>
+                 <select  style="width: 300px" id="cust_level" name="cust_level" class="js-example-basic-single" >
+   		      	    <option class="cust_level" value="" >请选择</option>
+				<%for(list in cust_level_list!){%>
+					<option class="cust_level" value="${list.name}">${list.value}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_status_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			 <dl>
+				<dt>合同编号</dt>
+				<dd>
+					<input name="contract_num" type="text" id="contract_num" maxlength="200" class="input normal" />
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>所属渠道</dt>
+				<dd>
+                 <select  style="width: 300px" id="channel_id" name="channel_id" class="js-example-basic-single" >
+   		      	    <option  value="" >请选择</option>
+				<%for(list in channel_id_list!){%>
+					<option value="${list.channel_id}">${list.channel_name1}</option>
+				<%}%>
+   		      	  </select>
+   		      	  <input type="hidden" id="cust_status_tip"/><span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+		</div>
+		<div class="tab-content" style="display: none">
+			<div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                        <li><a class="add" onclick='addImg()' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <%for(var i=0;i<5;i++){%>
+           <div class="ImgAdd" title="1" hidden>
+            	<dl>
+				<dt>文件描述</dt>
+				<dd>
+					<input name="auth_desc" type="text"  maxlength="200" class="input normal" />
+					<span id="Validform_checktip"></span>
+	    
+		          	<span class="help-inline"><a  class="select_image icon-btn add" href="javascript:;"><i></i><span>选择附件</span></a></span>
+		          	<span class="help-inline"><a  class="icon-btn del" href="javascript:;"><i></i><span>删除</span></a></span>
+				</dd>
+				</dl>
+				<dl>
+				<dt>附件路径</dt>
+				<dd>
+	             	<input  class="auth_attach input normal" type="text" maxlength="200" name="auth_attach" /><a href="#" class="auth_attach_preview" target="_blank" hidden >预览</a>
+				</dd>
+				</dl>
+			</div>
+				 <%}%>	
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/cust/customer/insert">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxInsert('${ctx}/admin/cust/customer/insert')"/> 
+            </#permission>
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>用户管理</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.id}}</td>
+            <td>{{row.login_name}}</td>
+            <td>{{row.name}}</td>
+            <td>普通会员</td>
+            <td>{{row.email}}</td>
+            <td>{{row.phone}}</td>
+			<td>{{row.status | decode: '0','锁定','1','正常'}}</td>
+            <td>
+				<a href="javascript:;" onclick="edit('${ctx}/admin/sys/user/edit/{{row.id}}')">修改</a>
+				<#permission url="/admin/sys/user/unlock">
+				{{if row.status=="0"}}
+				<a href="javascript:;" onclick='unlock("${ctx}/admin/sys/user/unlock/{{row.id}}")'>解锁</a>
+				{{/if}}
+				</#permission>
+			<#permission url="/admin/sys/user/toChangePWD">
+				<a href="javascript:;"  onclick="edit('${ctx}/admin/sys/user/toChangePWD/{{row.id}}')">修改密码</a>
+		</#permission>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+
+<script type="text/javascript">
+function unlock(url){
+	$.layer({
+	    shade: [0.5, '#888'],
+	    border: [0.2, 0.1, '#000'],
+	    area: ['auto','auto'],
+    	title:'解锁账号',
+	    dialog: {
+	        msg: '确定要解锁该账号吗？',
+	        btns: 2,                    
+	        type: 4,
+	        btn: ['确定','取消'],
+	        yes: function(index){
+	        	layer.close(index);
+	        	var v = loading("解锁中！");
+	        	jQuery.ajax({
+	        		url : url,
+	        		type : "POST",
+	        		success : function(result) {
+	        			    layer.close(v);
+	        				pagination();
+	        				popStatus(1, '解锁成功！！！', 1);
+	        		}
+	        	});
+	        }, no: function(){
+	            
+	        }
+	    }
+	});
+}
+</script>
+<body class="mainbody">
+       <div id="floatHead" class="toolbar">
+        <div class="box-wrap">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    	<#permission url="/admin/sys/user/insert">
+	                        <li><a class="add" onclick="add('${ctx}/admin/sys/user/add')" href="javascript:;"><i></i><span>新增</span></a></li>
+						</#permission>
+                        <#permission url="/admin/sys/user/delete">
+                        <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a></li>
+                        <li><a onclick="del('${ctx}/admin/sys/user/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a></li>
+                        </#permission>
+                    </ul>
+                </div>
+                
+                <div class="r-list">
+                <form id="search_form">
+		        	<input type="text" class="keyword" id="name" name="name">
+		        	<a href="javascript:;" class="btn-search" id="searchBtn">查询</a>
+                </form>
+            	</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/sys/user/json">
+            <tr>
+                <th>选择</th>
+                <th sort="id">用户ID</th>
+                <th sort="login_name">用户名</th>
+                <th sort="name">姓名</th>
+                <th>角色</th>
+                <th sort="email">邮箱</th>
+                <th sort="phone">手机号码</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

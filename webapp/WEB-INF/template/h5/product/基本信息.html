@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>基金俱乐部-基金详情-基本信息</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+<#QuerSuperFundList fundcode="${fundcode!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">基本信息</span></h1>
+    <div class="f-topBox2">
+      <p class="p p1">基金简称：${fund.pro_shortname!"--"}</p>
+      <p class="p p2">基金代码：${fund.fundcode!"--"}</p>
+    </div>
+  </div>
+</header>
+<div class="main isTop2 wrap nofooter">
+  <div class="g-table-list notitle">
+    <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="30%">基金管理人：</td>
+          <td width="70%">${fund.pro_fundmanager!"--"}</td>
+        </tr>
+        <tr>
+          <td>基金托管人：</td>
+          <td>${fund.pro_deposit!"--"}</td>
+        </tr>
+        <tr>
+          <td>成立日期：</td>
+          <td>${fund.setup_date!"--"}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="g-list-n">
+    <li>
+      <h6 class="title">投资目标：</h6>
+      <div class="info">${fund.investment!"--"}</div>
+    </li>
+    <li>
+      <h6 class="title">投资策略：</h6>
+      <div class="info">${fund.investment_strategy!"--"}</div>
+    </li>
+    <li>
+      <h6 class="title">投资范围：</h6>
+      <div class="info">${fund.investment_range!"--"}</div>
+    </li>
+    <li>
+      <h6 class="title">风险收益特征：</h6>
+      <div class="info">${fund.risk_return!"--"}</div>
+    </li>
+  </ul>
+  <p style="height:1rem"></p>
+</div>
+<%}}%>
+</#QuerSuperFundList>
+</body>
+</html>

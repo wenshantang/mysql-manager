@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>购买下一步</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">购买</span></h1>
+		</div>
+</header>
+<div class="main isTop1 wrap nofooter">
+		<div class="yl-fenhong">
+				
+				<div class="top-e-msg yl-f m-t-b" style="margin-bottom:3.9506172839506rem; margin-top:5.9259259259259rem;">
+						请输入6位数字的交易密码
+				</div>
+				<div class="yl-inputDiv yl-pword-bg">
+						<input class="g-input" id="tradepassword" type="password" placeholder="" maxlength="6" value="">
+				</div>
+				<a class="g-btns g-submit g-m-t112 m-auto" href="javascript:void(0);" onclick="buyfund()">确  定</a>
+				<div class="bottom-e-msg">
+						
+				</div>
+		  <input type="hidden" id="fund_code"  name="fund_code" value="${fund_code}">
+       	  <input type="hidden"  id="share_type"  name="share_type"  value="${share_type}" >
+       	  <input type="hidden"  id="fund_busin_code"  name="fund_busin_code" value="${fund_busin_code}" >
+       	  <input type="hidden" id="trade_acco"  name="trade_acco" value="${trade_acco}">
+       	  <input type="hidden" id="balance"  name="balance" value="${balance}">
+       	  <input type="hidden" id="auto_buy"  name="auto_buy" value="${auto_buy}">
+		</div>
+</div>
+<script type="text/javascript">
+	function buyfund(){
+		 $(".bottom-e-msg").text("");
+		var fund_code=$("#fund_code").val();//基金代码
+		//var fund_code="3Q0108";//基金代码
+		var share_type=$("#share_type").val();//付款方式
+		var fund_busin_code=$("#fund_busin_code").val();//业务代码
+		var trade_acco=$("#trade_acco").val();//交易账号
+		var balance=$("#balance").val();//购买金额
+		var auto_buy=$("#auto_buy").val();//分红方式
+		var tradepassword=$("#tradepassword").val();
+		if (fund_code == "" || fund_code == null) {
+			$(".bottom-e-msg").text("请返回上一层选择对应的基金!");
+			return false;
+		}
+		if (share_type == "" || share_type == null) {
+			$(".bottom-e-msg").text("请返回上一层选择付费方式!");
+			return false;
+		}
+		if (fund_busin_code == "" || fund_busin_code == null) {
+			$(".bottom-e-msg").text("请返回上一层选择业务方式!");
+			return false;
+		}
+		if (trade_acco == "" || trade_acco == null) {
+			$(".bottom-e-msg").text("请返回上一层选择支付方式!");
+			return false;
+		}
+		
+		if (balance == "" || balance == null) {
+			$(".bottom-e-msg").text("请返回上一层填写购买金额!");
+			return false;
+		}
+		if (auto_buy == "" || auto_buy == null) {
+			$(".bottom-e-msg").text("请返回上一层选择分红方式!");
+			return false;
+		}
+		if (tradepassword == "" || tradepassword == null) {
+			$(".bottom-e-msg").text("请输入交易密码!");
+			return false;
+		}
+		if(fund_busin_code=='020'){ 
+			$.ajax({
+				type : "post",
+				data : {
+					"balance" : balance,
+					"fund_code" : fund_code,
+					"password":tradepassword,
+					"share_type" : share_type,
+					"trade_acco" : trade_acco,
+					"auto_buy" : auto_buy
+				},
+				url : "${ctxPath}/trade/buy",
+				success : function(result) {
+					if("0000"==result.code){
+						console.log(result.data);
+						var obj = eval('(' + result.data + ')');
+						window.location.href="${ctxPath}/h5/capital/buysuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+					}else{
+						$(".bottom-e-msg").text(result.msg);
+					}
+				}
+			});
+			
+		}else if(fund_busin_code=='022'){
+			$.ajax({
+				type : "post",
+				data : {
+					"balance" : balance,
+					"fund_code" : fund_code,
+					"password":tradepassword,
+					"share_type" : share_type,
+					"trade_acco" : trade_acco,
+					"auto_buy" : auto_buy
+				},
+				url : "${ctxPath}/trade/buy",
+				success : function(result) {
+					if("0000"==result.code){
+						console.log(result.data);
+						var obj = eval('(' + result.data + ')');
+						window.location.href="${ctxPath}/h5/capital/buysuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+					}else{
+						$(".bottom-e-msg").text(result.msg);
+					}
+				}
+			});
+		}else{
+			$(".bottom-e-msg").text("该基金不可购买");
+		}
+	}
+</script>
+</body>
+</html>

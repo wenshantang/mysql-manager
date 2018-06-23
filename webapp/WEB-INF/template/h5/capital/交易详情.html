@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>在途交易-详情</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+
+<body>
+<m m-main="killorder_m_number_password"></m> 
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">在途交易-详情</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+<#TradeapplyQuery  client_id='${session.customer.data.client_id}' allot_no='${allot_no!}';resultmap>
+	<%if(resultmap!=null){for(map in resultmap.data!){%>
+	  <ul class="g-list-li nobg">
+	  <%if(map.fund_busin_code=='036'){%>
+	    <li><span class="name">转出基金名称</span><span class="info">${map.fund_name!''}</span></li>
+	    <li><span class="name">转出基金代码</span><span class="info">${map.fund_code!''}</span></li>
+	    <li><span class="name">转入基金名称</span><span class="info">${map.target_fund_code!''}</span></li>
+	    <li><span class="name">转入基金代码</span><span class="info"><#QuerSuperFundList fundcode="${map.target_fund_code!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>${fund.pro_name}<%}}%></#QuerSuperFundList></span></li>
+	  <%}else{%>
+	    <li><span class="name">基金名称</span><span class="info">${map.fund_name!''}</span></li>
+	    <li><span class="name">基金代码</span><span class="info">${map.fund_code!''}</span></li>
+	  <%}%>
+	    <li><span class="name">交易时间</span><span class="info">${StringToDateFormatShort(map.apply_date!'')} 
+	                  ${StringToDateFormatShortDate(map.apply_time!'')}</span></li>
+	     <!--认购、申购 -->
+	     <%if(map.fund_busin_code=='020'||map.fund_busin_code=='022'){%>
+	      <li><span class="name">交易类型</span><span class="info"><%if(map.fund_busin_code=='022'){%>申购<%}%><%if(map.fund_busin_code=='020'){%>认购<%}%></span></li>
+	      <li><span class="name">金额/份额</span><span class="info">${StringToNumber(map.balance!'')}元<!-- ${StringToNumber(map.shares!'')} 份--></span></li>
+	      <li><span class="name">分红方式</span><span class="info">
+	      <%if(map.auto_buy==''){%> 
+	    		--
+	    	<%}else if(map.auto_buy=='0'){%>
+	    		红利再投资 
+	    	<%}else if(map.auto_buy=='1'){%>
+	    	       现金红利
+	    	<%}%></span></li>
+	      <#BankaccountquerydQuery  bank_no='${map.bank_no!}' trade_acco='${map.trade_acco!}';Bankmap>
+	    	<%if(Bankmap!=null){for(bmap in Bankmap!){%>
+	    		<li><span class="name">支付方式</span><span class="info">${bmap.bank_name!''} 尾号${IdCard4Function(bmap.bank_account!'')}</span></li>
+	    	<%}}%>
+	      </#BankaccountquerydQuery>
+	     <%}%>
+	      <!--赎回 -->
+	     <%if(map.fund_busin_code=='024'){%>
+	      <li><span class="name">交易类型</span><span class="info">赎回</span></li>
+	      <li><span class="name">金额/份额</span><span class="info">${StringToNumber(map.shares!'')}份</span></li>
+	      <#BankaccountquerydQuery  bank_no='${map.bank_no!}' trade_acco='${map.trade_acco!}';Bankmap>
+	    	<%if(Bankmap!=null){for(bmap in Bankmap!){%>
+	    		<li><span class="name">赎回至</span><span class="info">${bmap.bank_name!''} 尾号${IdCard4Function(bmap.bank_account!'')}</span></li>
+	    	<%}}%>
+	      </#BankaccountquerydQuery>
+	     <%}%>
+	     
+	      <!--定投 -->
+	     <%if(map.fund_busin_code=='039'||map.fund_busin_code=='090'||map.fund_busin_code=='988'){%>
+	      <li><span class="name">交易类型</span><span class="info"><%if(map.fund_busin_code=='090'){%>定投<%}%><%if(map.fund_busin_code=='988'){%>定投修改<%}%></span></li>
+	      <li><span class="name">定投金额</span><span class="info">${StringToNumber(map.balance!'')}元</span></li>
+	      <#BankaccountquerydQuery  bank_no='${map.bank_no!}' trade_acco='${map.trade_acco!}';Bankmap>
+	    	<%if(Bankmap!=null){for(bmap in Bankmap!){%>
+	    		<li><span class="name">支付方式</span><span class="info">${bmap.bank_name!''} 尾号${IdCard4Function(bmap.bank_account!'')}</span></li>
+	    	<%}}%>
+	      </#BankaccountquerydQuery>
+	      <li><span class="name">扣款周期</span><span class="info"><%if(map.protocol_period_unit=='0'){%>每月<%}%><%if(map.protocol_period_unit=='1'){%>每周<%}%></span></li>
+	      <li><span class="name">扣款日期</span>
+	      <span class="info">
+	      <%if(map.protocol_period_unit=='0'){%>${map.fix_date}号<%}%>
+	      <%if(map.protocol_period_unit=='1'){%>
+	      <%if(map.fix_date=='2'){%>一<%}%>
+	      <%if(map.fix_date=='3'){%>二<%}%>
+	      <%if(map.fix_date=='4'){%>三<%}%>
+	      <%if(map.fix_date=='5'){%>四<%}%>
+	      <%if(map.fix_date=='6'){%>五<%}%>
+	      <%}%>
+	      </span>
+	      </li>
+	     <%}%>
+	     <!--转换 -->
+	     <%if(map.fund_busin_code=='036'){%>
+	      <li><span class="name">交易类型</span><span class="info">转换</span></li>
+	      <li><span class="name">金额/份额</span><span class="info">${StringToNumber(map.shares!'')}份</span></li>
+	     <%}%>
+	     <!--修改分红方式 -->
+	     <%if(map.fund_busin_code=='029'){%>
+	     <li><span class="name">交易类型</span><span class="info">修改分红方式</span></li>
+	     <li><span class="name">分红方式</span>
+	    	<%if(map.auto_buy==''){%> 
+	    		<span class="info">--</span>
+	    	<%}else if(map.auto_buy=='0'){%>
+	    		<span class="info">红利再投资 </span>
+	    	<%}else if(map.auto_buy=='1'){%>
+	    		<span class="info">现金红利  </span>
+	    	<%}%>
+	    </li>
+	     <%}%>
+	  </ul>
+	  <div class="m50">
+	   <%if(map.iswithdraw=='0'){%>
+	  <a class="g-btns g-submit g-m-t40" href="javascript:void(0);" onclick="killorder('${map.trade_acco}','${map.allot_no}')" >撤 单</a>
+	  <%}else{%>
+	  <a class="g-btns g-submit g-m-t40 bg-acacac"  href="javascript:void(0);">撤 单</a>
+	  <%}%>
+	  </div>
+  <p style="height:4rem"></p>
+  <input type="hidden" value=""  id="trade_acco"/>
+  <input type="hidden" value=""  id="allot_no"/>
+ <a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+</div>
+<div class="g-bottom-fixed yl-zhuan3">
+  <div class="wrap">
+    <div class="btn"> 
+     <%if(map.fund_busin_code=='020'||map.fund_busin_code=='022'||map.fund_busin_code=='039'||map.fund_busin_code=='036'){%>
+    <a href="${ctxPath}/h5/capital/buy?fundcode=${map.fund_code}" class="btn2">再次购买</a> 
+    <a href="${ctxPath}/h5/capital/invest?fundcode=${map.fund_code}" class="btn2">发起定投</a> 
+    <%}%>
+     <%if(map.fund_busin_code=='024'){%>
+    <a href="${ctxPath}/h5/product/fundlist" class="btn2">基金购买</a> 
+    <%}%>
+    </div>
+  </div>
+</div>
+<%}}%>
+</#TradeapplyQuery>
+<script type="text/javascript">
+function killorder(trade_acco,allot_no){
+	$("#trade_acco").val(trade_acco);
+	$("#allot_no").val(allot_no);
+	$('#MumberPassword').click();
+} 
+
+function killorderapply(password){
+	var trade_acco=$("#trade_acco").val();
+	var allot_no=$("#allot_no").val();
+	$.ajax({
+		type : "post",
+		data : {
+			"trade_acco" : trade_acco,
+			"original_appno" : allot_no,
+			"password" : password
+		},
+		url : ctx+"/trade/withdraw",
+		success : function(result) {
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("撤单成功!");
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</body>
+</html>

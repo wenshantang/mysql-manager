@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>编辑FTP服务器</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">FTP服务器基本信息</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+			<dl>
+				<dt>服务器状态</dt>
+				<dd>
+					<div class="rule-multi-radio">
+				      	<input name="server_status" type="radio" value="1" ${server.server_status =='1'?'checked="checked"':''}/><label for="">正常使用</label>
+			      		<input name="server_status" type="radio" value="0" ${server.server_status =='0'?'checked="checked"':''}/><label for="">停止使用</label>
+				    </div>
+					<span id="Validform_checktip">*不启用则无法使用</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器名称</dt>
+				<dd>
+					<input name="id" type="hidden" id="id" value="${server.id}"/>
+					<input name="server_name" type="text" id="server_name" class="input normal" value="${server.server_name}"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器IP地址</dt>
+				<dd>
+					<input name="server_ip" type="text" id="server_ip" class="input normal" value="${server.server_ip}"/>
+					<span id="Validform_checktip"></span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器端口</dt>
+				<dd>
+					<input name="port" type="text" id="port" class="input small" style="text-align: center;" value="${server.port}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>登录用户名</dt>
+				<dd>
+					<input name="username" type="text" id="username" class="input normal" value="${server.username}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>登录密码</dt>
+				<dd>
+					<input name="passwd" type="password" id="passwd" class="input normal" value="${server.passwd}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>是否被动链接</dt>
+				<dd>
+				<div class="rule-multi-radio">
+			      	<input name="pasv_mode" type="radio" value="0" ${server.server_status =='0'?'checked="checked"':''}/><label for="">不是</label>
+		      		<input name="pasv_mode" type="radio" value="1" ${server.server_status =='1'?'checked="checked"':''}/><label for="">是</label>
+				</div>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>传输编码</dt>
+				<dd>
+					<input name="encoding" type="text" id="encoding" class="input middle" value="${server.encoding}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>传输超时时间</dt>
+				<dd>
+					<input name="timeout" type="text" id="timeout" class="input small" value="${server.timeout}"/>
+					<span id="Validform_checktip">*秒，0为服务器默认</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>服务器类型</dt>
+				<dd>
+					<select name="server_type" id="server_type" class="js-example-basic-single" style="width: 100px;height:34px;">
+    <option  value="0" ${server.server_type =='0'?'selected':''}>ftp服务器</option>
+	<option  value="1" ${server.server_type =='1'?'selected':''}>sftp服务器</option>
+</select>	
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>默认路径</dt>
+				<dd>
+					<textarea name="path" rows="3" cols="20" id="path" class="input" style="width: 500px;height: 30px;">${server.path}</textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>访问ULR</dt>
+				<dd>
+					<textarea name="visit_url" rows="3" cols="20" id="visit_url" class="input" style="width: 500px;height: 30px;">${server.visit_url}</textarea>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>说明</dt>
+				<dd>
+                    <textarea name="memo" rows="3" cols="20" id="memo" class="input" style="width: 500px;height: 100px;">${server.memo}</textarea>
+                    <span id="Validform_checktip">*</span>
+                </dd>
+			</dl>
+		</div>
+		
+		
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			<#permission url="/admin/sys/ftp/update">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="Public.ajaxUpdate('${ctx}/admin/sys/ftp/update')"/> 
+			</#permission>	
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

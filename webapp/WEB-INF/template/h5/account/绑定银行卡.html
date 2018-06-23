@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>绑定银行卡</title>
+<%include("/h5/common/assets.html"){}%> 
+</head>
+
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">绑定银行卡</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter">
+  <h6 class="g-listTitle title">身份信息</h6>
+  <ul class="g-list-li nobg">
+    <li><span class="name">姓名</span><span class="info" >${session.customer.data.client_name}</span></li>
+    <li><span class="name">证件类型</span><span class="info" >
+    <#cms_properties type="certificationtype_list" ; dicts>
+    <%for(dict in dicts){%>
+    	<%if(dict.name==session.customer.data.id_kind_gb){%>
+    		${dict.value} 
+    	<%}%>
+    <%}%>  
+    </#cms_properties></span></li>
+    <li><span class="name">证件号码</span><span class="info" id="custnumber">${strutil.subStringTo(session.customer.data.id_no,0,4)}****${strutil.subStringTo(session.customer.data.id_no,strutil.length(session.customer.data.id_no)-4,strutil.length(session.customer.data.id_no))}</span></li>
+  </ul>
+    <h6 class="g-listTitle title">银行卡信息</h6>
+  <ul class="g-list-li nobg">
+    <li class="g-bg2"><span class="name">银行</span><span class="info sss2"><select m-select="m" class="m-select" id="bankname">
+     <#allbanks;allbanks>
+     	<%for(bank in allbanks){%>
+       <option name ="${bank.capital_mode}_${bank.bank_name}_${bank.detail_fund_way}_${bank.is_support_fast_mode}"  value="${bank.bank_no}">${bank.bank_name}(${bank.capital_mode_name})</option>
+       <%}%>
+     </#allbanks>
+    </select></span></li>
+    <li><span class="name">银行卡号</span><span class="info"><input class="m-input-right" value="" placeholder="请输入银行卡号" type="tel" id="banknumber"></span></li>
+    <li><span class="name">预留手机</span><span class="info"><input class="m-input-right" value="${strutil.subStringTo(session.customer.data.mobile_tel,0,3)}****${strutil.subStringTo(session.customer.data.mobile_tel,7,11)}" placeholder="" type="text" id="mobile"></span></li>
+  </ul>
+  <div class="m50">
+    <div class="agreement-btn">
+      <label>
+        <input class="m-checkbox" name="" type="checkbox" value="" checked>
+        我已阅读并同意</label>
+      <a href="${ctxPath}/h5/account/payagrement">《快捷支付协议》</a></div>
+    <a class="g-btns g-submit g-m-t40" href="javascript:void(0);" onclick="checkbank()">确 定</a>
+    
+     <form action="${ctxPath}/h5/account/bindverifybanktel" id="form" method="post" style="display: none;">
+       	  <input type="hidden"   name="bank_account"      id="bank_account">
+       	  <input type="hidden"   name="bank_account_name" id="bank_account_name" value="${session.customer.data.client_name}">
+       	  <input type="hidden"   name="bank_name"         id="bank_name">
+       	  <input type="hidden"   name="bank_no"           id="bank_no">
+       	  <input type="hidden"   name="capital_mode"      id="capital_mode">
+       	  <input type="hidden"   name="detail_fund_way"   id="detail_fund_way">
+       	  <input type="hidden"   name="fund_interface_type" id="fund_interface_type">
+       	  <input type="hidden"   name="client_full_name"  id="client_full_name" value="${session.customer.data.client_name}">
+       	  <input type="hidden"   name="client_name"       id="client_name"      value="${session.customer.data.client_name}"> 
+       	  <input type="hidden"   name="id_kind_gb"        id="id_kind_gb"       value="${session.customer.data.id_kind_gb}"> 
+       	  <input type="hidden"   name="id_no"             id="id_no"            value="${session.customer.data.id_no}"> 
+       	  <input type="hidden"   name="mobile_tel"        id="mobile_tel"       value="${session.customer.data.mobile_tel}"> 
+     </form>
+    <div class="bottom-e-msg"> </div>
+  </div>
+</div>
+</body> 
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+var myArray=new Array();
+<#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+<%for(bank in mybanks){%>
+    myArray.push("${bank.capital_mode}");
+<%}%>
+</#mybanks>
+//下拉框选中事件 
+function addchange(h){
+	$(".bottom-e-msg").text("");
+	console.log(myArray);
+	var capitals=$("select option:checked").attr("name");
+	var capital_mode=capitals.split("_")[0];//资金方式
+	for(var i=0;i<myArray.length;i++){
+		if(capital_mode==myArray[i]){
+			$(".bottom-e-msg").text("您在该支付渠道已绑过银行卡!");
+			return false;
+		}
+	}
+}
+function checkbank(){
+		$(".bottom-e-msg").text("");
+		var bank_no=$("#bankname").val();//银行编号
+		var capitals=$("select option:checked").attr("name");
+		var capital_mode=capitals.split("_")[0];//资金方式
+		var bank_name=capitals.split("_")[1];//银行名称
+		var detail_fund_way=capitals.split("_")[2];//明细资金方式
+		var fund_interface_type=capitals.split("_")[3];//接口类型
+		var bank_account=$("#banknumber").val();//银行账号 
+		var mobile=$("#mobile").val();//手机号码
+		if (bank_name == "" || bank_name == null) {//银行名称
+			$(".bottom-e-msg").text("请选择银行卡!");
+			return false;
+	    }
+		if (bank_no == "" || bank_no == null) {//银行编号
+			$(".bottom-e-msg").text("请选择银行卡!");
+			return false;
+	    }
+		if (capital_mode == "" || capital_mode == null) {//资金方式
+			$(".bottom-e-msg").text("请选择银行卡!");
+			return false;
+	    }
+		for(var i=0;i<myArray.length;i++){
+			if(capital_mode==myArray[i]){
+				$(".bottom-e-msg").text("您在该支付渠道已绑过银行卡!");
+				return false;
+			}
+		}
+		if (bank_account == "" || bank_account == null) {//银行账号
+			$(".bottom-e-msg").text("请输入银行账号!");
+			return false;
+	    }
+		if (!Regular.REG(Number(bank_account), RegexEnum.bank_account)) {
+			$(".bottom-e-msg").text("银行卡号格式错误");
+			return false;
+		}
+		var checkStatus=$("input:checkbox").is(':checked');
+		if(checkStatus=="false" || checkStatus == false){
+			$(".bottom-e-msg").text("请阅读快捷支付协议");
+			return false;
+		}
+		$("#bank_name").val(bank_name);//银行名称
+		$("#bank_account").val(bank_account);//银行账号
+		$("#bank_no").val(bank_no);//银行编号
+		$("#capital_mode").val(capital_mode);//资金方式
+		$("#detail_fund_way").val(detail_fund_way);//明细资金方式
+		$("#fund_interface_type").val(fund_interface_type);//接口类型
+		<%if(strutil.length(goto!"")<1){%>
+		   document.getElementById("form").submit();
+		  <%}else{%>
+		  var path = "${ctxPath}/h5/account/bindverifybanktel?goto=${goto!}";
+		  $('#form').attr("action", path).submit();;
+     <%}%> 
+}	
+</script>
+</html>

@@ -1,0 +1,75 @@
+         <#publicFundDevided  fundcode="${fund_code!}" assignmode="1" page="${p!}" pagesize="5";fundDevided>
+           <%if(fundDevided!=null && fundDevided.data.dataList.~size>0){%>
+             <table width="465" class="table" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                   <tr>
+                     <th>拆分日</th>
+                     <th>拆分前单位净值</th>
+                     <th>拆分后单位净值</th>
+                     <th>拆分比例</th>
+                   </tr>
+                </thead>
+                <tbody>
+                <%for(devided in fundDevided.data.dataList){%>
+                   <tr>
+                     <td>${devided.bookingdate}</td>
+                     <td>
+                       <%if(@devided.getString("splitfrontvalue")!=null){%>
+                          ${devided.splitfrontvalue}
+                       <%}else{%>
+                          0.0000
+                       <%}%>
+                     </td>
+                     <td>
+                       <%if(@devided.getString("splitaftervalue")!=null){%>
+                          ${devided.splitaftervalue}
+                       <%}else{%>
+                          0.0000
+                       <%}%>
+                     </td>
+                     <td style="text-align:center">
+                       <%if(@devided.getString("splitratio")!=null){%>
+                          ${devided.splitratio}%
+                       <%}else{%>
+                          0.00%
+                       <%}%>
+                     </td>
+                   </tr>
+                <%}%>
+                </tbody>
+             </table>
+             <%
+               var p = fundDevided.data.page;  //当前页
+               var totalPage = fundDevided.data.totalPage;  //总页数
+             %>
+             <div class="m-g-pageBox md-page-box">
+      		   <div class="m-g-page">
+      		      <span>
+      		         <a id="a1_3" class="item" href="javascript:void(0);" onclick="gotoPage_3(1,${totalPage});">首页</a>
+      		      </span>
+      		      <span>
+      		         <a id="a2_3" class="item" href="javascript:void(0);" onclick="gotoPage_3(${p-1},${totalPage});">上一页</a>
+      		      </span>
+      		         <a id="a3_3"class="item" href="javascript:void(0);" onclick="gotoPage_3(${p+1},${totalPage});">下一页</a>
+                     <a id="a4_3" class="item" href="javascript:void(0);" onclick="gotoPage_3(${totalPage},${totalPage});">尾页</a>
+      			  <span class="info">共${totalPage}页 当前为第<input class="thisnumber" value="${p}" type="text">页</span>
+    		 </div>
+    		 <script type="text/javascript">    
+              function setCss(){
+    	        if(${p}>1){
+    		      $("#a1_3").addClass("on");
+    		      $("#a2_3").addClass("on");
+    	        }
+    	        if(${totalPage}>${p}){
+    		      $("#a3_3").addClass("on");
+    		      $("#a4_3").addClass("on");
+    	        }
+             }
+             $(function(){
+    	       setCss();
+             });
+           </script>
+    	  <%}else{%>
+          <center>...暂无更新数据...</center>
+        <%}%>
+    </#publicFundDevided>

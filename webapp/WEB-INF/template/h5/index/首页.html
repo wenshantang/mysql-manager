@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>首页</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<script type="text/javascript">
+
+function checkIsAppleDevice() {
+	var u = navigator.userAgent, app = navigator.appVersion;
+	         var ios = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+	         var iPad = u.indexOf('iPad') > -1;
+	         var iPhone = u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1;
+	         if (ios || iPad || iPhone) {
+	             return true;
+	         } else {
+	             return false;
+	         }
+	     }
+	     
+	function onlineservice(){
+		layer.open({
+			shadeClose: true,
+		    content:"您可以下载安装手机APP，与客服人员进行在线咨询",
+		    btn: ['确认','取消'],
+		    yes: function(){
+		    	if (checkIsAppleDevice()) { 
+		  /*   		layer.open({
+		    			content:"人保宝APP即将发布，敬请期待",
+		    			shadeClose: true,
+		    		    btn: ['知道了']
+		    		}); */
+		    		window.location.href = "http://pre.im/m18L";//打开apk
+		    		layer.closeAll();
+		    		//Popbox.sureWithBtn("");
+		    		//window.location.href = "https://itunes.apple.com/us/app/998dian-wan-cheng/id1135278767?mt=8";//跳转到AppStore
+		    		        } else {
+		    		        	/* layer.open({
+		    		    			content:"人保宝APP即将发布，敬请期待",
+		    		    			shadeClose: true,
+		    		    		    btn: ['知道了']
+		    		    		}); */
+		    		window.location.href = "http://114.55.156.74/rbzgfront/static/PICCFund(v1.4).apk";//打开apk
+		    		layer.closeAll();
+		    		        }
+		    }, no: function(){
+		    }
+		});
+	}
+	function getdetail(id){
+		document.getElementById("message_"+id).submit();
+	}
+</script>
+<#token/>
+<body>
+<m m-main="index"></m>
+<header class="header"> 
+  <div class="wrap"> 
+    <h1 class="title">
+    	<a class="t-left" href="javascript:void(0);" onclick="onlineservice()"><img src="${ctxPath}/portal/h5/images/index2_03.png"></a>
+    	<span class="txt">人保资产基金</span>
+    	<%if(session.customer!=null){%>
+    		<%if(session.customer.data.real_name_flag=='0'){%>
+    			<%if(session.customer.data.logintype=='0'){%>
+    		<a class="t-right" href="${ctxPath}/h5/account/realname"><img src="${ctxPath}/portal/h5/images/index_05.png"></a>
+    		<%}else{%>
+    		    <a class="t-right" href="${ctxPath}/h5/account/myconsignment"><img src="${ctxPath}/portal/h5/images/index_05.png"></a>
+    		<%}%> 
+    	    <%}else{%>
+    	    	<a class="t-right" href="${ctxPath}/h5/account/norealname"><img src="${ctxPath}/portal/h5/images/index_05.png"></a>
+    	    <%}%>
+    	<%}else{%>
+    		<a class="t-right" href="${ctxPath}/h5/login"><img src="${ctxPath}/portal/h5/images/index_05.png"></a>
+		<%}%>
+    </h1>
+    <div class="new-popupBox ">
+      <btn class="new-colse" onClick="takeoff()">关闭</btn>
+      <ul class="new-lbox">
+        <li class="new-list g-d-table">
+          <div class="g-d-table-cell">
+          <#querymessagelist client_id="${session.customer.data.client_id!}" cust_no="${session.customer.data.cust_no!}" customerId="${session.customer.data.mobile_tel!}" operator_from="1" page="1" pagesize="2";querymessagelist>
+          	<%if(querymessagelist.code=='0000'){%>
+            <div class="g-table-con">
+             <%for(message in querymessagelist.data.dataList){%>
+             <form action="${ctxPath}/h5/account/messagedetail" id="message_${message.id}" method="post" style="display: none;">
+       	       <input type="hidden"  id="id"       name="id"       value="${message.id}">
+       	       <input type="hidden"  id="msgtype" name="msgtype" value="${message.msgtype}">
+            </form>
+            	<a href="javascript:void(0);" onclick="getdetail('${message.id}')" >
+            <%if(strutil.length(message.title)<=25){%>${message.title}<%}else{%>${strutil.subStringTo(message.title,0,25)}...<%}%></a>
+             <!--  <a href="javascript:void(0);" >重要提示1.2</a> -->
+              <%}}%>
+              </div>
+              </#querymessagelist>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="f-topBox">
+      <time class="time">资产日期：2016-06-22</time>
+      <div class="pBox">
+		<%if(session.customer!=null){%>
+			<p class="p1">16.86</p>
+		<%}else{%>
+			<p class="p1">--</p>
+		<%}%>
+        <p class="p2">人保宝昨日收益（元）</p>
+      </div>
+      <div class="gt-Box3 gt-Box4">
+        <div class="list">
+          <p class="l1">3.320%</p>
+          <p class="l2">七日年化收益率</p>
+        </div>
+        <div class="list">
+          <p class="l1">0.8814</p>
+          <p class="l2">每万份收益（元）</p>
+        </div>
+        <div class="list">
+		<%if(session.customer!=null){%>
+			<p class="l1">686.80</p>
+		<%}else{%>
+			<p class="l1">--</p>
+		<%}%>
+          
+          <p class="l2"> 累计收益（元）</p>
+        </div>
+      </div>
+      </div>
+        <ul class="g-box3">
+   <!-- onclick="javascript:window.location.href='${ctxPath}/h5/capital/recharge'" -->
+    <li>
+      <p class="icon" ><img src="${ctxPath}/portal/h5/images/bicon_03.png"></p>
+      <p class="txt" >充值</p>
+    </li>
+    <!-- onclick="javascript:window.location.href='${ctxPath}/h5/capital/fixedsalary'" -->
+    <li>
+      <p class="icon"><img src="${ctxPath}/portal/h5/images/bicon_05.png"></p>
+      <p class="txt">定存工资</p>
+    </li>
+     <!-- onclick="javascript:window.location.href='${ctxPath}/h5/capital/unionpay'" -->
+     <li>
+      <p class="icon"><img src="${ctxPath}/portal/h5/images/bicon_07.png"></p>
+      <p class="txt">取现</p>
+    </li>
+  </ul>
+  </div>
+</header>
+<div class="main isTop wrap">
+    <div class="index-list-box index-v2016-10-9">
+      <div class="swiper-wrapper">
+      <#RecommendFund queryType='1';list> 
+      <%if(list!=null){ for(data in list){%>
+        <div class="swiper-slide"> 
+        <%if(data.fundtype!='4'){%>
+          <div class="index-list" onclick="javascript:window.location.href='${ctxPath}/h5/product/detail?fundcode=${data.fundcode!}'">
+           <%}else{%>
+            <div class="index-list" onclick="javascript:window.location.href='${ctxPath}/h5/product/coindetail?fundcode=${data.fundcode!}'">
+           <%}%>
+            <h6 class="title"> ${data.fundname!}</h6>
+            <p class="number">${data.fundcode!}</p>
+             <%if(data.fundtype!='4'){%>
+             	<p class="p1">单位净值（元）：${NumberFunction(data.i_fundvalue!,"###0.0000")}</p>
+            	<p class="p2">日涨幅</p>
+            	 <%if(strutil.contain(data.i_fluctuateper+"","-")){%>
+            	 <p class="p3" style="color:#008000;"><%if(data.i_fluctuateper!=null){%>${NumberFunction(data.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+            	 <%}else{%>
+            	<p class="p3" ><%if(data.i_fluctuateper!=null){%>${NumberFunction(data.i_fluctuateper*100,"###0.00")}%<%}else{%>--<%}%></p>
+             	<%}%>
+             <%}else{%>
+            	<p class="p1">万份收益（元）：${NumberFunction(data.i_dividendamount!,"###0.0000")}</p>
+            	<p class="p2">七日年化</p>
+            	 <%if(strutil.contain(data.i_incomdepercent+"","-")){%>
+            	<p class="p3" style="color:#008000;">${NumberFunction(data.i_incomdepercent!,"###0.000")}<%if(data.i_incomdepercent!=null){%>%<%}%></p>
+            	 <%}else{%>
+            	<p class="p3" >${NumberFunction(data.i_incomdepercent!,"###0.000")}<%if(data.i_incomdepercent!=null){%>%<%}%></p>
+             	<%}%>
+            	<%}%>
+          
+            <%if(data.introduceimg!=null){%>
+            	<p class="g-img-auto"><img src="${data.introduceimg!}"/></p> 
+            <%}else if(data.introduce!=null){%>
+              <p class="g-img-auto">${data.introduce!}</p>
+            <%}%>
+            <div class="g-btnBox2"> <a class="g-btns g-btn2 index" href="${ctxPath}/h5/capital/buy?fundcode=${data.fundcode!}">购  买</a> <a class="g-btns g-btn2 index" href="${ctxPath}/h5/capital/invest?fundcode=${data.fundcode!}">定  投</a> </div>
+          </div>
+        </div>
+      <%}}%>
+       </#RecommendFund>
+       <!--  <div class="swiper-slide">
+          <div class="index-list">
+            <h6 class="title">
+            人保资产货币 
+            </h3>
+            <p class="number">000001</p>
+            <p class="p1">万份收益（元）：0.7856</p>
+            <p class="p2">七日年化</p>
+            <p class="p3">2.456%</p>
+            <p class="g-img-auto"><img src="${ctxPath}/portal/h5/images/index-bbbbbb.png"/></p>
+          </div>
+        </div> -->
+      </div>
+      <div class="i-l-btn l"><img src="${ctxPath}/portal/h5/images/index_16.png"></div>
+      <div class="i-l-btn r"><img src="${ctxPath}/portal/h5/images/index_16.png"></div>
+    </div>
+<!-- <div class="g-btnBox2"> <a class="g-btns g-btn2" href="${ctxPath}/h5/capital/buy?fundcode=${data.fundcode!}">购  买</a> <a class="g-btns g-btn2 no" href="javascript:void(0);">定  投</a> </div>
+  -->
+</div>
+<%include("/h5/common/foot.html",{nav:'index'}){}%>
+<script type="text/javascript">
+	$(function(){
+		<#radiateswitch ;radiateswitch>
+		<%if(radiateswitch.code=='0000'){%>
+		<%if(radiateswitch.data.show_flag=='0'){%>
+		if('${session.takeoff}'=='' || '${session.takeoff}'==null){
+			$('.new-popupBox').addClass('show');
+		}
+		<%}}%>
+		</#radiateswitch>
+	});
+	 
+	function takeoff(){
+		$.ajax({
+			type : "post",
+			data : {
+			},
+			url : "${ctxPath}/user/takeOff",
+			success : function(result) {
+				if (result.code == "0000") {
+					$('.new-popupBox').removeClass('show');
+				} else {
+				}
+			}
+		});
+	}
+</script>
+</body>
+</html>

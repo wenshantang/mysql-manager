@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>招聘管理</title>
+<!-- <script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js&version=2015120313" charset="utf-8"></script> -->
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.post_name}}</td>
+			<td>{{row.job_name}}</td>
+			<td>{{row.post_city}}</td>
+			<td>{{row.degree}}</td>
+			<td>{{row.experience}}</td>
+			<td>{{row.recruit_type | propertiesVal:'RECRUIT'}}</td>
+			<td>{{row.recruit_title | propertiesVal:'TITTLETYPE'}}</td>
+			<td>{{row.dep_type | propertiesVal:'DEPARTMENT'}}</td>
+			<td>{{row.req_num}}</td>
+			<td>{{row.description}}</td>
+			<td>{{row.post_request}}</td>
+            <td>
+				<a href="javascript:;" class="img-btn edit operator" onclick='edit("${ctx}/admin/position/edit/{{row.id}}")'>修改</a>
+           </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody"> 
+
+    <div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/position/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/position/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/position/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/position/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+          <dl>
+				<dt>岗位名称：</dt>
+				<dd>
+   		      	    <input class="input middle" name="post_name" type="text" style="width:133px;" id="post_name"/> 
+				</dd>
+			</dl>
+			<dl>
+				<dt>招聘类型：</dt>
+				<dd>
+   		      	    <td><select name="recruit_type" id="recruit_type" search="-1"
+						class="js-example-basic-single"
+						style="width: 100px; height: 34px;">
+						<option  value="">请选择</option>
+						 <%for(list in recruit!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+					</select></td>
+				</dd>
+			</dl>
+			<dl>
+				<dt>招聘标题：</dt>
+				<dd>
+   		      	   <td><select name="recruit_title" id="recruit_title" search="-1"
+						class="js-example-basic-single"
+						style="width: 100px; height: 34px;">
+						<option  value="">请选择</option>
+							     <%for(list in tittletype!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+					</select></td> 
+				</dd>
+			</dl>
+			<dl>
+				<dt>招聘部门：</dt>
+				<dd>
+   		      	   <td><select name="dep_type" id="dep_type" search="-1"
+						class="js-example-basic-single"
+						style="width: 100px; height: 34px;">
+						<option  value="">请选择</option>
+							   <%for(list in department!){%>
+					<option  value="${list.name}">${list.value}</option>
+					<%}%>
+					</select></td>
+				</dd>
+			</dl>
+			<!-- <dl>
+				<dt>创建时间：</dt>
+				<dd>
+				<%var nowDate = date();%>
+					<input class="input middle" name="create_date" style="width:133px;" onclick="WdatePicker({dateFmt:'yyyyMMdd',maxDate: '#F{$dp.$D(\'endDate\');}' })"  type="text" id="beginDate" />~
+					<input class="input middle" name="create_date1" style="width:133px;" onclick="WdatePicker({dateFmt:'yyyyMMdd',minDate: '#F{$dp.$D(\'beginDate\');}',maxDate:'%y-%M-%d' })"  type="text" id="endDate" 
+						value="${nowDate,dateFormat='yyyyMMdd'}"/>
+				</dd>
+			</dl> -->
+				</form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+          
+		</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/position/json">
+            <tr>
+                <th>选择</th>
+                <th sort="post_name">岗位名称</th>
+                <th sort="job_name">岗位职称</th>
+                <th sort="post_city">工作地点</th>
+                <th sort="degree">学历要求</th>
+                <th sort="experience">经验要求</th>
+                <th sort="recruit_type">招聘类型</th>
+                <th sort="recruit_title">招聘标题</th>
+                <th sort="dep_type">部门</th>
+				<th sort="req_num">需求人数</th>
+				<th sort="description" width="25%">岗位职责</th>
+				<th sort="post_request" width="25%">任职资格</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

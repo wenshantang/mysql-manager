@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产</title>
+<%include("/h5/common/assets.html"){}%>
+<style>
+.main.isTop:before {
+    height: 15.95rem;
+}
+</style>
+</head>
+<script type="text/javascript">
+function gotomyassets(){
+	var logintype="${session.customer.data.logintype!}"
+		 if(logintype=='0'){
+			// window.location.href="${ctxPath}/h5/capital/mycapital";
+		 }else  if(logintype=='1'){
+			 window.location.href="${ctxPath}/h5/capital/mycapitalcs";
+		 }
+}
+window.onload=gotomyassets();
+</script>
+
+<body>
+<#MyCapital  client_id='${session.customer.data.client_id}' cust_no="${session.customer.data.cust_no!}" ;resultmap>
+<header class="header">  
+  <div class="wrap">
+  
+    <h1 class="title"><span class="txt">我的资产</span></h1>
+    <div class="f-topBox f-topBox1123">
+      <time class="time">资产日期：${resultmap.asset_date!'--'}</time>
+      <div class="pBox">
+      <%if(!strutil.contain(resultmap.gain_balance!+"","-")){%>
+        <p class="p1">${StringToNumber(resultmap.gain_balance!'')}</p><!-- gain_balance -->   
+      <%}else{%> 
+       <p class="p1" style="color:#008000;">${StringToNumber(resultmap.gain_balance!'')}</p>
+      <%}%>			 
+        <p class="p2">浮动收益（元）</p> 
+      </div>
+      <div class="m-msgBox">
+        <p class="msg">当前持有基金的累计收益</p>
+      </div>
+      <div class="gt-Box3">
+        <div class="list">
+          <p class="l1">${StringToNumber(resultmap.worth_value!'')}</p>  <!-- total_share_assets -->
+          <p class="l2">总资产（元）</p>
+        </div>
+        <div class="list">
+          <p class="l1">${StringToNumber(resultmap.rbb!'')}</p>
+          <p class="l2">人保宝（元）</p>
+        </div>
+        <div class="list">
+          <p class="l1">${StringToNumber(resultmap.balance!'')}</p>
+          <p class="l2">在途资产（元）</p>
+        </div>
+      </div>
+   </div>
+  </div>
+</header>
+<div class="main isTop wrap" > 
+  <ul class="g-list-li2">
+  	<%if(resultmap!=null){for(map in resultmap.data!){%>
+  	<%if(map.worth_value==""||map.worth_value==null){%> 
+    <li style="background: #fff;"><a href="javascript:void(0);"> 
+      <p class="list list1"><span class="s1">${map.fundtypename!''}基金</span><span class="s2">${resultmap.asset_date!'--'}</span></p>
+      <%if(map.fundtypename=="货币"){%> 
+      <p class="list list2"><span class="s1 c-f25050">${StringToNumber(map.unpaid_income!'')}</span><span class="s2">未付收益（元）</span></p>
+      <%}else{%>
+      <%if(!strutil.contain(map.gain_balance,"-")){%>
+      <p class="list list2"><span class="s1 c-f25050">${StringToNumber(map.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+      <%}else{%>
+      <p class="list list2"><span class="s1 " style="color:#008000;">${StringToNumber(map.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+      <%}%>
+      <%}%>
+      <p class="list list3"><span class="s1">${StringToNumber(map.worth_value!'')}</span><span class="s2">总资产（元）</span></p>
+      <p class="list list4"><span class="s1">${StringToNumber(map.balance!'')}</span><span class="s2">在途资产（元）</span></p>
+      </a></li>
+      <%}else{%>
+      <li><a href="${ctxPath}/h5/capital/positions?nav=${map.fundtype!''}">
+      <p class="list list1"><span class="s1">${map.fundtypename!''}基金</span><span class="s2">${resultmap.asset_date!'--'}</span></p>
+     <%if(map.fundtypename=="货币"){%> 
+      <p class="list list2"><span class="s1 c-f25050">${StringToNumber(map.unpaid_income!'')}</span><span class="s2">未付收益（元）</span></p>
+      <%}else{%>
+      <%if(!strutil.contain(map.gain_balance,"-")){%>
+      <p class="list list2"><span class="s1 c-f25050">${StringToNumber(map.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+      <%}else{%>
+      <p class="list list2"><span class="s1 " style="color:#008000;">${StringToNumber(map.gain_balance!'')}</span><span class="s2">浮动收益（元）</span></p>
+      <%}%>
+      <%}%>
+      <p class="list list3"><span class="s1">${StringToNumber(map.worth_value!'')}</span><span class="s2">总资产（元）</span></p>
+      <p class="list list4"><span class="s1">${StringToNumber(map.balance!'')}</span><span class="s2">在途资产（元）</span></p>
+      </a></li>
+      <%}%>
+      <%}}%>
+  </ul>
+  <ul class="g-list-li m-t20">
+    <li><a href="${ctxPath}/h5/capital/investment"><span class="name">定投管理</span></a></li>
+    <li><a href="${ctxPath}/h5/capital/trade"><span class="name">交易查询</span></a></li>
+  </ul>
+</div>
+</#MyCapital>
+<%include("/h5/common/foot.html",{nav:'myassets'}){}%>
+</body>
+</html>

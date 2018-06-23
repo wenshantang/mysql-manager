@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link href="${ctx}/resource-injar/css?t=/skin/default/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/scripts/common.js"></script>
+<style type="text/css">
+.we-txt {
+	background: url('${ctx}/resource-injar/image?t=/cms.png') no-repeat 0px -80px;
+}
+.we-txt p {
+	font-size: 13px;
+	line-height: 35px;
+	padding-left: 128px;
+	margin-top: 20px;
+}
+
+.nlist-4 {
+    border: 1px solid #eee;
+    font-size: 12px;
+    overflow: hidden;
+}
+.tab-content {
+	padding: 0 15px;
+}
+
+.tab-content dl, .div-content dl {
+	padding: 3px 0;
+    line-height: 25px;
+}
+</style>
+</head>
+<body class="mainbody">
+        <div class="nlist-4" style="border:0;width: 50%;">
+        	<div class="we-txt" style="margin-left: 30px">
+             	  <p>
+                  ${sys.greetings}！${session.user.name}。<br>
+                  欢迎使用鑫铭管理平台！<br>
+                  IP：${sys.ip}<br>
+                  </p>
+             </div>
+            
+            <h3 style="margin-left: 30px;margin-top: 30px"><i></i>系统信息</h3>
+            <div class="tab-content" style="border: 0">
+			<dl>
+				<dt>系统启动时间</dt>
+				<dd>
+					<span>${sys.serverStartTime}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统运行时间</dt>
+				<dd>
+					<span>${sys.serverRunTime}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>服务器用户</dt>
+				<dd>
+					<span>${sys.userName } (${sys.userHome})</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Java版本</dt>
+				<dd>
+					<span>${sys.javaVersion}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Java安装目录</dt>
+				<dd>
+					<span>${sys.javaHome}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>系统临时目录</dt>
+				<dd>
+					<span>${sys.javaIoTmpdir}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>Servlet容器</dt>
+				<dd>
+					<span>${sys.servletEngine!}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM内存总量</dt>
+				<dd>
+					<span>${sys.totalMemory}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM空闲内存量</dt>
+				<dd>
+					<span>${sys.freeMemory}</span>
+				</dd>
+			</dl>
+			<dl>
+				<dt>JVM最大内存量</dt>
+				<dd>
+					<span>${sys.maxMemory}</span>
+				</dd>
+			</dl>
+          </div>
+	  	</div>
+</body>
+</html>

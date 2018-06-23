@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>配置管理</title>
+<%include("resource/template/common/resource.html"){}%>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.id}}"/>
+               	</span>
+            </td>
+            <td>{{row.type}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.value}}</td>
+            <td>{{row.idx}}</td>
+			<td>{{row.status | decode: '0','锁定','1','正常'}}</td>
+            <td>{{row.memo | subStr:'10'}}</td>
+            <td>
+				<a href="javascript:;" class="img-btn edit operator" onclick="edit('${ctx}/admin/cms/properties/edit/{{row.id}}')">修改</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+        <div class="toolbar-wrap">
+            <div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/cms/properties/insert">
+                        <li><a class="add" onclick="add('${ctx}/admin/cms/properties/add')" href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/cms/properties/delete">
+                        <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                        </li>
+                        <li><a onclick="del('${ctx}/admin/cms/properties/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                        </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+			<dl>
+				<dt>配置项分类</dt>
+				<dd>
+					<select name="type" id="type" class="js-example-basic-single" style="width: 200px;">
+                    <option value="">请选择</option>
+				  	<%for(dict in dictTypes!){%>
+					<option value="${dict}">${dict}</option>
+				  	<%}%>
+				   </select>
+				</dd>
+			</dl>
+			<dl>
+				<dt>配置名称</dt>
+				<dd>
+					<input type="text" class="input normal big" id="name" name="name"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>配置值</dt>
+				<dd>
+					<input type="text" class="input normal big" id="value" name="value" />
+				</dd>
+			</dl>
+			</form>
+          </div>
+          
+          <div class="searchButton">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+        
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cms/properties/json">
+            <tr>
+                <th width="5%">选择</th>
+                <th sort="type" width="12%">配置项分类</th>
+                <th sort="name" width="15%">配置名称</th>
+                <th sort="value" width="38%">配置值</th>
+                <th sort="idx" width="5%">排序</th>
+                <th sort="status" width="5%">状态</th>
+                <th width="15%">说明</th>
+                <th width="5%">操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

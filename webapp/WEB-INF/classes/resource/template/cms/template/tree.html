@@ -1,0 +1,53 @@
+<%if(parent_id == '888888888888888888'){%>
+[{
+	"text": "<a href='${ctx}/admin/cms/template/list/888888888888888888' target='templateRightFrame'>根路径</a>",
+	"classes": "folder"
+	<%if(templates!= null && templates.~size != 0){%>
+		,
+	"expanded": true,
+	"children": [
+	<%for(template in templates){%>
+		{
+		"id": "${template.id}",
+		<%if(template.dir!=null &&template.dir!=''){%>
+			"text": "<a href='${ctx}/admin/cms/template/list/${template.id}' target='templateRightFrame'>${template.dir}</a>",
+			"classes": "folder",
+			"hasChildren":true
+		<%}else{%>
+			"text": "<a href='javascript:;'>${template.name}</a>",
+			"classes": "file",
+			"hasChildren":false
+		<%}%>
+		}
+		<%if(templateLP.size > templateLP.index){%>
+			,
+		<%}%>
+	<%}%>
+	]
+	<%}%>
+}]
+<%}else{%>
+	<%if(templates!= null && templates.~size != 0){%>
+	[
+		<%for(template in templates){%>
+		{
+		"id": "${template.id}",
+		<%if(template.dir!=null &&template.dir!=''){%>
+			"text": "<a href='${ctx}/admin/cms/template/list/${template.id}' target='templateRightFrame'>${template.dir}</a>",
+			"classes": "folder",
+			"hasChildren":true
+		<%}else{%>
+			"text": "<a href='javascript:;'>${template.name}</a>",
+			"classes": "file",
+			"hasChildren":false
+		<%}%>
+		}
+		<%if(templateLP.size > templateLP.index){%>
+			,
+		<%}%>
+		
+		<%}%>
+	]
+	<%}%>
+
+<%}%>

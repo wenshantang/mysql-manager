@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的-密码管理-重置交易密码</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+</head>
+<body>
+<m m-main="resetps_m_number_password"></m>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">重置交易密码</span></h1>
+  </div>
+</header>
+<#token/>
+<div class="main wrap nofooter">
+  <div class="m50 g-input40">
+    <h6 class="g-listTitle2 title">证件类型</h6>
+    <div class="g-inputBox">
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="" id="id_kind_gb">
+              <#cms_properties type="certificationtype_list" ; dicts>
+           <%for(dict in dicts){%>
+           			<%if(dict.name!='4'){%>
+            		<option  value="${dict.name}">${dict.value}</option>
+            		<%}%>
+		    <%}%>
+         </#cms_properties>
+          </select>
+        </div>
+      </div>
+    </div>
+    <h6 class="g-listTitle2 title">证件号码</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input" type="tel" id="id_no" placeholder="请输入证件号码">
+      </span> </div>
+    <h6 class="g-listTitle2 title">银行卡</h6>
+    <div class="g-inputBox">
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="" id="trade_acco">
+             <#mybanks client_id="${session.customer.data.client_id!}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+           <%for(bank in mybanks){%> 
+            <option value="${bank.trade_acco}">${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+            <%}%>
+           </#mybanks>
+          </select>
+        </div>
+      </div>
+    </div> 
+    <h6 class="g-listTitle2 title">银行卡号</h6>
+    <div class="g-inputDiv"> <span class="g-input-span">
+      <input class="g-input" type="tel" id="bankno" placeholder="请输入银行卡号">
+      </span> </div>
+      <h6 class="g-listTitle2 title">验证码</h6>
+      <input  type="hidden"  id="mobile" value="${session.customer.data.mobile_tel!}">
+    <div class="g-inputVeri">
+      <div class="g-inputDiv"> <span class="g-input-span">
+        <input class="g-input" maxlength="6" id=authcode type="tel"  placeholder="请输入验证码" >
+        </span> </div>
+        <input  type="hidden"  id="hiddenpassword" >
+    <a class="veri-btn veri-btn-icon"  style="background-color: #f25050" id="send_authcode"  onclick="sendcode()" >获取验证码</a> </div>
+    <a class="g-btns g-submit g-m-t70" href="javascript:void(0);"  onclick="checkbankinfo()">确 定</a>
+	<a id="MumberPassword" m-number-password="MumberPassword" style="display:none"  class="g-btns g-submit g-m-t70" href="javascript:void(0);" >确 定</a>
+	<a id="MumberPassword2" style="display:none" m-number-password="MumberPassword2" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定2</a>
+	<p style="height:1rem"></p>
+  </div>
+</div>
+<script type="text/javascript">
+var wait =60; 
+function time() {
+	if (wait == 0) {
+		$("#send_authcode").attr("onclick","sendcode();");
+		$("#send_authcode").text("发送手机验证码");
+		$("#send_authcode").css("background","#f25050");
+        wait = 60;
+    } else {
+    	$("#send_authcode").removeAttr("onclick");
+    	$("#send_authcode").css("background","#dcdcdc");
+    	$("#send_authcode").text("重新发送("+wait+")");
+        wait--;
+        setTimeout(function() {
+            time()
+    	}, 1000)
+ 	}
+ }
+ 
+var message="";
+//验证身份信息
+function checkinfo(){
+	var  flag=false;
+	var id_kind_gb=$("#id_kind_gb").val();//证件类型
+	var id_no=$("#id_no").val();//证件号码
+	var bankno=$("#bankno").val();//银行卡号
+	var trade_acco=$("#trade_acco").val();
+	if (id_kind_gb == "" || id_kind_gb == null) {//证件类型
+		message="请选择证件类型!";
+		return false;
+    }
+	if (id_no == "" || id_no == null) {//证件号码
+		message="请填写证件号码!";
+		return false;
+    }
+	if (bankno == "" || bankno == null) {//银行卡号!
+		message="请填写银行卡号!";
+		return false;
+    }
+	if(id_kind_gb=="0"){
+		if (!Regular.REG(id_no, RegexEnum.idcard)) {//证件号码
+			message="证件号码格式错误!";
+			return false;
+	    }
+	}
+	$.ajax({
+		type : "post",
+		data : {
+			"id_kind_gb" : id_kind_gb,
+			"id_no" : id_no,
+			"bankno":bankno,
+			"trade_acco":trade_acco
+			
+		},
+		url : "${ctxPath}/user/checkperson",
+		async : false,
+		success : function(result) {
+			console.log(result);
+			if (result.code == "0000") {
+				flag=true;
+			} else {
+				message=result.msg;
+				flag=false;
+			}
+		}
+	});
+	return flag;
+}
+//发送手机验证码
+function sendcode() {
+	var mobile = $("#mobile").val();
+	if (mobile == "" || mobile == null) {
+		Popbox.sureWithBtn("手机号不能为空")
+		return false;
+	}
+	if (!Regular.REG(Number(mobile), RegexEnum.mobile)) {
+		Popbox.sureWithBtn("手机格式错误")
+		return false;
+	}
+	if(checkinfo()){
+		$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"template_id":"6",
+				"sms_channel_id":"2"
+			},
+			url : "${ctxPath}/send/sendcode",
+			success : function(result) {
+				if (result.code == "0000") {
+					time();
+					Popbox.sureWithBtn("验证码发送成功!")
+				} else {
+					Popbox.sureWithBtn("验证码发送失败!");
+				}
+			}
+		});
+	}else{
+		Popbox.sureWithBtn(message);
+	}
+}
+
+function checkbankinfo(){
+	var id_kind_gb=$("#id_kind_gb").val();//证件类型
+	var id_no=$("#id_no").val();//证件号码
+	var bankno=$("#bankno").val();//银行卡号
+	var authcode=$("#authcode").val();//验证码
+	var mobile=$("#mobile").val();//手机号
+	var trade_acco=$("#trade_acco").val();//交易账号
+	if (id_kind_gb == "" || id_kind_gb == null) {//证件类型
+		Popbox.sureWithBtn("请选择证件类型!");
+		return false;
+    }
+	if (id_no == "" || id_no == null) {//证件号码
+		Popbox.sureWithBtn("请填写证件号码!");
+		return false;
+    }
+	if (bankno == "" || bankno == null) {//银行卡号!
+		Popbox.sureWithBtn("请填写银行卡号!");
+		return false;
+    }
+	if (authcode == "" || authcode == null) {//验证码
+		Popbox.sureWithBtn("请填写验证码!");
+		return false;
+    }
+	if(id_kind_gb=="0"){
+		if (!Regular.REG(id_no, RegexEnum.idcard)) {//证件号码
+			Popbox.sureWithBtn("证件号码格式错误!");
+			return false;
+	    }
+	}
+	$.ajax({
+			type : "post",
+			data : {
+				"mobile" : mobile,
+				"authcode" : authcode
+			}, 
+			url : "${ctxPath}/send/checkmobilecode",
+			success : function(result) {
+				console.log(result);
+				if (result.code == "0000") {
+					$('#MumberPassword').click();
+				} else {
+					Popbox.sureWithBtn(result.msg);
+				}
+			}
+	});
+}
+function resetps(password){	
+	var id_kind_gb=$("#id_kind_gb").val();//证件类型
+	var id_no=$("#id_no").val();//证件号码
+	var bankno=$("#bankno").val();//银行卡号
+	var authcode=$("#authcode").val();//验证码
+	var mobile=$("#mobile").val();//手机号
+	var trade_acco=$("#trade_acco").val();//交易账号
+	var hiddenpassword=$("#hiddenpassword").val();
+	if (id_kind_gb == "" || id_kind_gb == null) {
+		Popbox.sureWithBtn("请选择证件类型");
+		return false;
+	}
+	if (id_no == "" || id_no == null) {
+		Popbox.sureWithBtn("请选择证件号码");
+		return false;
+	}
+	if (bankno == "" || bankno == null) {
+		Popbox.sureWithBtn("请填写银行卡号");
+		return false;
+	}
+	if (authcode == "" || authcode == null) {
+		Popbox.sureWithBtn("请填写验证码!");
+		return false;
+	}
+	if (hiddenpassword!=password) {
+		Popbox.sureWithBtn("新交易密码和确认交易密码不一致!");
+		return false;
+	}
+	$.ajax({
+		type : "post",
+		data : {
+			"id_kind_gb" : id_kind_gb,
+			"id_no" : id_no,
+			"new_password" : password,
+			"bankno" : bankno,
+			"authcode" : authcode,
+			"mobile" : mobile
+		},
+		url : ctx+"/user/resettradeps",
+		success : function(result) {
+			if (result.code == "0000") {
+				Popbox.sureWithBtn("修改成功!");
+				window.location.href="${ctxPath}/h5/account/psmanager";
+			} else {
+				Popbox.sureWithBtn(result.msg);
+			}
+		}
+	});
+}
+</script>
+</body>
+</html>

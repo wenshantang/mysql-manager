@@ -1,0 +1,23 @@
+<%for(menu in leftMenus){%>
+	<%if(menu.type == '1'){%>
+	<div class="list-group" name="${menu.name}">
+	<%}else{%>
+	<div class="list-group" name="${menu.name}" src="${ctx}${menu.url}" target="${menu.id}">
+	<%}%>
+  		<h1 title="${menu.name}"></h1>
+  		<div class="list-wrap">
+  		<ul>
+  		<%for(son in menu.sons!){%>
+			<li>
+				<a><span>${son.name}</span></a>
+					<ul>
+						<%for(sonson in son.sons){%>
+		  					<li><a id="${sonson.id}" rel="${ctx}${sonson.url}"> <span>${sonson.name}</span> </a></li>
+		  				<%}%>
+					</ul>
+			</li>
+		<%}%>
+		</ul>
+  		</div>
+    </div>
+<%}%>

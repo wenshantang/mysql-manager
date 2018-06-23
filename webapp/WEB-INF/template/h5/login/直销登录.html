@@ -1,0 +1,231 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>登录</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<script type="text/javascript">
+function gotoindex(){ 
+	var customer="${session.customer.data.logintype!}"
+			 if(customer==""||customer==null){
+				// window.location.href="${ctxPath}/h5/index";
+			 }else if(customer=='1'){
+				 <%if(strutil.length(type!"")<1){%>
+					 <%if(!strutil.contain(goto!"","fundcode")){%>
+						window.location.href="${ctxPath}/h5/index";
+	                 <%}%> 
+				 <%}%>
+			 }else if(customer=='0'){
+				 window.location.href="${ctxPath}/h5/index";
+			 }
+}
+window.onload=gotoindex();
+</script> 
+<body>
+
+<m m-main="login"></m>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">登录</span></h1>
+  </div>
+</header>
+<div class="main wrap g-icon-bg">
+  <div class="login-logoDiv"><img class="login-logo" src="${ctxPath}/portal/h5/images/kkk_03.png"/></div>
+  <div class="m50">
+    <div class="tag-titleBox"><a class="on" href="javascript:void(0)">人保宝</a><a href="javascript:void(0)">代销查询</a></div>
+    <div class="tag-listBox g-inputLogin">
+      <div class="tag-list"> 
+         <div class="m-select-type">
+          <select name="cusy_type" id="cusy_type">
+         	 <option placeholder="输入手机号或身份证号" value="A">手机号/身份证</option>
+         	 <option placeholder="输入中国护照号码" value="1">中国护照</option>
+         	 <option placeholder="输入军官证号码" value="2">军官证</option>
+         	 <option placeholder="输入士兵证号码" value="3">士兵证</option>
+         	 <option placeholder="输入户口本或出生证号码" value="5">户口本/出生证</option>
+         	 <option placeholder="输入其他号码" value="6">其他</option>
+          </select>
+        </div>
+        <div class="g-inputDiv icon-phone"> <span class="g-input-span">
+          <input class="g-input" type="text" id="loginname"  placeholder="输入手机号或证件号">
+          </span> <span class="m-select-btn">选择登陆类型</span></div>
+        <div class="g-inputDiv icon-pass"> <span class="g-input-span">
+          <input class="g-input" type="password" id="password" placeholder="6位数字的登录密码">
+          <span class="g-pass-eye-btn" ><img src="${ctxPath}/portal/h5/images/reg_nosee.png" onclick="showpassword()" ></span> </span> </div>
+        <a class="g-btns g-submit g-m-t40" href="javascript:void(0);" onclick="login()">登  录</a>
+        <div class="bottom-e-msg" id="message"></div>
+        <div class="login-pass-btn-box m-t404" ><a class="l-p-a-btn" href="${ctxPath}/h5/register">注册</a><a class="l-p-b-btn" href="${ctxPath}/h5/account/forgetps">忘记登录密码？</a></div>
+      </div>
+      <div class="tag-list">
+       <div class="m-select-type">
+          <select name="con_cusy_type"  id="con_cusy_type">
+             <option placeholder="输入手机号或身份证号" value="A">手机号/身份证</option>
+         	 <option placeholder="输入中国护照号码" value="1">中国护照</option>
+         	 <option placeholder="输入军官证号码" value="2">军官证</option>
+         	 <option placeholder="输入士兵证号码" value="3">士兵证</option>
+         	 <option placeholder="输入户口本或出生证号码" value="5">户口本/出生证</option>
+         	 <option placeholder="输入其他号码" value="6">其他</option>
+          </select>
+        </div>
+        <div class="g-inputDiv icon-phone"> <span class="g-input-span">
+          <input class="g-input" type="text" id="conloginname" placeholder="输入手机号或证件号">
+          </span> <span class="m-select-btn">选择登陆类型</span></div>
+        <div class="g-inputDiv icon-pass"> <span class="g-input-span">
+          <input class="g-input" type="password"  id="conpassword"   placeholder="6位数字的登录密码">
+          <span class="g-pass-eye-btn"> <img src="${ctxPath}/portal/h5/images/reg_nosee.png" onclick="showpassword()"> </span> </span> </div>
+        <a class="g-btns g-submit g-m-t40" href="javascript:void(0);" onclick="conlogin()">代销查询</a>
+        <div class="bottom-e-msg" id="consignmentmessage"></div>
+        <div class="g-info-b2">温馨提示：代销用户首次登录请使用开户证件号，登录密码为证件号后6位。</div>
+        <div class="login-pass-btn-box m-t194"><a class="l-p-b-btn" href="${ctxPath}/h5/account/forgetps?type=coin">忘记登录密码？</a></div>
+        <!-- ${ctxPath}/h5/account/forgetps  onclick="conlogin()" -->
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+
+function checkmobile(mobile,acco_type) {
+	var flag = false;
+	 $.ajax({
+		//校验该手机号是否已被注册()
+		url : '${ctxPath}/user/checkuser',
+		data : {
+			"acco_no" : mobile,"acco_type":acco_type,"system_from":"1"
+		},
+		dataType : 'json',
+		type : 'post',
+		success : function(data) {
+			if (data.code = "0000") {
+				console.log(eval("("+data.data+")").exist);
+				if(eval("("+data.data+")").exist=='0'){
+					flag = true;
+				}else{
+					flag = false;
+				}
+				
+			}
+		}
+	}); 
+	return flag;
+}
+	function showpassword(){//显示明文密码
+		$("#password").attr('type','text');
+		$("#conpassword").attr('type','text');
+		$(".g-pass-eye-btn").html("<img src='${ctxPath}/portal/h5/images/reg_see.png' onclick='hidepassword()' >");
+	} 
+	function hidepassword(){//隐藏明文密码
+		$("#password").attr('type','password');
+		$("#conpassword").attr('type','password');
+		$(".g-pass-eye-btn").html("<img src='${ctxPath}/portal/h5/images/reg_nosee.png' onclick='showpassword()' >");
+	}
+	function login(){
+		$("#message").text('');
+		var loginname=$("#loginname").val();//用户名
+		var password=$("#password").val();//密码	
+		var cusy_type=$("#cusy_type").val();
+		console.log(cusy_type);
+		if (loginname == "" || loginname == null) {
+			$("#message").text("登录账号不能为空")
+			return false;
+		}
+		if (password == "" || password == null) {
+			$("#message").text("登录密码不能为空")
+			return false;
+		}
+		if (cusy_type == "" || cusy_type == null) {
+			$("#message").text("登录方式不能为空")
+			return false;
+		}
+		if(cusy_type=="A"){
+			if(loginname.length==11){
+				cusy_type="4";
+			}else{ 
+				cusy_type="0";
+			}
+		}
+		
+		$.ajax({
+			type : "post",
+			data : {
+				"loginname" : loginname,"password":password,"log_type":cusy_type
+			},
+			url : "${ctxPath}/user/login",
+			success : function(result) {
+				if (result.code == "0000") {
+					//alert('登录成功!');
+					<%if(strutil.length(goto!"")<1){%>
+					window.location.href="${ctxPath}/h5/index";
+                 <%}else{%>
+                    window.location='${goto!}';
+                 <%}%> 
+					
+				} else {
+					$("#message").text(result.msg);
+				}
+			}
+		});
+
+	}
+	
+	function conlogin(){
+		$("#consignmentmessage").text('');
+		var loginname=$("#conloginname").val();//用户名
+		var password=$("#conpassword").val();//密码
+		var id_kind_gb=$("#con_cusy_type").val();//证件类型
+		var log_type=$("#con_cusy_type").val();//4 为手机登录
+		if(log_type=='A'){
+			if(loginname.length==11){
+				log_type="4"
+			}else{
+				id_kind_gb="0";
+			}
+		}
+		if (loginname == "" || loginname == null) {
+			$("#consignmentmessage").text("登录账号不能为空")
+			return false;
+		}
+		if (password == "" || password == null) {
+			$("#consignmentmessage").text("登录密码不能为空")
+			return false; 
+		} 
+		$.ajax({
+			type : "post",
+			data : {
+				"loginname" : loginname,"password":password,"log_type":log_type,"id_kind_gb":id_kind_gb
+			},
+			url : "${ctxPath}/user/conlogin",
+			success : function(result) {
+				if (result.code == "0000") { 
+					console.log(result.data);
+					//状态为0代表需要完善手机号码，为1代表不需要完善手机号码
+					if(eval("("+result.data+")").status=='0'){
+						window.location.href="${ctxPath}/h5/consignmentsetps"
+					}else{
+						<%if(strutil.length(type!"")<1){%>
+						<%if(strutil.length(goto!"")<1){%>
+						   window.location.href="${ctxPath}/h5/capital/mycapitalcs";
+						  <%}else{%>
+		                    window.location='${goto!}'; 
+		                 <%}%> 
+	                   <%}else{%>
+	                      window.location.href="${ctxPath}/h5/capital/mycapitalcs";
+	                   <%}%>
+						
+					}
+				} else {
+					$("#consignmentmessage").text(result.msg);
+				}
+			}
+		});
+		
+	}
+</script>
+</body>
+</html>

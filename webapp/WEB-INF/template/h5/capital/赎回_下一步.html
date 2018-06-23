@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>赎回下一步</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<header class="header">
+		<div class="wrap">
+				<h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">赎回</span></h1>
+		</div>
+</header>
+<div class="main isTop1 wrap nofooter">
+		<div class="yl-fenhong">
+				
+				<div class="top-e-msg yl-f m-t-b" style="margin-bottom:3.9506172839506rem; margin-top:5.9259259259259rem;">
+						请输入6位数字的交易密码
+				</div>
+				<div class="yl-inputDiv yl-pword-bg">
+						<input class="g-input" id="tradepassword" type="password" placeholder="" maxlength="6" value="">
+				</div>
+				<a class="g-btns g-submit g-m-t112 m-auto" href="javascript:void(0);" onclick="redemptionfund()">确  定</a>
+				<div class="bottom-e-msg">
+						
+				</div>
+		  <input type="hidden" id="fund_code"  name="fund_code" value="${fund_code}">
+       	  <input type="hidden"  id="share_type"  name="share_type"  value="${share_type}" >
+       	  <input type="hidden"  id="share"  name="share" value="${share}" >
+       	  <input type="hidden" id="trade_acco"  name="trade_acco" value="${trade_acco}">
+       	  <input type="hidden" id="fund_exceed_flag"  name="fund_exceed_flag" value="${fund_exceed_flag}">
+		</div>
+</div>
+<script type="text/javascript">
+	function redemptionfund(){
+		 $(".bottom-e-msg").text("");
+		var fund_code=$("#fund_code").val();//基金代码
+		//var fund_code="3Q0108";//基金代码
+		var share_type=$("#share_type").val();//付款方式
+		var share=$("#share").val();//份额
+		var trade_acco=$("#trade_acco").val();//交易账号
+		var fund_exceed_flag=$("#fund_exceed_flag").val();//赎回标志
+		var tradepassword=$("#tradepassword").val();
+		if (fund_code == "" || fund_code == null) {
+			$(".bottom-e-msg").text("请返回上一层选择对应的基金!");
+			return false;
+		}
+		if (share_type == "" || share_type == null) {
+			$(".bottom-e-msg").text("请返回上一层选择付费方式!");
+			return false;
+		}
+		if (share == "" || share == null) {
+			$(".bottom-e-msg").text("请返回上一层填写赎回份额!");
+			return false;
+		}
+		if (trade_acco == "" || trade_acco == null) {
+			$(".bottom-e-msg").text("请返回上一层选择支付方式!");
+			return false;
+		}
+		
+		if (fund_exceed_flag == "" || fund_exceed_flag == null) {
+			$(".bottom-e-msg").text("请返回上一层选择赎回标志!");
+			return false;
+		}
+		if (tradepassword == "" || tradepassword == null) {
+			$(".bottom-e-msg").text("请输入交易密码!");
+			return false;
+		}
+			$.ajax({
+				type : "post", 
+				data : {
+					"shares" : share,
+					"fund_code" : fund_code,
+					"password":tradepassword,
+					"share_type" : share_type,
+					"trade_acco" : trade_acco,
+					"fund_exceed_flag" : fund_exceed_flag
+				},
+				url : "${ctxPath}/trade/redemption",
+				success : function(result) { 
+					if("0000"==result.code){
+						console.log(result.data);
+						var obj = eval('(' + result.data + ')');
+						window.location.href="${ctxPath}/h5/capital/redemptionsuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+					}else{
+						$(".bottom-e-msg").text(result.msg);
+					}
+				}
+			});
+	}
+</script>
+</body>
+</html>

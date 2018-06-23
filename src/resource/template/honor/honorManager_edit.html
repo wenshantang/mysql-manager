@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>添加荣誉</title>
+<script type="text/javascript" src="${ctx}/resource-injar/script?t=/plugin/datepicker/WdatePicker.js&version=2015120313" charset="utf-8"></script>
+<%include("resource/template/common/resource.html"){}%>
+
+
+<script type="text/javascript">
+function updateHonor(){
+ var honor_name = $("#honor_name").val();
+ var honor_type = $("#honor_type").val();
+ var honor_from = $("#honor_from").val();
+ var url1 = $("#url").val();
+ var show_index = $("#show_index").val();
+ var remark = $("#remark").val();
+ var honor_year = $("#honor_year").val();
+ var honor_month = $("#honor_month").val();
+ 
+ var honor_id = $("#id").val();
+ 
+ if(honor_name.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ 
+ if(honor_type.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ if(honor_from.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ if(url1.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ if(show_index.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }else{
+	 var type = /^[0-9]*[1-9][0-9]*$/;
+	 if(!type.test(show_index)){
+		 alert("索引必须为数字");
+		 return false;
+	 }
+ }
+
+ if(honor_year.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ if(honor_month.length==0){
+	 alert("奖励名称不能为空！");
+	 return false;
+ }
+ 
+ 
+ 
+ if(document.getElementById("is_h5_flag").checked){
+	 $("#is_h5_flag").val("1");
+ }else{
+	 $("#is_h5_flag").val("0");
+ }
+ var is_h5_flag = $("#is_h5_flag").val();
+   $.ajax({  
+
+    type : "POST",  //提交方式  
+    url : "${ctx}/admin/honorManager/update",//路径  
+    data : {  
+       "honor_name":honor_name,"honor_type":honor_type,"honor_from":honor_from,"url":url1,"show_index":show_index,"remark":remark,
+       "honor_year":honor_year,"honor_month":honor_month,"is_h5_flag":is_h5_flag,"honor_id":honor_id
+    },//数据，这里使用的是Json格式进行传输  
+    success : function(result) {//返回数据根据结果进行相应的处理  
+        if ( result.code=="0000") {  
+              alert("修改成功！");
+//               Public.closeDialog()
+//               window.location.href="${ctx}/admin/honorManager/index";
+              parent.location.reload();
+              
+        } 
+    }  
+});  
+
+}
+     
+</script>
+</head>
+<body class="mainbody">
+		<div class="content-tab-wrap">
+			<div id="floatHead" class="content-tab">
+				<div class="content-tab-ul-wrap">
+					<ul>
+						<li><a href="javascript:;" onclick="tabs(this);"class="selected">修改荣誉管理</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<form id="data_form">
+		<div class="tab-content">
+		    <input type="hidden" name="id" id="id" value="${msg.id}" />
+			<input type="hidden" name="create_date" id="create_date" value="${msg.create_date}" />
+			<input type="hidden" name="create_by" id="create_by" value="${msg.create_by}">
+			<dl>
+				<dt>奖励名称</dt>
+				<dd>
+					<input name="honor_name" type="text" id="honor_name" class="input normal" value="${msg.honor_name}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>奖励类型</dt>
+				<dd>
+					<input name="honor_type" type="text" id="honor_type" class="input normal" value="${msg.honor_type}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			
+			
+			<dl>
+				<dt>来源</dt>
+				<dd>
+				<input class="input normal" name="honor_from" value="${msg.honor_from}" id="honor_from"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>URL</dt>
+				<dd>
+				<input class="input normal" name="url" value="${msg.url}" id="url"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>索引</dt>
+				<dd>
+				<input class="input normal" name="show_index" value="${msg.show_index}" id="show_index"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl id="twodl">
+				<dt>是否删除:</dt>
+				<dd>
+					 <select style="width: 133px" id="del_flag" name="del_flag" class="js-example-basic-single" >
+   		      	    <option value="">请选择</option>
+   		      	    <option value="0" ${msg.del_flag == '0' ?'selected':''}>未删除</option>
+   		      	    <option value="1" ${msg.del_flag == '1' ?'selected':''}>已删除</option>
+   		      	  </select>		
+   		      	 <span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>备注</dt>
+				<dd>
+				<input class="input normal" name="remark"  value="${msg.remark}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>奖励年份</dt>
+				<dd>
+					<input class="input middle" name="honor_year" onclick="WdatePicker({dateFmt:'yyyy',maxDate:'%y-%M-%d' })"   type="text" id="honor_year" value="${msg.honor_year}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>奖励月份</dt>
+				<dd>
+					<input class="input middle" name="honor_month" onclick="WdatePicker({dateFmt:'MM'})"   type="text" id="honor_month" value="${msg.honor_month}"/>
+					<span id="Validform_checktip">*</span>
+				</dd>
+			</dl>
+			
+			<dl>
+				
+				<dd>	
+				    <td>
+				          <%if(msg.is_h5_flag!=null){%>
+					        <%if(msg.is_h5_flag=='1'){%>
+							   <input name="is_h5_flag" type="checkbox"  checked="true" id="is_h5_flag" />&nbsp;h5使用&nbsp;&nbsp;
+							<%}else{%>
+							   <input name="is_h5_flag" type="checkbox"  id="is_h5_flag" />&nbsp;h5使用&nbsp;&nbsp;
+							<%}%>
+						  <%}else{%>
+						       <input name="is_h5_flag" type="checkbox" id="is_h5_flag" />&nbsp;h5使用&nbsp;&nbsp;
+						  <%}%>
+				    </td>
+
+				</dd>
+			</dl>
+			
+			
+		</div>
+		</form>
+		<div class="page-footer">
+			<div class="btn-list">
+			
+				<input type="button" name="btnSubmit" value="确定" id="btnSubmit" class="btn" onclick="updateHonor();"/> 
+    
+				<input name="btnReturn" type="button" value="取消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>

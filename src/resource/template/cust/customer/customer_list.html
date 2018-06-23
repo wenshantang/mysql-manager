@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>用户信息</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+function rest(url){
+	$.layer({
+	    shade: [0.5, '#888'],
+	    border: [0.2, 0.1, '#000'],
+	    area: ['auto','auto'],
+    	title:'重置密码',
+	    dialog: {
+	        msg: '确定要重置该客户密码吗？',
+	        btns: 2,                    
+	        type: 4,
+	        btn: ['确定','取消'],
+	        yes: function(index){
+	        	layer.close(index);
+	        	var v = loading("重置中！");
+	        	jQuery.ajax({
+	        		url : url,
+	        		type : "POST",
+	        		success : function(result) {
+	        			    layer.close(v);
+	        				pagination();
+	        				popStatus(1, '重置成功！！！', 1);
+	        		}
+	        	});
+	        }, no: function(){
+	            
+	        }
+	    }
+	});
+}
+function approve(url){
+	$.layer({
+	    shade: [0.5, '#888'],
+	    border: [0.2, 0.1, '#000'],
+	    area: ['auto','auto'],
+    	title:'审核通过',
+	    dialog: {
+	        msg: '确定审核通过吗？',
+	        btns: 2,                    
+	        type: 4,
+	        btn: ['确定','取消'],
+	        yes: function(index){
+	        	layer.close(index);
+	        	var v = loading("审核中！");
+	        	jQuery.ajax({
+	        		url : url,
+	        		type : "POST",
+	        		success : function(result) {
+	        			    layer.close(v);
+	        				pagination();
+	        				popStatus(1, '审核成功！！！', 1);
+	        		}
+	        	});
+	        }, no: function(){
+	            
+	        }
+	    }
+	});
+}
+</script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.cust_id}}" type="checkbox" name="_ckid" value="{{row.cust_id}}"/>
+               	</span>
+            </td>
+            <td><a href="javascript:;" onclick='edit("${ctx}/admin/cust/customer/detail/{{row.cust_id}}")'>{{row.cust_name}}</a></td>   
+			<td>{{row.short_name}}</td>       
+			<td>{{row.cust_kind | propertiesVal:'cust_kind_list'}}</td>    
+			<td>{{row.cust_type | propertiesVal:'cust_type_list'}}</td>    
+			<td>{{row.cust_level | propertiesVal:'cust_level_list'}}</td>
+            <td>{{row.mobile}}</td>
+			<td>{{row.telnum}}</td>
+			<td>{{row.email}}</td>
+			<td style="text-align:left">{{row.address}}</td>
+            <td>
+			    {{if row.cust_status=="0" & row.cust_type =="2"}}
+ 				    <a href="javascript:;" onclick='approve("${ctx}/admin/cust/customer/approve/{{row.cust_id}}")'>审核通过</a>
+				{{/if}}
+				<a href="javascript:;" onclick='edit("${ctx}/admin/cust/customer/edit/{{row.cust_id}}")'>修改</a>
+				<a href="javascript:;" onclick='rest("${ctx}/admin/cust/customer/restPassword/{{row.cust_id}}")'>重置密码</a>
+            </td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+ <div class="toolbar-wrap">
+ 			<div id="floatHead" class="toolbar">
+                <div class="l-list">
+                    <ul class="icon-list">
+                    <#permission url="/admin/cust/customer/insert">
+                        <li><a class="add" onclick='add("${ctx}/admin/cust/customer/add")' href="javascript:;"><i></i><span>新增</span></a>
+                        </li>
+                    </#permission>
+                    <#permission url="/admin/cust/customer/delete">
+                       <li><a class="all" href="javascript:;" onclick="checkAll(this);"><i></i><span>全选</span></a>
+                       </li>
+                       <li><a onclick="del('${ctx}/admin/cust/customer/delete')" id="btnDelete" class="del" href="javascript:;"><i></i><span>删除</span></a>
+                       </li>
+                    </#permission>
+                    </ul>
+                </div>
+            </div>
+          <div class="searchbar">
+          <div class="searchForm">
+          <form id="search_form">
+					<dl>
+						<dt>客户名称：</dt>
+						<dd>
+		   		      	    <input class="input middle" name="cust_name" type="text" style="width:133px;" id="cust_name"/> 
+						</dd>
+					</dl>
+					<dl>
+						<dt>客户类别：</dt>
+						<dd>
+							<select  id="cust_kind" name="cust_kind" search="-2"  class="js-example-basic-single" style="width: 100px;">
+		   		      			  <option value="">请选择</option>
+										<%for(list in cust_kind_list!){%>
+									<option value="${list.name}">${list.value}</option>
+								  	<%}%>
+		   		      	    </select>
+						</dd>
+					</dl>	
+					<dl>
+						<dt>客户等级：</dt>
+						<dd>
+							<select  id="cust_level" name="cust_level" search="-2"  class="js-example-basic-single" style="width: 100px;">
+		   		      			  <option value="">请选择</option>
+										<%for(list in cust_level_list!){%>
+									<option value="${list.name}">${list.value}</option>
+								  	<%}%>
+		   		      	    </select>
+						</dd>
+					</dl>	
+					<dl>
+						<dt>客户类型：</dt>
+						<dd>
+							<select  id="cust_type" name="cust_type" search="-2"  class="js-example-basic-single" style="width: 100px;">
+		   		      			  <option value="">请选择</option>
+										<%for(list in cust_type_list!){%>
+									<option value="${list.name}">${list.value}</option>
+								  	<%}%>
+		   		      	    </select>
+						</dd>
+					</dl>	
+				</form>
+          </div>
+          <div class="searchButton" style="float: right;margin-right: 60px;">
+             <input id="searchBtn" class="btn" type="button" value="搜 索" />
+             <input id="clearBtn" class="btn yellow" type="button" value="重 置" />
+   		  </div>
+		</div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cust/customer/json">
+            <tr>
+                <th>选择</th>
+                <th sort="cust_name">客户名称</th>
+                <th sort="short_name">客户简称</th>
+                <th sort="cust_kind">客户类别</th>
+                <th sort="cust_type">客户类型</th>
+                <th sort="cust_level">客户等级</th>
+                <th sort="mobile">手机号码</th>
+                <th sort="telnum">商务电话</th>
+                <th sort="email">电子邮件</th>
+                <th sort="address">联系地址</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+</body>
+</html>

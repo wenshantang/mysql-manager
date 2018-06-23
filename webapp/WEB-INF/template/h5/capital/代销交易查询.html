@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>我的资产-代销交易查询</title>
+<%include("/h5/common/assets.html"){}%>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/zepto.js"></script>
+<script type="text/javascript" src="${ctxPath}/popbox/popbox.js"></script>
+<script src="${ctxPath}/popbox/layer.m.js"></script>
+</head>
+<script type="text/javascript">
+		 var page=1;//当前页(在途交易记录查询)
+		 var totalPage=1;
+		 var pagesize=11;//每页的条数	
+		Zepto(function($){ 
+			$(window).scroll(function(){
+					 //滚动条拉到离底10像素内，而且没超过总页数
+					 console.info(($(window).scrollTop() + $(window).height() > $(document).height()-10));
+			      if(($(window).scrollTop() + $(window).height() > $(document).height()-10)){
+			        	 if(totalPage>page){
+			        		page++; 
+			        		searchconsignmenttrade(page);
+			        	}
+				 }
+		  });
+});
+</script>
+<body>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">代销交易查询</span></h1>
+  </div>
+</header>
+<div class="main wrap nofooter"> 
+      <div class="g-table-3">
+       			<input type="hidden" value=""  id="fund_busin_code"/>
+                <input type="hidden" value=""  id="starttime"/>
+                <input type="hidden" value=""  id="endtime"/>
+             <div class="g-table-typeBox" m-show="type"  id="type-content1" m-onclass="on" style="display: none;">
+                <a class="btn on" onclick="searchtype('','1')">全部</a>
+                <a class="btn" onclick="searchtype('022','1')">申购</a>
+                <a class="btn" onclick="searchtype('020','1')">认购</a>
+                <a class="btn" onclick="searchtype('024','1')">赎回</a>
+                <a class="btn" onclick="searchtype('039','1')">定投</a>
+                <a class="btn" onclick="searchtype('036','1')">转换</a>
+                <a class="btn" onclick="searchtype('029','1')">修改分红方式</a>
+                <a class="btn" onclick="searchtype('029','1')">基金分红</a>
+                <a class="btn" onclick="searchtype('','1')">基金成立</a>
+                <a class="btn" onclick="searchtype('024','1')">强制赎回</a>
+                <a class="btn" onclick="searchtype('','1')">人保宝</a>
+            </div>
+            <div class="g-table-typeBox g-table-typeBox2" id="date-content1" m-show="date" style="display: none;">
+                    <p class="p"><a class="d-btn" onclick="searchtype('w','0')">近1周</a><span class="date"><input m-date="m" class="input" type="text" placeholder="开始日期" value="" id="startDate1"></span></p>
+                    <p class="p"><a class="d-btn" onclick="searchtype('m','0')">近1月</a><span class="date"><input m-date="m" class="input" type="text" placeholder="结束日期" id="endDate1"></span></p>
+            </div>
+        <table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col"  id="date1" m-onshow="date"  >确认日期<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></th>
+              <th scope="col" id="type1"  m-onshow="type" >交易类型<img class="soso-icon" src="${ctxPath}/portal/h5/images/sosos_03.png"></th>
+              <th scope="col"><p class="pt">销售机构<br>基金简称</p></th>
+              <th scope="col">金额/份额</th>
+              <th scope="col" width="17%">状态</th>
+            </tr>
+          </thead>
+          <tbody id="consignmentlist">
+          </tbody> 
+        </table>
+      </div>
+      <p style="height:1rem"></p>
+</div>
+<form action="${ctxPath}/h5/capital/tradedetail_coin" id="form" method="post" style="display: none;">
+		  <input type="hidden"   name="busin_flag"           id="busin_flag">
+		  <input type="hidden"   name="allot_no"           id="allot_no">
+       	  <input type="hidden"   name="fund_name"           id="fund_name">
+       	  <input type="hidden"   name="fund_code"           id="fund_code">
+       	  <input type="hidden"   name="apply_date"          id="apply_date">
+       	  <input type="hidden"   name="affirm_date"         id="affirm_date">
+       	  <input type="hidden"   name="busin_name"          id="busin_name">
+       	  <input type="hidden"   name="apply_sum"           id="apply_sum">
+       	  <input type="hidden"   name="trade_confirm_type"  id="trade_confirm_type" >
+       	  <input type="hidden"   name="auto_buy_name"       id="auto_buy_name"> 
+       	  <input type="hidden"   name="trade_acco"          id="trade_acco_hidden"> 
+       	  <input type="hidden"   name="bank_no"             id="bank_no"> 
+       	  <input type="hidden"   name="trade_fee"           id="trade_fee" >
+       	  <input type="hidden"   name="apply_share"         id="apply_share"> 
+       	  <input type="hidden"   name="from_fund_name"      id="from_fund_name"> 
+       	  <input type="hidden"   name="from_fund_code"      id="from_fund_code"> 
+       	  <input type="hidden"   name="trade_status_name"   id="trade_status_name">
+       	  <input type="hidden"   name="agency_name"         id="agency_name">
+</form>  
+<div id="consignment_trade_list" style="display: none;"></div>
+<script type="text/javascript">
+var fund_busin_code=$("#fund_busin_code").val();//业务代码查询
+var start_date=$("#starttime").val();//开始时间
+var end_date=$("#endtime").val();//结束时间
+//在途交易查询
+function searchconsignmenttrade(page){
+	fund_busin_code=$("#fund_busin_code").val();
+	start_date=$("#starttime").val();
+	end_date=$("#endtime").val();
+	$("#consignment_trade_list").html("");
+	var url ="${ctxPath}/h5/capital/consignmentPage?p="+page+"&fund_busin_code="+fund_busin_code+"&end_date="+end_date+"&begin_date="+start_date;
+	$("#consignment_trade_list").load(url, function(response, status, xhr) {
+		console.info($("#consignment_trade_list").html());
+		$('#consignmentlist').append($("#consignment_trade_list").html());
+	});
+}
+function searchtype(code,type){
+	if(type=='1'){//在途交易类型
+		var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show();
+				$("#type-content1").hide();
+				return false;
+				}
+		}
+		$("#date-content1").hide();
+		$("#fund_busin_code").val(code);
+		$("#type-content1").hide();
+		$("#consignmentlist").html("");
+		searchconsignmenttrade('1');
+	}else if(type=='0'){//在途交易时间框
+		var now = new Date();
+		if(code=='w'){
+			var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+			$("#starttime").val(date.format("yyyyMMdd"));
+			$('#startDate1').val(date.format("yyyy-MM-dd"));
+			$('#endDate1').val(now.format("yyyy-MM-dd"));
+		}else{
+			var begin=new Date();
+			var end=new Date();
+			new Date(begin.setMonth((new Date().getMonth()-1)));
+			var begintime= begin.format("yyyy-MM-dd");
+			var endtime=end.format("yyyy-MM-dd");
+			$('#startDate1').val(begintime);
+			$('#endDate1').val(endtime);
+			$("#starttime").val(begin.format("yyyyMMdd"));
+		}
+		$("#date-content1").hide();
+		$("#consignmentlist").html("");
+		searchconsignmenttrade('1');
+	}
+}
+
+function adddate(g,r,i,p){
+	$("#type-content1").hide();
+	if(g=='1'||g=='2'){
+		var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show();
+				return false;
+			}
+		//$("#date-content1").hide();
+		$("#starttime").val(startDate);
+		$("#endtime").val(endDate);
+		$("#consignmentlist").html("");
+		if(g=='2'){
+			$("#date-content1").hide();
+			searchconsignmenttrade('1');
+		}
+		}
+	}
+}
+$(function(){
+	searchtype("w","0");
+})
+
+function confirmtradeinfodetail(id){
+	$("#busin_flag").val($("#busin_flag_"+id).val());
+	$("#fund_name").val($("#fund_name_"+id).val());
+	$("#fund_code").val($("#fund_code_"+id).val());
+	$("#apply_date").val($("#apply_date_"+id).val());
+	$("#affirm_date").val($("#affirm_date_"+id).val());
+	$("#busin_name").val($("#busin_name_"+id).val());
+	$("#apply_sum").val($("#apply_sum_"+id).val());
+	$("#trade_confirm_type").val($("#trade_confirm_type_"+id).val());
+	$("#auto_buy_name").val($("#auto_buy_name_"+id).val());
+	$("#trade_acco_hidden").val($("#trade_acco_hidden_"+id).val());
+	$("#bank_no").val($("#bank_no_"+id).val());
+	$("#trade_fee").val($("#trade_fee_"+id).val());
+	$("#apply_share").val($("#apply_share_"+id).val());
+	$("#from_fund_name").val($("#from_fund_name_"+id).val());
+	$("#from_fund_code").val($("#from_fund_code_"+id).val());
+	$("#trade_status_name").val($("#trade_status_name_"+id).val());
+	$("#agency_name").val($("#agency_name_"+id).val());
+	$("#allot_no").val(id);
+	$("#form").submit();
+}
+</script>
+</body>
+<script>
+    $('#date1').click(function(){
+        $('#date-content1').css('zIndex',20);
+        $('#type-content1').css('zIndex',0);
+        $("#type-content1").hide();
+    });
+    $('#type1').click(function(){
+    	var startDate=$('#startDate1').val().replace(/-/g,"");
+		var endDate=$('#endDate1').val().replace(/-/g,"");
+		if(startDate!=""&&endDate!=""){
+			if(startDate>endDate){
+				Popbox.sureWithBtn('您选择的结束日期不能早于开始日期');
+				$("#date-content1").show();
+				$("#type-content1").hide();
+				return false;
+				}
+		}
+		$('#date-content1').hide();
+        $('#date-content1').css('zIndex',0);
+        $('#type-content1').css('zIndex',20);
+    });	
+</script>
+</body>
+</html>

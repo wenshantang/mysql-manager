@@ -1,0 +1,134 @@
+<div class="main2 wrap">
+  <div class="m-box">
+	<#topic_article topicCode="newsList" page="1" rows="6";pageRecord>
+	
+    <div class="up">
+      <h3 class="title">新闻快报</h3>
+      <a class="more" href="${ctxPath}/pc/newsInfo/newsList">更多 ></a>
+      <%if(pageRecord.dataList.~size>0){%> 
+      <div class="pic"> <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=newsList">
+      <img src="${pageRecord.dataList[0].small_picurl!}" />
+      </a> 
+      </div>
+      <div class="con">
+        <h6 class="title" title="${pageRecord.dataList[0].title!}" ><a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=newsList"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a></h6>
+        <p class="txt">${pageRecord.dataList[0].short_title!} </p>
+        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time,0,10)}</p>
+      </div>
+      <%}%>
+      <div class="clear"> </div>
+    </div>
+	<%if(pageRecord.dataList.~size>0){%> 
+    <div class="down">
+      <ul class="t-list">
+			<%for(article2 in pageRecord.dataList){%> 
+				<%if(article2LP.index!=1){%> 
+        <li><a  href="${ctxPath}/pc/newsInfo/articleInfo?id=${article2.id}&topicCode=newsList"><span class="txt" title="${article2.title}"><%if(strutil.length(article2.title)<=13){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
+			<%}%>
+			<%}%>
+		
+	  </ul>
+    </div>	
+    <%}%>
+	</#topic_article>
+  </div>
+  <div class="m-box m-left">
+  <#topic_article topicCode="activitiesList" page="1" rows="6";pageRecord>
+    <div class="up">
+      <h3 class="title">最新动态</h3>
+      <a class="more" href="${ctxPath}/pc/newsInfo/activitiesList">更多 ></a>
+      <%if(pageRecord.dataList.~size>0){%> 
+      <div class="pic">
+       <%if(pageRecord.dataList[0].type_id=='1'){%>
+      <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=activitiesList">
+      <img src="${pageRecord.dataList[0].small_picurl!}" />
+      </a>
+      <%}else{%>
+       <a href="${pageRecord.dataList[0].article_location!}"><img src="${pageRecord.dataList[0].small_picurl!}" /></a>
+      <%}%>
+        </div>
+      <div class="con">
+        <h6 class="title" title="${pageRecord.dataList[0].title!}" >
+        <%if(pageRecord.dataList[0].type_id=='1'){%>
+        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=activitiesList" ><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
+        <%}else{%>
+          <a href="${pageRecord.dataList[0].article_location!}"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
+        <%}%>
+        </h6>
+        <p class="txt">${pageRecord.dataList[0].short_title} </p>
+        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time,0,10)}</p>
+	
+      </div>
+      <%}%>
+      <div class="clear"> </div>
+    </div>
+    <%if(pageRecord.dataList.~size>0){%> 
+    <div class="down">
+      <ul class="t-list">
+			<%for(article2 in pageRecord.dataList){%>  
+				<%if(article2LP.index!=1){%> 
+        <li>
+       <%if(article2.type_id=='1'){%>
+       <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${article2.id!}&topicCode=activitiesList"><span class="txt" title="${article2.title!}"><%if(strutil.length(article2.title)<=13){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
+      <%}else{%>
+       <a href="${article2.article_location!}"><span class="txt" title="${article2.title!}"><%if(strutil.length(article2.title)<=15){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
+      <%}%>
+				<%}%>
+			<%}%>
+		
+	  </ul>
+    </div>	
+    <%}%>
+	</#topic_article> 
+  </div>
+
+  <div class="m-box">
+  <#topic_article topicCode="companynotices" page="1" rows="6";pageRecord>  
+    <div class="up">
+      <h3 class="title">公司公告</h3>
+      <a class="more" href="${ctxPath}/pc/newsInfo/companynotices">更多 ></a>
+      <%if(pageRecord.dataList.~size>0){%> 
+      <div class="pic"> 
+     <%if(pageRecord.dataList[0].type_id=='1'){%>
+      <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=companynotices">
+     
+      <img src="${pageRecord.dataList[0].small_picurl!}" />
+      </a> 
+      <%}else{%>
+      <a href="${pageRecord.dataList[0].article_location!}"><img src="${pageRecord.dataList[0].small_picurl!}" /></a> 
+      <%}%>
+      </div>
+      <div class="con">
+        <h6 class="title" title="${pageRecord.dataList[0].title!}" >
+         <%if(pageRecord.dataList[0].type_id=='1'){%>
+        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id}&topicCode=companynotices"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
+         <%}else{%>
+        <a href="${pageRecord.dataList[0].article_location!}"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
+        <%}%>
+        </h6>
+        <p class="txt">${pageRecord.dataList[0].short_title!} </p>
+        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time!,0,10)}</p>
+			
+      </div>
+      <div class="clear"> </div>
+    </div>
+    <div class="down">
+      <ul class="t-list"> 
+			<%for(article3 in pageRecord.dataList){%>  
+				<%if(article3LP.index!=1){%> 
+        <li>
+       <%if(article3.type_id=='1'){%>
+        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${article3.id}&topicCode=companynotices"><span class="txt" title="${article3.title}"><%if(strutil.length(article3.title)<=13){%>${article3.title}<%}else{%>${strutil.subStringTo(article3.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article3.publish_time,0,10)}</span></a>
+       <%}else{%>
+       <a href="${article3.article_location!}"><span class="txt" title="${article3.title}"><%if(strutil.length(article3.title)<=13){%>${article3.title}<%}else{%>${strutil.subStringTo(article3.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article3.publish_time,0,10)}</span></a>
+       <%}%>
+        </li>
+				<%}%>
+			<%}%>
+		<%}%>
+      </ul>
+    </div>	
+	</#topic_article>
+  </div>	
+  <div class="clear"> </div>
+</div>

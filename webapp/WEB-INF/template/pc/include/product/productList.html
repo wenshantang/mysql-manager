@@ -1,0 +1,818 @@
+<style type="text/css">
+.wrap{ width:1202px; margin:0 auto;}
+</style> 
+
+<#showElement ;elementList>
+<%
+  var element = @elementList.get(0);
+%>
+
+<div class="wrap m-g-content bottom-p20">
+  <ul class="m-tagTitle" m-switch-tab="t1">
+    <li id="0" class=""><a href="javascript:void(0);">全部</a></li>
+    <li id="4" class=""><a href="javascript:void(0);">货币型</a></li>
+    <li id="3" class=""><a href="javascript:void(0);">债券型</a></li>
+    <li id="6" class=""><a href="javascript:void(0);">股票型</a></li>
+    <li id="5" class=""><a href="javascript:void(0);">ETF型</a></li>
+    <li id="2" class=""><a href="javascript:void(0);">混合型</a></li>
+  </ul>
+  <div class="m-tagConList" m-switch-con="t1">
+    <div class="m-tagCon"> 
+      <div class="m-g-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col" width="60">序号</th> 
+              <th scope="col" width="280">基金简称/基金代码</th>
+              <th scope="col" width="178">净值日期</th>
+              <%if(element.i_dividendamount=='0'){%>
+                 <th scope="col" width="200">万份收益（元）</th>
+              <%}%>
+              <%if(element.sevenday=='0'){%>
+                 <th scope="col" width="160">七日年化</th>
+              <%}%>
+              <%if(element.rate=='0'){%>
+                 <th scope="col" width="90">费率</th>
+              <%}%>
+              <th scope="col" width="*" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 货币型基金 -->
+           <#productListTag  fundtype='货币型';pageRecord>
+            <%if(pageRecord.~size>0){
+              var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=4">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                 ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.i_dividendamount=='0'){%>
+                <%if(fund.i_dividendamount!=null){%>
+                   <td>${fund.i_dividendamount!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                   <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sevenday=='0'){%>
+                <%if(fund.i_incomdepercent!=null){%>
+                   <td><span style="color:${fund.i_incomdepercent>=0?'#e60012':'#22ac38'};">${fund.i_incomdepercent!,numberFormat="###,###,##0.00"}%</span></td>
+                <%}else{%>
+                   <td><span style="color:#e60012">0.00%</span></td>
+                <%}%>
+              <%}%>
+              <%if(element.rate=='0'){%>
+                <%if(fund.purchase_rate!=null){%>
+                   <td>${fund.purchase_rate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                   <td>0.00%</td>
+                <%}%>
+              <%}%>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+      <div class="m-g-table">
+        <table id="selectResult201601" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">序号</th>
+              <th scope="col">基金简称/基金代码</th>
+              <th scope="col">净值日期</th>
+              <%if(element.nav=='0'){%>
+                <th scope="col">单位净值（元）</th>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <th scope="col">累计净值（元）</th>
+              <%}%>   
+              <%if(element.daily_growth_rate=='0'){%>    
+                <th onclick="sortTable('selectResult201601',5, 'float')" scope="col"><a id="rzzl201601"  href="javascript:void;" class="down" onclick="rzzl('201601','5')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;">日增长率</a></th>         
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <th onclick="sortTable('selectResult201601',6, 'float')" scope="col"><a id="month201601"  href="javascript:void;" class="down" onclick="month('201601','6')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1月</a></th>           
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <th onclick="sortTable('selectResult201601', 7, 'float')" scope="col"><a id="sixMonth201601"  href="javascript:void;"   class="down" onclick="sixMonth('201601','7')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近6月</a></th>          
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <th onclick="sortTable('selectResult201601', 8, 'float')" scope="col"><a id="year201601"  href="javascript:void;" class="down" onclick="year('201601','8')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1年</a></th>        
+              <%}%>
+              <th scope="col">成立日期</th>                       
+              <th width="195" scope="col" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 非货币型基金 -->
+           <#productListTag  fundtype='非货币型';pageRecord>
+            <%if(pageRecord.~size>0){
+               var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=3">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                 ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.nav=='0'){%>
+                <%if(fund.i_fundvalue!=null){%>
+                  <td>${fund.i_fundvalue!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <%if(fund.i_fundtotalnetval!=null){%>
+                  <td>${fund.i_fundtotalnetval!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.daily_growth_rate=='0'){%> 
+                <%if(fund.i_fluctuateper!=null){%>
+                  <td style="color:${fund.i_fluctuateper>=0?'#e60012':'#22ac38'};">${fund.i_fluctuateper!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <%if(fund.i_monthgrothrate!=null){%>
+                  <td style="color:${fund.i_monthgrothrate>=0?'#e60012':'#22ac38'}">${fund.i_monthgrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <%if(fund.i_hyeargrothrate!=null){%>
+                  <td style="color:${fund.i_hyeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_hyeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <%if(fund.i_yeargrothrate!=null){%>
+                  <td style="color:${fund.i_yeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_yeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <td>
+                 <%if(fund.setup_date==null || fund.setup_date==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                 <%}else{%>
+                   ${fund.setup_date}
+                 <%}%>
+              </td>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="m-tagCon">
+      <div class="m-g-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col" width="60">序号</th>
+              <th scope="col" width="280">基金简称/基金代码</th>
+              <th scope="col" width="178">净值日期</th>
+              <%if(element.i_dividendamount=='0'){%>
+                <th scope="col" width="200">万份收益（元）</th>
+              <%}%>
+              <%if(element.sevenday=='0'){%>
+                <th scope="col" width="160">七日年化</th>
+              <%}%>
+              <%if(element.rate=='0'){%>
+                <th scope="col" width="90">费率</th>
+              <%}%>
+              <th scope="col" width="*" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 货币型基金 -->
+           <#productListTag  fundtype='4';pageRecord>
+           <%if(pageRecord.~size>0){
+             var index = 1;
+           %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=4">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                 ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.i_dividendamount=='0'){%>
+                <%if(fund.i_dividendamount!=null){%>
+                  <td>${fund.i_dividendamount!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sevenday=='0'){%>
+                <%if(fund.i_incomdepercent!=null){%>
+                  <td style="color:${fund.i_incomdepercent>=0?'#e60012':'#22ac38'}">${fund.i_incomdepercent!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.rate=='0'){%>
+                <%if(fund.purchase_rate!=null){%>
+                  <td>${fund.purchase_rate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td>0.00%</td>
+                <%}%>
+              <%}%>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="m-tagCon">
+      <div class="m-g-table">
+        <table id="selectResult201602" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">序号</th>
+              <th scope="col">基金简称/基金代码</th>
+              <th scope="col">净值日期</th>
+              <%if(element.nav=='0'){%>
+                <th scope="col">单位净值（元）</th>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <th scope="col">累计净值（元）</th>  
+              <%}%>     
+              <%if(element.daily_growth_rate=='0'){%> 
+                <th onclick="sortTable('selectResult201602', 5, 'float')" scope="col"><a id="rzzl201602" href="javascript:void;" class="down" onclick="rzzl('201602','5')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;">日增长率</a></th>         
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <th onclick="sortTable('selectResult201602', 6, 'float')" scope="col"><a id="month201602"  href="javascript:void;" class="down" onclick="month('201602','6')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1月</a></th>           
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <th onclick="sortTable('selectResult201602', 7, 'float')" scope="col"><a id="sixMonth201602"  href="javascript:void;" class="down" onclick="sixMonth('201602','7')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近6月</a></th>          
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <th onclick="sortTable('selectResult201602', 8, 'float')" scope="col"><a id="year201602"  href="javascript:void;" class="down" onclick="year('201602','8')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1年</a></th>        
+              <%}%>
+              <th scope="col">成立日期</th>                       
+              <th width="195" scope="col" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 债券型基金 --> 
+           <#productListTag fundtype='3';pageRecord> 
+           <%if(pageRecord.~size>0){
+               var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=3">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                 ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.nav=='0'){%>
+                <%if(fund.i_fundvalue!=null){%>
+                  <td>${fund.i_fundvalue!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <%if(fund.i_fundtotalnetval!=null){%>
+                  <td>${fund.i_fundtotalnetval!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.daily_growth_rate=='0'){%> 
+                <%if(fund.i_fluctuateper!=null){%>
+                  <td style="color:${fund.i_fluctuateper>=0?'#e60012':'#22ac38'}">${fund.i_fluctuateper!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <%if(fund.i_monthgrothrate!=null){%>
+                  <td style="color:${fund.i_monthgrothrate>=0?'#e60012':'#22ac38'}">${fund.i_monthgrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <%if(fund.i_hyeargrothrate!=null){%>
+                  <td style="color:${fund.i_hyeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_hyeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <%if(fund.i_yeargrothrate!=null){%>
+                  <td style="color:${fund.i_yeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_yeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <td>
+                <%if(fund.setup_date==null || fund.setup_date==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.setup_date}
+                <%}%>
+              </td>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 股票型 -->
+     <div class="m-g-table">
+        <table id="selectResult201603" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">序号</th>
+              <th scope="col">基金简称/基金代码</th>
+              <th scope="col">净值日期</th>
+              <%if(element.nav=='0'){%>
+                <th scope="col">单位净值（元）</th>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <th scope="col">累计净值（元）</th> 
+              <%}%>    
+              <%if(element.daily_growth_rate=='0'){%>   									
+                <th onclick="sortTable('selectResult201603', 5, 'float')" scope="col"><a id="rzzl201603"  href="javascript:void;" class="down" onclick="rzzl('201603','5')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;">日增长率</a></th>         
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <th onclick="sortTable('selectResult201603', 6, 'float')" scope="col"><a id="month201603"  href="javascript:void;" class="down" onclick="month('201603','6')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1月</a></th>           
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <th onclick="sortTable('selectResult201603', 7, 'float')" scope="col"><a id="sixMonth201603"  href="javascript:void;" class="down" onclick="sixMonth('201603','7')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近6月</a></th>          
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <th onclick="sortTable('selectResult201603', 8, 'float')" scope="col"><a id="year201603"  href="javascript:void;" class="down" onclick="year('201603','8')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1年</a></th>        
+              <%}%>
+              <th scope="col">成立日期</th>                       
+              <th width="195" scope="col" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 股票型基金 -->
+           <#productListTag  fundtype='6';pageRecord>
+            <%if(pageRecord.~size>0){
+               var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=3">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.nav=='0'){%>
+                <%if(fund.i_fundvalue!=null){%>
+                  <td>${fund.i_fundvalue!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <%if(fund.i_fundtotalnetval!=null){%>
+                  <td>${fund.i_fundtotalnetval!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.daily_growth_rate=='0'){%> 
+                <%if(fund.i_fluctuateper!=null){%>
+                  <td style="color:${fund.i_fluctuateper>=0?'#e60012':'#22ac38'}">${fund.i_fluctuateper!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <%if(fund.i_monthgrothrate!=null){%>
+                  <td style="color:${fund.i_monthgrothrate>=0?'#e60012':'#22ac38'}">${fund.i_monthgrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <%if(fund.i_hyeargrothrate!=null){%>
+                  <td style="color:${fund.i_hyeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_hyeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <%if(fund.i_yeargrothrate!=null){%>
+                  <td style="color:${fund.i_yeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_yeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <td>
+                <%if(fund.setup_date==null || fund.setup_date==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                 ${fund.setup_date}
+                <%}%>
+              </td>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+    <!-- ETF型 -->
+     <div class="m-g-table">
+        <table id="selectResult201604" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">序号</th>
+              <th scope="col">基金简称/基金代码</th>
+              <th scope="col">净值日期</th>
+              <%if(element.nav=='0'){%>
+                <th scope="col">单位净值（元）</th>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <th scope="col">累计净值（元）</th>  
+              <%}%> 
+              <%if(element.daily_growth_rate=='0'){%>    
+                <th onclick="sortTable('selectResult201604', 5, 'float')" scope="col"><a id="rzzl201604"  href="javascript:void;" class="down" onclick="rzzl('201604','5')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;">日增长率</a></th>         
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <th onclick="sortTable('selectResult201604', 6, 'float')" scope="col"><a id="month201604"  href="javascript:void;" class="down" onclick="month('201604','6')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1月</a></th>           
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <th onclick="sortTable('selectResult201604', 7, 'float')" scope="col"><a id="sixMonth201604"  href="javascript:void;" class="down" onclick="sixMonth('201604','7')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近6月</a></th>          
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <th onclick="sortTable('selectResult201604', 8, 'float')" scope="col"><a id="year201604"  href="javascript:void;" class="down" onclick="year('201604','8')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1年</a></th>        
+              <%}%>
+              <th scope="col">成立日期</th>                       
+              <th width="195" scope="col" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- ETF型基金 -->
+           <#productListTag  fundtype='5';pageRecord>
+            <%if(pageRecord.~size>0){
+               var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=3">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.nav=='0'){%>
+                <%if(fund.i_fundvalue!=null){%>
+                  <td>${fund.i_fundvalue!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <%if(fund.i_fundtotalnetval!=null){%>
+                  <td>${fund.i_fundtotalnetval!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.daily_growth_rate=='0'){%>
+                <%if(fund.i_fluctuateper!=null){%>
+                  <td style="color:${fund.i_fluctuateper>=0?'#e60012':'#22ac38'}">${fund.i_fluctuateper!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <%if(fund.i_monthgrothrate!=null){%>
+                  <td style="color:${fund.i_monthgrothrate>=0?'#e60012':'#22ac38'}">${fund.i_monthgrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <%if(fund.i_hyeargrothrate!=null){%>
+                  <td style="color:${fund.i_hyeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_hyeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <%if(fund.i_yeargrothrate!=null){%>
+                  <td style="color:${fund.i_yeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_yeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <td>
+                <%if(fund.setup_date==null || fund.setup_date==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.setup_date}
+                <%}%>
+              </td>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+     <!-- 混合型 -->
+      <div class="m-g-table">
+        <table id="selectResult201605" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th scope="col">序号</th>
+              <th scope="col">基金简称/基金代码</th>
+              <th scope="col">净值日期</th>
+              <%if(element.nav=='0'){%>
+                <th scope="col">单位净值（元）</th>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <th scope="col">累计净值（元）</th>  
+              <%}%>     
+              <%if(element.daily_growth_rate=='0'){%> 
+                <th onclick="sortTable('selectResult201605', 5, 'float')" scope="col" ><a href="javascript:void;" id="rzzl201605" class="down" onclick="rzzl('201605','5')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;">日增长率</a></th>         
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <th onclick="sortTable('selectResult201605', 6, 'float')" scope="col"><a href="javascript:void;" id="month201605" class="down" onclick="month('201605','6')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1月</a></th>           
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <th onclick="sortTable('selectResult201605', 7, 'float')" scope="col"><a href="javascript:void;" id="sixMonth201605" class="down" onclick="sixMonth('201605','7')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近6月</a></th>          
+              <%}%>
+              <%if(element.oneyear=='0'){%> 
+                <th onclick="sortTable('selectResult201605', 8, 'float')" scope="col"><a href="javascript:void;" id="year201605" class="down" onclick="year('201605','8')" style="display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;">近1年</a></th>        
+              <%}%>
+              <th scope="col">成立日期</th>                       
+              <th width="195" scope="col" class="g-center">购买</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!-- 混合型基金 -->
+           <#productListTag  fundtype='2';pageRecord>
+            <%if(pageRecord.~size>0){
+               var index = 1;
+            %>
+            <%for(fund in pageRecord){%>
+            <tr>
+              <td>${index++}</td>
+              <td><p class="p1"><a href="${ctxPath}/pc/product/productInfo?fund_id=${fund.pro_id}&fund_code=${fund.fundcode}&fund_type=3">${fund.pro_shortname}</a></p>
+                <p class="p2"><a href="#">${fund.fundcode}</a></p></td>
+              <td>
+                <%if(fund.c_funddate==null || fund.c_funddate==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.c_funddate}
+                <%}%>
+              </td>
+              <%if(element.nav=='0'){%>
+                <%if(fund.i_fundvalue!=null){%>
+                  <td>${fund.i_fundvalue!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.sumnav=='0'){%>
+                <%if(fund.i_fundtotalnetval!=null){%>
+                  <td>${fund.i_fundtotalnetval!,numberFormat="###,###,##0.0000"}</td>
+                <%}else{%>
+                  <td>0.0000</td>
+                <%}%>
+              <%}%>
+              <%if(element.daily_growth_rate=='0'){%>
+                <%if(fund.i_fluctuateper!=null){%>
+                  <td style="color:${fund.i_fluctuateper>=0?'#e60012':'#22ac38'}">${fund.i_fluctuateper!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.onemonth=='0'){%>
+                <%if(fund.i_monthgrothrate!=null){%>
+                  <td style="color:${fund.i_monthgrothrate>=0?'#e60012':'#22ac38'}">${fund.i_monthgrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.sixmonth=='0'){%>
+                <%if(fund.i_hyeargrothrate!=null){%>
+                  <td style="color:${fund.i_hyeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_hyeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <%if(element.oneyear=='0'){%>
+                <%if(fund.i_yeargrothrate!=null){%>
+                  <td style="color:${fund.i_yeargrothrate>=0?'#e60012':'#22ac38'}">${fund.i_yeargrothrate!,numberFormat="###,###,##0.00"}%</td>
+                <%}else{%>
+                  <td style="color:#e60012">0.00%</td>
+                <%}%>
+              <%}%>
+              <td>
+                <%if(fund.setup_date==null || fund.setup_date==''){%>
+                   -- &nbsp;&nbsp; -- &nbsp;&nbsp; --
+                <%}else{%>
+                   ${fund.setup_date}
+                <%}%>
+              </td>
+              <td class="g-center"><a class="t-btn1" href="#">购买</a><a class="t-btn2" href="#">定投</a></td>
+            </tr>
+            <%}%>
+            <%}%>
+            </#productListTag>
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+<script type="text/javascript">
+/* 
+   fund_type-全部:0; 混合:2; 债券:3; 货币:4; ETF:5; 股票:6
+*/
+$(function(){
+	$.ajax({
+		url :"${ctxPath}/productnav/queryFundIndex",
+		type : "POST", 
+		dataType:"json",
+		data: {
+			//参数为基金类型fund_type  //${index!}
+			index_type:"0"
+	    },
+		success : function(data) {
+			var result = eval('(' + data + ')');
+            var data = result.data[0];
+            if(data!=null){
+            	$("#"+data.fund_type).addClass("m-on");
+            	$("#"+data.fund_type).children("a:eq(0)").click();
+            }else{
+            	$("#0").addClass("m-on");
+            	$("#0").children("a:eq(0)").click();
+            }
+		},
+		error:function(){
+			$("#0").addClass("m-on");
+			$("#0").children("a:eq(0)").click();
+		}
+	});
+ });
+
+	function rzzl(fundstyle,iCol){
+		var val;
+		val=$("#rzzl"+fundstyle).attr("class");
+		
+		if(val=="up"){
+		 	$("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_1-on.png') no-repeat scroll right center transparent;width:70px;");	
+			$("#rzzl"+fundstyle).attr("class","down");	
+		 }
+		 if(val=="down"){
+			 $("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2-on.png') no-repeat scroll right center transparent;width:70px;");	
+			$("#rzzl"+fundstyle).attr("class","up");
+		 }
+		if(val!="up"&&val!="down"){
+			$("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2-on.png') no-repeat scroll right center transparent;width:70px;");	
+			$("#rzzl"+fundstyle).attr("class","down");
+		 }
+		setStyle(fundstyle,iCol);	
+	}
+
+	
+	function month(fundstyle,iCol){
+		var val;
+		val=$("#month"+fundstyle).attr("class");
+		
+	 	if(val=="up"){                          
+		 	$("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_1-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#month"+fundstyle).attr("class","down");	
+		 }
+		 if(val=="down"){
+			 $("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#month"+fundstyle).attr("class","up");
+		 }
+		if(val!="up"&&val!="down"){
+			$("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#month"+fundstyle).attr("class","down");
+		 }
+		setStyle(fundstyle,iCol);
+	}
+	
+	function sixMonth(fundstyle,iCol){
+		var val;
+		val=$("#sixMonth"+fundstyle).attr("class");
+		
+		 if(val=="up"){
+			$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_1-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#sixMonth"+fundstyle).attr("class","down");	
+		 }
+		 if(val=="down"){
+			$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#sixMonth"+fundstyle).attr("class","up");
+		 }
+		 if(val!="up"&&val!="down"){
+			$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#sixMonth"+fundstyle).attr("class","down");
+		}
+		 setStyle(fundstyle,iCol);	 
+	}
+	
+	function year(fundstyle,iCol){
+		var val;
+		val=$("#year"+fundstyle).attr("class");
+		
+		if(val=="up"){
+			 $("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_1-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#year"+fundstyle).attr("class","down");	
+		}
+		if(val=="down"){
+			$("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2-on.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#year"+fundstyle).attr("class","up");
+		}
+		if(val!="up"&&val!="down"){
+			$("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");	
+			$("#year"+fundstyle).attr("class","down");
+		}
+		setStyle(fundstyle,iCol);
+	}
+	
+function setStyle(fundstyle,iCol){
+	if(iCol=='5'){
+		$("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+	}else if(iCol=='6'){
+		$("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;");
+		$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");	
+	}else if(iCol=='7'){
+		$("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;");
+		$("#year"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+	}else if(iCol=='8'){
+		$("#month"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#sixMonth"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:50px;");
+		$("#rzzl"+fundstyle).attr("style","display:inline-block; position:relative; text-indent:0;background: url('../portal/pc/images/jiantou_2.png') no-repeat scroll right center transparent;width:70px;");
+	}
+}
+</script>
+
+
+</#showElement>
+
+
+

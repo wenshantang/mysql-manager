@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="x5-page-mode" content="no-title">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-touch-fullscreen" content="no"/>
+<title>定投修改</title>
+<%include("/h5/common/assets.html"){}%>
+</head>
+
+<body>
+<m m-main="invest_m_number_password"></m>
+<#investlist id_kind_gb="${session.customer.data.id_kind_gb!}"  id_no="${session.customer.data.id_no!}" scheduled_protocol_id="${id!}";investlist>
+  <%if(investlist.ReturnCode=='0000'){%>
+      <%for(invest in investlist.data){%>
+<header class="header">
+  <div class="wrap">
+    <h1 class="title"><a class="t-left" href="javascript:history.back(-1);"><img src="${ctxPath}/portal/h5/images/top-left_03.png"></a><span class="txt">定投管理-修改</span></h1>
+    <div class="f-topBox2">
+      <p class="p p1">基金简称：${invest.fund_name}</p>
+      <p class="p p2">基金代码：${invest.fund_code}</p>
+	  <input type="hidden" id="fund_busin_code" value="039"	name="fund_busin_code">
+	   <input type="hidden" id="pro_shortname" value="${invest.fund_name}" >
+    </div>
+  </div>
+</header>
+<div class="main isTop2 wrap nofooter">
+  <div class="g-box54">
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">支付方式</span>
+     <%if(session.customer.data.real_name_flag=="1"){%>
+					<a href="${ctxPath}/h5/account/addcard" class="btn info"><img
+						class="icon" src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a>
+					<%}else{%> <a href="${ctxPath}/h5/account/bindbank"
+						class="btn info"><img class="icon"
+						src="${ctxPath}/portal/h5/images/idc_03.png">添加银行卡</a> <%}%>
+      </h6>
+      <div class="g-inputDiv">
+        <div class="g-input-span m-selectBox">
+          <select m-select="m" class="m-select" name="trade_acco"  id="trade_acco">
+           <#mybanks client_id="${session.customer.data.client_id}" customerId="${session.customer.data.mobile_tel!}";mybanks>
+				<%for(bank in mybanks){%>
+					<option  name="${bank.bank_name}尾号${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}(${bank.capital_mode_name})"  value="${bank.trade_acco}"  <%if(invest.trade_acco==bank.trade_acco){%> selected<%}%> >${bank.bank_name}****${strutil.subStringTo(bank.bank_account,strutil.length(bank.bank_account)-4,strutil.length(bank.bank_account))}</option>
+				<%}%> 
+		  </#mybanks>
+          </select>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="first_trade_month" value="${invest.first_trade_month}">
+    <div class="g-checkbox2 g-m-t70">
+      <h6 class="title">扣款周期</h6>
+      <div class="list g-m-t70" m-switch-tab="t1">
+        <p class="p">
+          <label> 
+            <input class="m-checkbox" name="f" type="radio" value="0" <%if(invest.protocol_period_unit=='0'){%> checked<%}%> >
+            月</label>
+        </p>
+        <p class="p">
+          <label>
+            <input class="m-checkbox" name="f" type="radio" value="1" <%if(invest.protocol_period_unit=='1'){%> checked<%}%> >
+            周</label>
+        </p>
+      </div>
+    </div>
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">扣款日期</span><span class="info" id="firstdate" >下一扣款日：${strutil.subStringTo(invest.next_fixrequest_date,0,4)}-${strutil.subStringTo(invest.next_fixrequest_date,4,6)}-${strutil.subStringTo(invest.next_fixrequest_date,6,8)}</span></h6>
+          <div class="g-inputDiv" m-switch-con="t1">
+					<div class="g-input-span m-selectBox" <%if(invest.protocol_period_unit=='1'){%>style="display:none;" <%}%> >
+						<select m-select="m" class="m-select" name="" id="selectdate_2">
+						 <%for(var i=1;i<=28;i++){%>
+						 <%if(i<=9){%>
+						 	<option value="0${i}" <%if(invest.protocol_fix_day=="0${i}"){%> selected<%}%> >${i}号</option>
+						 <%}else{%>
+						    <option value="${i}"  <%if(parseInt(invest.protocol_fix_day)==i){%> selected<%}%> >${i}号</option>
+						 <%}%>
+						 <%}%>
+						</select>
+					</div> 
+					<div class="g-input-span m-selectBox"  <%if(invest.protocol_period_unit=='0'){%>style="display:none;" <%}%>>
+						<select m-select="m" class="m-select" name="" id="selectdate_3">
+							<option value="02" <%if(invest.protocol_fix_day=="2"){%> selected<%}%> >周一</option>
+							<option value="03" <%if(invest.protocol_fix_day=="3"){%> selected<%}%> >周二</option>
+							<option value="04" <%if(invest.protocol_fix_day=="4"){%> selected<%}%> >周三</option>
+							<option value="05" <%if(invest.protocol_fix_day=="5"){%> selected<%}%> >周四</option>
+							<option value="06" <%if(invest.protocol_fix_day=="6"){%> selected<%}%> >周五</option>
+						</select>
+					</div>
+				</div>
+    </div>
+    <div class="g-inputBox g-m-t60">
+      <h6 class="title"><span class="name">定投金额（元）</span><span class="info" id="fundrate">费率：${invest.discount_rate!'--'}</span></h6>
+      <div class="g-inputDiv"> <span class="g-input-span">
+      <#QuerSuperFundList fundcode="${invest.fund_code!}";pageRecord>
+<%if(pageRecord.totalCount!=0){for(fund in pageRecord.list!){%>
+<input type="hidden" id="minimum_purchase_amount" value="${fund.minimum_purchase_amount}" >
+<input class="g-input" type="text" placeholder="最低金额${fund.minimum_purchase_amount}元"  onkeyup='this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/gi,"")' id="investmoney" value="${invest.apply_sum}">
+<%}}%> </#QuerSuperFundList>
+       
+        </span> </div>
+    </div>
+    <input type="hidden" id="share_type" value="A" name="share_type"> 
+    <a class="g-btns g-submit g-m-t70" href="javascript:void(0);" onclick="checkinvest()"> 确 定</a> 
+	<a id="MumberPassword"  m-number-password="MumberPassword" style="display: none;" class="g-btns g-submit g-m-t70" href="javascript:void(0);">确 定</a>
+	<div class="bottom-e-msg"></div>
+  </div>
+</div>
+
+<form action="${ctxPath}/h5/capital/investsuccess" id="form" method="post" style="display: none;">
+       	  <input type="hidden"   name="fund_code"      id="fund_code" value="${invest.fund_code}">
+       	  <input type="hidden"   name="trade_acco"     id="trade_acco_hidden">
+       	  <input type="hidden"   name="allot_no"       id="allot_no">
+       	  <input type="hidden"   name="invest_date"         id="invest_date" >
+       	  <input type="hidden"   name="next_fixrequest_date"  id="next_fixrequest_date" value="${strutil.subStringTo(invest.next_fixrequest_date,0,4)}-${strutil.subStringTo(invest.next_fixrequest_date,4,6)}-${strutil.subStringTo(invest.next_fixrequest_date,6,8)}"> 
+</form> 
+<%}%>
+<%}%>
+</#investlist>
+<script type="text/javascript" src="${ctxPath}/portal/h5/js/regular.js"></script>
+<script type="text/javascript">
+function investfund(tradepassword){
+	 $(".bottom-e-msg").text("");
+	 var apply_sum=$("#investmoney").val();
+	 var first_trade_month=$("#first_trade_month").val();
+	 var checkvalue = $('input:radio[name="f"]:checked').val();//协议周期单位 "0":月,"1":周
+	 var fix_date="";
+	 if(checkvalue=="0"){
+			//月时取第二个下拉框里面的值
+			fix_date=$("#selectdate_2").val();
+	 }else{
+			//其他的取第三个下拉框里面的值
+			fix_date=$("#selectdate_3").val();
+	 }
+	 var fund_code=$("#fund_code").val(); 
+	 var trade_acco=$("#trade_acco").val();
+	 var share_type=$("#share_type").val();
+	 if (trade_acco == "" || trade_acco == null) {//支付方式
+		$(".bottom-e-msg").text("请选择支付方式!");
+		return false;
+	 }
+	 if (checkvalue == "" || checkvalue == null) {//协议周期单位 
+		$(".bottom-e-msg").text("请选择协议周期单位 !");
+		return false;
+	 }
+	 if (fix_date == "" || fix_date == null) {//定投日
+		$(".bottom-e-msg").text("请选择定投日!");
+		return false;
+	 }
+	 if (apply_sum == "" || apply_sum == null) {//定投金额
+		$(".bottom-e-msg").text("请填写定投金额!");
+		return false;
+	 }	
+	 if (share_type == "" || share_type == null) {
+		$(".bottom-e-msg").text("请选择银行卡!");
+		return false;
+	 }
+	 if (!Regular.REG(apply_sum, RegexEnum.decmal)) {//定投金额
+			$(".bottom-e-msg").text("金额格式不正确!");
+			return false;
+	 }
+	 var minimum_purchase_amount=$("#minimum_purchase_amount").val();
+		if(minimum_purchase_amount-apply_sum>0){
+			$(".bottom-e-msg").text("定投金额要高于最低购买金额!");
+			return false;
+	}
+	if (tradepassword == "" || tradepassword == null) {
+		$(".bottom-e-msg").text("请输入交易密码!");
+		return false;
+	}
+	var  scheduled_protocol_id="${id!}";
+	var capital_way=$("#trade_acco").find("option:selected").attr("name");
+	$.ajax({
+			type : "post",
+			data : {
+				"apply_sum" : apply_sum,
+				"first_trade_month" : first_trade_month,
+				"fix_date":fix_date,
+				"fund_code" : fund_code,
+				"password" : tradepassword,
+				"protocol_period_unit" : checkvalue,
+				"share_type" : share_type,
+				"trade_acco" : trade_acco,
+				"trade_period" : "1",
+				"scheduled_protocol_id":scheduled_protocol_id,
+				"pro_shortname" : $("#pro_shortname").val(),
+				"capital_way" : capital_way
+			},
+			url : "${ctxPath}/trade/invest",
+			success : function(result) {
+				if("0000"==result.code){
+					$("#trade_acco_hidden").val(trade_acco);//交易账号
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					$("#allot_no").val(obj.allot_no);//申请编号
+					if(checkvalue=='0'){
+						$("#invest_date").val("每月"+fix_date+"号");
+					}else if(checkvalue=='1'){
+						if(fix_date=='02'){$("#invest_date").val("每周一");}
+						if(fix_date=='03'){$("#invest_date").val("每周二");}
+						if(fix_date=='04'){$("#invest_date").val("每周三");}
+						if(fix_date=='05'){$("#invest_date").val("每周四");}
+						if(fix_date=='06'){$("#invest_date").val("每周五");}
+					}
+					$("#form").submit();
+					//window.location.href="${ctxPath}/h5/capital/buysuccess?fund_code="+fund_code+"&trade_acco="+trade_acco+"&allot_no="+obj.allot_no;
+				}else{
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		});
+}
+function checkinvest(){
+	var apply_sum=$("#investmoney").val();
+	var first_trade_month=$("#first_trade_month").val();
+	var checkvalue = $('input:radio[name="f"]:checked').val();//协议周期单位 "0":月,"1":周
+	var fix_date="";
+	if(checkvalue=="0"){
+		//月时取第二个下拉框里面的值
+		fix_date=$("#selectdate_2").val();
+	}else{
+		//其他的取第三个下拉框里面的值
+		fix_date=$("#selectdate_3").val();
+	}
+	var fund_code=$("#fund_code").val();
+	var trade_acco=$("#trade_acco").val();
+	if (trade_acco == "" || trade_acco == null) {//支付方式
+			$(".bottom-e-msg").text("请选择支付方式!");
+			return false;
+	}
+	if (checkvalue == "" || checkvalue == null) {//协议周期单位 
+		$(".bottom-e-msg").text("请选择协议周期单位 !");
+		return false;
+	}
+	if (fix_date == "" || fix_date == null) {//定投日
+		$(".bottom-e-msg").text("请选择定投日!");
+		return false;
+	}
+	if (apply_sum == "" || apply_sum == null) {//定投金额
+		$(".bottom-e-msg").text("请填写定投金额!");
+		return false;
+	}
+	 if (!Regular.REG(apply_sum, RegexEnum.decmal)) {//定投金额
+			$(".bottom-e-msg").text("金额格式不正确!");
+			return false;
+	 } 
+	 var minimum_purchase_amount=$("#minimum_purchase_amount").val();
+		if(minimum_purchase_amount-apply_sum>0){
+			$(".bottom-e-msg").text("定投金额要高于最低购买金额!");
+			return false;
+	}
+	 $('#MumberPassword').click();
+}
+//下拉框选中事件
+function addchange(h){
+		var trade_acco=$("#trade_acco").val();
+		var checkvalue = $('input:radio[name="f"]:checked').val();
+		var first_exchdate=$("#selectdate_"+h).find("option:selected").val();
+		var fund_code=$("#fund_code").val();
+		$.ajax({
+			type : "post",
+			data : {
+				"first_exchdate" : first_exchdate,
+				"protocol_period_unit" : checkvalue,
+				"trade_acco" : trade_acco,
+				"target_fund_code" : fund_code
+			},
+			url : "${ctxPath}/trade/firstdate",
+			success : function(result) {
+				if (result.code == "0000") {
+					console.log(result.data);
+					var obj = eval('(' + result.data + ')');
+					var exchdate=obj.first_exchdate;
+					var date=exchdate.substring(0,4)+"-"+exchdate.substring(4,6)+"-"+exchdate.substring(6,8);
+					$("#firstdate").text("下一扣款日："+date);
+					$("#first_trade_month").val(obj.first_trade_month);//首次交易月
+					$("#next_fixrequest_date").val(date);//下一扣款日，为了成功页面展示
+				} else {
+					$(".bottom-e-msg").text(result.msg);
+				}
+			}
+		}); 
+}
+
+
+//复选框选中事件
+function addcheck(h){
+	var trade_acco=$("#trade_acco").val();
+	var checkvalue = $('input:radio[name="f"]:checked').val();
+	var i=h[0].defaultValue;
+	if(i=='1'){
+		i="3"
+	}else{
+		i="2"	
+	}
+	var first_exchdate=$("#selectdate_"+i).find("option:selected").val();
+	var fund_code=$("#fund_code").val(); 
+	$.ajax({
+		type : "post",
+		data : {
+			"first_exchdate" : first_exchdate,
+			"protocol_period_unit" : checkvalue,
+			"trade_acco" : trade_acco,
+			"target_fund_code" : fund_code
+		},
+		url : "${ctxPath}/trade/firstdate",
+		success : function(result) {
+			if (result.code == "0000") {
+				console.log(result.data);
+				var obj = eval('(' + result.data + ')');
+				var exchdate=obj.first_exchdate;
+				var date=exchdate.substring(0,4)+"-"+exchdate.substring(4,6)+"-"+exchdate.substring(6,8);
+				$("#firstdate").text("下一扣款日："+date);
+				$("#next_fixrequest_date").val(date);//下一扣款日，为了成功页面展示
+				$("#first_trade_month").val(obj.first_trade_month);//首次交易月
+			} else {
+				$(".bottom-e-msg").text(result.msg);
+			}
+		}
+	}); 
+}
+	</script>
+</body>
+</html>

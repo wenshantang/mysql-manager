@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>CMS文章管理</title>
+<%include("resource/template/common/resource.html"){}%>
+<script type="text/javascript">
+	function selectArticle(){
+		var articleName='';
+		var articleUrl='';
+		var selected = false;
+		$("input[name='_ckid']:checked").each(function(){
+			selected = true;
+			var arr= $(this).val().split("|");
+			articleName =arr[0];
+			articleUrl =arr[1];
+		});
+		if(!selected){
+			popStatus(2, '请选择一篇文章！！！', 3);
+			return;
+		}
+		parent.setArticle(articleName,articleUrl);
+		Public.closeDialog();
+	}
+
+</script>
+</head>
+<script id="tableContent" type="text/html">
+	{{each dataList as row}}
+		<tr>
+			<td>
+            	<span class="checkall" style="vertical-align:middle;">
+                	<input id="id_{{row.id}}" type="checkbox" name="_ckid" value="{{row.title}}|{{row.article_location}}"/>
+               	</span>
+            </td>
+            <td title="{{row.title}}">{{row.title | subStr:'20'}}</td>
+            <td class="tdleft">{{row.article_location}}</td>
+			<td>{{row.status | decode:'0','待审核','1','审核通过', '2','审核不通过','3','禁止访问'}}</td>
+         </tr>
+	{{/each}}
+</script>
+<body class="mainbody">
+        <div id="floatHead" class="toolbar">
+        <div class="box-wrap">
+                <div class="r-list">
+                <form id="search_form">
+		        	<input type="text" class="keyword" id="title" name="title"/>
+		        	<a href="javascript:;" class="btn-search" id="searchBtn">查询</a>
+                </form>
+            	</div>
+        </div>
+        </div>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltable" url="${ctx}/admin/cms/article/json/888888888888888888">
+            <tr>
+                <th width="5%">选择</th>
+                <th sort="title">标题</th>
+                <th width="20%">访问路径</th>
+                <th sort="status" width="10%">状态</th>
+            </tr>
+            <tbody id="tablelist"></tbody>
+        </table>
+        <div class="pagelist"></div>
+        
+        
+        <div class="page-footer">
+			<div class="btn-list">
+				<input type="button" name="btnSubmit" value="确 认" id="btnSubmit" class="btn" onclick="selectArticle();"/> 
+				<input name="btnReturn" type="button" value="取 消" class="btn yellow" onclick="Public.closeDialog();" />
+			</div>
+			<div class="clear"></div>
+		</div>
+</body>
+</html>
