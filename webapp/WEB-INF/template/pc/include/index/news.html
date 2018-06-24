@@ -1,134 +1,394 @@
-<div class="main2 wrap">
-  <div class="m-box">
-	<#topic_article topicCode="newsList" page="1" rows="6";pageRecord>
-	
-    <div class="up">
-      <h3 class="title">新闻快报</h3>
-      <a class="more" href="${ctxPath}/pc/newsInfo/newsList">更多 ></a>
-      <%if(pageRecord.dataList.~size>0){%> 
-      <div class="pic"> <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=newsList">
-      <img src="${pageRecord.dataList[0].small_picurl!}" />
-      </a> 
-      </div>
-      <div class="con">
-        <h6 class="title" title="${pageRecord.dataList[0].title!}" ><a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=newsList"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a></h6>
-        <p class="txt">${pageRecord.dataList[0].short_title!} </p>
-        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time,0,10)}</p>
-      </div>
-      <%}%>
-      <div class="clear"> </div>
-    </div>
-	<%if(pageRecord.dataList.~size>0){%> 
-    <div class="down">
-      <ul class="t-list">
-			<%for(article2 in pageRecord.dataList){%> 
-				<%if(article2LP.index!=1){%> 
-        <li><a  href="${ctxPath}/pc/newsInfo/articleInfo?id=${article2.id}&topicCode=newsList"><span class="txt" title="${article2.title}"><%if(strutil.length(article2.title)<=13){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
-			<%}%>
-			<%}%>
-		
-	  </ul>
-    </div>	
-    <%}%>
-	</#topic_article>
-  </div>
-  <div class="m-box m-left">
-  <#topic_article topicCode="activitiesList" page="1" rows="6";pageRecord>
-    <div class="up">
-      <h3 class="title">最新动态</h3>
-      <a class="more" href="${ctxPath}/pc/newsInfo/activitiesList">更多 ></a>
-      <%if(pageRecord.dataList.~size>0){%> 
-      <div class="pic">
-       <%if(pageRecord.dataList[0].type_id=='1'){%>
-      <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=activitiesList">
-      <img src="${pageRecord.dataList[0].small_picurl!}" />
-      </a>
-      <%}else{%>
-       <a href="${pageRecord.dataList[0].article_location!}"><img src="${pageRecord.dataList[0].small_picurl!}" /></a>
-      <%}%>
-        </div>
-      <div class="con">
-        <h6 class="title" title="${pageRecord.dataList[0].title!}" >
-        <%if(pageRecord.dataList[0].type_id=='1'){%>
-        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=activitiesList" ><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
-        <%}else{%>
-          <a href="${pageRecord.dataList[0].article_location!}"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
-        <%}%>
-        </h6>
-        <p class="txt">${pageRecord.dataList[0].short_title} </p>
-        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time,0,10)}</p>
-	
-      </div>
-      <%}%>
-      <div class="clear"> </div>
-    </div>
-    <%if(pageRecord.dataList.~size>0){%> 
-    <div class="down">
-      <ul class="t-list">
-			<%for(article2 in pageRecord.dataList){%>  
-				<%if(article2LP.index!=1){%> 
-        <li>
-       <%if(article2.type_id=='1'){%>
-       <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${article2.id!}&topicCode=activitiesList"><span class="txt" title="${article2.title!}"><%if(strutil.length(article2.title)<=13){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
-      <%}else{%>
-       <a href="${article2.article_location!}"><span class="txt" title="${article2.title!}"><%if(strutil.length(article2.title)<=15){%>${article2.title}<%}else{%>${strutil.subStringTo(article2.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article2.publish_time,0,10)}</span></a></li>
-      <%}%>
-				<%}%>
-			<%}%>
-		
-	  </ul>
-    </div>	
-    <%}%>
-	</#topic_article> 
-  </div>
+<div id="box_main">
+	<div id="box_main_sub1">
+		<div id="box_main_sub1_sub1">
+			<div id="box_main_sub1_sub1_sub1">
+				<div class="clearBoth"></div>
+				<div  class="columnSpace" id="elem-FrontSpecifies_show01-1441867910396" >
+					<div id="FrontSpecifies_show01-1441867910396"
+						class="FrontSpecifies_show01-d3_c1">
+						<div class="describe htmledit">
+							<p>
+								<img alt="" src="${ctxPath}/portal/picture/ec56747c-c639-4507-9b54-76f0ac1e5b7c_1.jpg" />
+							</p>
+						</div>
+					</div>
+				</div> 
+			</div>
+			<div id="box_main_sub1_sub1_sub2">
+				<div  class="columnSpace"
+					id="elem-FrontPublic_slideShow01-1441868103021" >
+					<script type="text/javascript"> 
+						//<![CDATA[
+						FrontPublic_slideShow01['FrontPublic_slideShow01-1441868103021_init'] = function() {
+							FrontPublic_slideShow01['FrontPublic_slideShow01-1441868103021_init'] = new FrontPublic_slideShow01();
+							FrontPublic_slideShow01['FrontPublic_slideShow01-1441868103021_init']
+									.ce_slide_init(
+											"requestDataFilePath=/comp-FrontSlide_listJson01-1441868103021&showType=1&changeTimes=5000&slideWidth=960&slideHeight=null&openType=_blank&isShowSlideTitle=0&isShowSlideContent=0&slideData=1",
+											"slideCategoryId=2&interceptSlideTitle=&maxSlideTitle=10&interceptSlideContent=&maxSlideContent=20&productCategoryLink=/products_list.html&productLink=/products_detail.html&newsCategoryLink=/news_list.html&newsLink=/news_detail.html&downloadCategoryLink=/download_list.html&downloadLink=/download_detail.html&galleryCategoryLink=/gallery_list.html&galleryLink=/gallery_detail.html&jobLink=/job_detail.html&comcontentLink=/comcontent_detail.html",
+											{
+												"contents" : [
+													 <#topic_article topicCode="qyxw" page="1" rows="5" ;pageRecord> 
+					 									<%for (article in pageRecord.dataList){%>
+					 									{
+															"descriPtion" : "${article.meta_desc}",
+															"smallPicPath" : "${article.small_picurl}",
+															"plink" : "${article.big_picurl}",
+															"slideName" : "${article.big_picurl}",
+															"bigPicPath" : "${article.big_picurl}"
+														},
+					 									<%}%></#topic_article> ],
+												"setData" : { 
+													"isPlaysSet" : 1,
+													"changeStyle" : 1
+												}
+											});
+						}
+						$(FrontPublic_slideShow01['FrontPublic_slideShow01-1441868103021_init']);
+						// ]]>
+					</script>
+					<div id="FrontPublic_slideShow01-1441868103021"
+						class="FrontPublic_slideShow01-d1_c1">
+						<script type="text/javascript" src="${static_ctx}/portal/js/png_1.js"></script>
+						<div class="slide-contente">
+							<div class="slide-pic">
+								<ul>
 
-  <div class="m-box">
-  <#topic_article topicCode="companynotices" page="1" rows="6";pageRecord>  
-    <div class="up">
-      <h3 class="title">公司公告</h3>
-      <a class="more" href="${ctxPath}/pc/newsInfo/companynotices">更多 ></a>
-      <%if(pageRecord.dataList.~size>0){%> 
-      <div class="pic"> 
-     <%if(pageRecord.dataList[0].type_id=='1'){%>
-      <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id!}&topicCode=companynotices">
-     
-      <img src="${pageRecord.dataList[0].small_picurl!}" />
-      </a> 
-      <%}else{%>
-      <a href="${pageRecord.dataList[0].article_location!}"><img src="${pageRecord.dataList[0].small_picurl!}" /></a> 
-      <%}%>
-      </div>
-      <div class="con">
-        <h6 class="title" title="${pageRecord.dataList[0].title!}" >
-         <%if(pageRecord.dataList[0].type_id=='1'){%>
-        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${pageRecord.dataList[0].id}&topicCode=companynotices"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
-         <%}else{%>
-        <a href="${pageRecord.dataList[0].article_location!}"><%if(strutil.length(pageRecord.dataList[0].title)<=8){%>${pageRecord.dataList[0].title}<%}else{%>${strutil.subStringTo(pageRecord.dataList[0].title,0,8)}...<%}%></a>
-        <%}%>
-        </h6>
-        <p class="txt">${pageRecord.dataList[0].short_title!} </p>
-        <p class="date">${strutil.subStringTo(pageRecord.dataList[0].publish_time!,0,10)}</p>
+								</ul>
+							</div>
+							<div class="slide-info-mark"></div>
+							<div class="slide-info">
+								<h3></h3>
+								<div class="slide-text"></div>
+								<div class="slide-tag-text">
+									<ul></ul>
+								</div>
+							</div>
+						</div>
+						<div class="slide-tag-thumbnail">
+							<div class="arrowhead-left arrowhead"></div>
+							<div class="thumbnail-list">
+								<ul></ul>
+							</div>
+							<div class="arrowhead-right arrowhead"></div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		function changenews(id){
+			var tab = "box_main_sub1_sub2_tab";
+			var liHideTab = "";
+			var hideTab
+			if(id == "1") {
+				liHideTab = "#new_" + tab + "2";
+				hideTab = "#" + tab + "2";
+			} else {
+				liHideTab = "#new_" + tab + "1";
+				hideTab = "#" + tab + "1";
+			}
+			var liTab = "#new_" + tab + id;
+			tab = "#" + tab + id;
+			$(liHideTab).removeClass(); 
+			$(liTab).removeClass(); 
 			
-      </div>
-      <div class="clear"> </div>
-    </div>
-    <div class="down">
-      <ul class="t-list"> 
-			<%for(article3 in pageRecord.dataList){%>  
-				<%if(article3LP.index!=1){%> 
-        <li>
-       <%if(article3.type_id=='1'){%>
-        <a href="${ctxPath}/pc/newsInfo/articleInfo?id=${article3.id}&topicCode=companynotices"><span class="txt" title="${article3.title}"><%if(strutil.length(article3.title)<=13){%>${article3.title}<%}else{%>${strutil.subStringTo(article3.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article3.publish_time,0,10)}</span></a>
-       <%}else{%>
-       <a href="${article3.article_location!}"><span class="txt" title="${article3.title}"><%if(strutil.length(article3.title)<=13){%>${article3.title}<%}else{%>${strutil.subStringTo(article3.title,0,13)}...<%}%></span><span class="date">${strutil.subStringTo(article3.publish_time,0,10)}</span></a>
-       <%}%>
-        </li>
-				<%}%>
-			<%}%>
-		<%}%>
-      </ul>
-    </div>	
-	</#topic_article>
-  </div>	
-  <div class="clear"> </div>
+			$(liHideTab).addClass("MultiPageTab_link");
+			$(liTab).addClass("MultiPageTab_hover");
+			
+			$(hideTab).hide()
+			$(tab).show()
+		}
+		</script>
+		<div class="ebiztabs_top_left_4_click" id="box_main_sub1_sub2">
+			<ul>
+				<li class="MultiPageTab_hover" id="new_box_main_sub1_sub2_tab1" onclick="changenews('1')"  ><a style="cursor: pointer;" >行业新闻</a></li>
+				<li class="MultiPageTab_link" id="new_box_main_sub1_sub2_tab2" onclick="changenews('2')" ><a style="cursor: pointer;">公司新闻</a></li>
+
+			</ul>
+			<div class="clear"></div>
+			<div class="tabs tabArea_a" id="box_main_sub1_sub2_tab1">
+				<div  class="columnSpace" id="elem-FrontNews_list01-1441870094128" >
+					<div id="FrontNews_list01-1441870094128"  class="FrontNews_list01-d1_c1_01">
+						<div>
+							<ul class="comstyle newslist-01">
+							   <#topic_article topicCode="qyxw" page="1" rows="5" ;pageRecord>
+ 									<%for (article in pageRecord.dataList){%>
+ 									<li class="content column-num1">
+									<div class="newstitle">
+										<ul>
+											<li class="title">
+												<h3>
+													<a href="${ctxPath}/articledetail?id=${article.id}&topicCode=qyxw"
+														title="${article.title}" target="_self">
+														${article.title}</a>
+												</h3>
+											</li>
+											<li class="date"><span>发布时间：</span>${strutil.subStringTo(article.publish_time,0,10)}</li>
+										</ul>
+									</div>
+									</li>
+									<li class="clearBoth"></li>
+ 									<%}%>
+ 							   </#topic_article>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tabs tabArea_b" id="box_main_sub1_sub2_tab2">
+				<div class="columnSpace" id="elem-FrontNews_list01-10337963938" >
+					<div id="FrontNews_list01-10337963938" class="FrontNews_list01-d1_c1_01">
+						<div>
+							<ul class="comstyle newslist-01">
+							  <#topic_article topicCode="gszx" page="1" rows="5" ;pageRecord> 
+ 									<%for (article in pageRecord.dataList){%>
+ 									<li class="content column-num1">
+									<div class="newstitle">
+										<ul>
+											<li class="title">
+												<h3>
+													<a href="${ctxPath}/articledetail?id=${article.id}&topicCode=gszx"
+														title="${article.title}" target="_self">
+														${article.title}</a>
+												</h3>
+											</li>
+											<li class="date"><span>发布时间：</span>${strutil.subStringTo(article.publish_time,0,10)}</li>
+										</ul>
+									</div>
+									</li>
+									<li class="clearBoth"></li>
+ 									<%}%>
+ 							   </#topic_article>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="box_main_sub1_sub3" style="height: 265px;">
+			<div id="box_main_sub1_sub3_sub1">
+				<div  class="columnSpace" id="elem-FrontSpecifies_show01-1441876135917" >
+					<div id="FrontSpecifies_show01-1441876135917"
+						class="FrontSpecifies_show01-d3_c1">
+						<div class="describe htmledit">
+							<p>
+								<img alt="" src="${ctxPath}/portal/picture/474929d9-86a0-43ac-ace7-abd78bd53787_1.jpg" />
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="box_main_sub1_sub3_sub2">
+				<div id="box_main_sub1_sub3_sub2_sub1">
+					<div class="columnSpace" id="elem-FrontSpecifies_show01-1442972988484" >
+						<div id="FrontSpecifies_show01-1442972988484"
+							class="FrontSpecifies_show01-d1_c1">
+<style type="text/css" >
+#box {
+	position: relative;
+	width: 360px;
+	height: 146px;
+	border: none;
+	margin: 0px auto;
+	cursor: pointer;
+}
+
+#box .list {
+	position: relative;
+	width: 360px;
+	height: 146px;
+	overflow: hidden;
+}
+
+#box .list ul {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#box .list li {
+	width: 360px;
+	height: 205px;
+	overflow: hidden;
+}
+
+#box .count {
+	position: absolute;
+	right: 0;
+	bottom: -55px;
+}
+
+#box .count li {
+	color: #fff;
+	float: left;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	margin-right: 5px;
+	overflow: hidden;
+	background: #0b4e9d;
+	opacity: 0.7;
+	filter: alpha(opacity = 70);
+}
+
+#box .count li.current {
+	color: #fff;
+	opacity: 1;
+	filter: alpha(opacity = 100);
+	font-weight: 700;
+	background: #f89e00;
+}
+
+#tmp {
+	width: 100px;
+	height: 100px;
+	background: red;
+	position: absolute;
+}
+</style>
+							<script type="text/javascript">
+								window.onload = function() {
+									var oBox = document.getElementById("box");
+									var oList = oBox.getElementsByTagName("ul")[0];
+									var aImg = oBox.getElementsByTagName("img");
+var liImg = oBox.getElementsByTagName("ul")[0].getElementsByTagName("li");
+									var timer = playTimer = null;
+									var index = i = 0;
+									var bOrder = true;
+									var aTmp = [];
+									//生成数字按钮
+									for (i = 0; i < aImg.length; i++) {
+										aTmp.push("<li>" + (i + 1) + "</li>")
+									}
+									//插入元素
+									var oCount = document.createElement("ul");
+									oCount.className = "count"
+									oCount.innerHTML = aTmp.join("");
+									oBox.appendChild(oCount);
+									//初始化状态
+									var aBtn = oBox.getElementsByTagName("ul")[1]
+											.getElementsByTagName("li");
+									aBtn[index].className = "current";
+									//按钮点击切换
+									for (i = 0; i < aBtn.length; i++) {
+										aBtn[i].index = i;
+										aBtn[i].onclick = function() {
+											index = this.index;
+											for (i = 0; i < aBtn.length; i++)
+												aBtn[i].className = "";
+											this.className = "current";
+											startMove(-(this.index * liImg[0].offsetHeight))
+										}
+									}
+autoPlay();
+
+									//鼠标移入展示区停止自动播放
+									oBox.onmouseover = function() {
+										clearInterval(playTimer)
+									};
+//鼠标移出自动播放
+									oBox.onmouseout = function() {
+										autoPlay();
+									};
+									//自动播放函数
+									function autoPlay() {
+										playTimer = setInterval(
+												function() {
+													bOrder ? index++ : index--;
+													index == aBtn.length - 1
+															&& (bOrder = false);
+													index == 0
+															&& (bOrder = true);
+															
+															if(aBtn.length-1>=index){
+																aBtn[index].onclick();
+																startMove(-(index * liImg[0].offsetHeight))
+															}
+													
+												}, 2000)
+									}
+									function startMove(iTarget) {
+										clearInterval(timer);
+										timer = setInterval(function() {
+											doMove(iTarget)
+										}, 30)
+									}
+									function doMove(iTarget) {
+										var iSpeed = (iTarget - oList.offsetTop) / 10;
+										iSpeed = iSpeed > 0 ? Math.ceil(iSpeed)
+												: Math.floor(iSpeed);
+										oList.offsetTop == iTarget ? clearInterval(timer)
+												: oList.style.top = oList.offsetTop+ iSpeed + "px"
+									}
+								};
+							</script>
+							<div id="box">
+								<div class="list" style="height: 215px;">
+									<ul>
+										<#pro_Lists  rows="3"  ;pageRecord>
+												<%for(p in pageRecord.dataList){%>
+													<li  style="height: 215px;" 
+ onclick="window.location.href='${ctxPath}/proone_detail?proId=${p.code}'"><img  style="height: 100%;width:100%;" alt="" src="${p.img_big}" /></li>
+
+												<%}%>
+										</#pro_Lists>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="box_main_sub1_sub3_sub2_sub2">
+					<div class="columnSpace"
+						id="elem-FrontSpecifies_show01-1442304457011" >
+						<div id="FrontSpecifies_show01-1442304457011"
+							class="FrontSpecifies_show01-d3_c1">
+							<div class="describe htmledit">
+							</div>
+						</div> 
+					</div>
+				</div>
+			</div> 
+		</div>
+		<div class="clearBoth"></div>
+	</div> 
+	<div id="box_main_sub2">
+		<div id="box_main_sub2_sub1">
+			<div  class="columnSpace" id="elem-FrontSpecifies_show01-1441957477668" >
+				<div id="FrontSpecifies_show01-1441957477668"
+					class="FrontSpecifies_show01-d3_c1">
+					<div class="describe htmledit">
+						<p>
+							<img alt="" src="${ctxPath}/portal/picture/f6c918bd-b324-4569-b966-037f3288770d_1.jpg" />
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="box_main_sub2_sub2">
+		
+		<#cms_banner type="wonderfulrecommend" rows="3";bans>
+  						 <%for(ban in bans){var pic=strutil.replace(ban.big_picurl,'\\','/');%>
+									<div id="box_main_sub2_sub2_sub${banLP.index}">
+										<div  class="columnSpace"
+											id="elem-FrontSpecifies_show01-1442304832575" >
+											<div id="FrontSpecifies_show01-1442304832575" 
+												class="FrontSpecifies_show01-d3_c1">
+												<div class="describe htmledit">
+													<p style="text-align: center;">
+														<a
+															href="${ctxPath}/productlist"><img
+															alt="" src="${pic}"
+															style="width: 364px; height: 215px;" /></a>
+													</p> 
+												</div>
+											</div>
+										</div>
+									</div> 
+    					 <%}%>
+ 		</#cms_banner>
+			<div class="clearBoth"></div>
+		</div>
+	</div>
 </div>
