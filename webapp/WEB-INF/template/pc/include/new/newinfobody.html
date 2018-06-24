@@ -1,0 +1,80 @@
+<div id="box_main">
+	<!--InstanceBeginEditable name="box_main"-->
+	<div id="box_main_sub1">
+		<div id="box_main_sub1_sub1">
+			<div id="box_main_sub1_sub1_sub1">
+				<div class="clearBoth"></div>
+				<div  class="columnSpace" id="elem-FrontNewsCategory_tree01-1443059485775" >
+					<!-- 装饰器样式开始 -->
+					<%include("/pc/include/new/newnav.html"){}%> 
+					<!-- 装饰器样式结束 -->
+				</div>
+			</div>
+			<div id="box_main_sub1_sub1_sub2">
+				<div  class="columnSpace" id="elem-FrontSpecifies_show01-1442222513547">
+					<div id="FrontSpecifies_show01-1442222513547"
+						class="FrontSpecifies_show01-d3_c1">
+						<div class="describe htmledit">
+							<p></p>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>
+		<div id="box_main_sub1_sub2">
+			<div  class="columnSpace" id="elem-FrontNews_list01-1443144624302" >
+				<!-- 装饰器样式开始 -->
+				<div class="border_03" id="qiyexinwen" >
+					<div class="border_03-topr">
+						<div class="border_03-topl"></div>
+					</div>
+					<div class="border_03-mid">
+						<div class="borderContent">
+							<div id="FrontNews_list01-1443144624301"
+								class="FrontNews_list01-d1_c1_01">
+							</div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+					<div class="border_03-footerr">
+						<div class="border_03-footerl"></div>
+					</div>
+				</div>
+				
+				
+				<div class="border_03" id="hanyexinwen" style="display: none;">
+					<div class="border_03-topr">
+						<div class="border_03-topl"></div>
+					</div>
+					<div class="border_03-mid">
+						<div class="borderContent">
+							<div id="FrontNews_list01-1443144624302"
+								class="FrontNews_list01-d1_c1_01">
+							</div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+					<div class="border_03-footerr">
+						<div class="border_03-footerl"></div>
+					</div>
+				</div>
+				<!-- 装饰器样式结束 -->
+			</div>
+		</div>
+		<div class="clearBoth"></div>
+	</div>
+	<div id="box_main_sub2"></div>
+	<!--InstanceEndEditable-->
+</div>
+<script type="text/javascript">
+$(function(){
+	gotoPage("1","qyxw");
+	gotoPage1("1","gszx");
+});
+ function gotoPage(p){ 
+	$("#FrontNews_list01-1443144624301").load("${ctxPath}/newsPage?topicCode=qyxw&p="+p);
+ }
+function gotoPage1(p1,topicCode){ 
+	$("#FrontNews_list01-1443144624302").load("${ctxPath}/newsPage2?topicCode=gszx&p="+p1);
+}
+</script>

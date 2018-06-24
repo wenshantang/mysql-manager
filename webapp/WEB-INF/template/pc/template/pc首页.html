@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<%include("/pc/common/meta.html"){}%>
+<link href="${static_ctx}/portal/css/page_index.min_1.css?version=${version}" rel="stylesheet" type="text/css" />
+<style type="text/css">
+#box_main	{
+	min-height: 540px;
+}
+</style>
+<body id="index">
+	<div class="pageWidth" id="box_root">
+		<div id="box_top" style="background: #e3e5e4;">
+			<%include("/pc/common/header.html",{flag:"index"}){}%>
+			<%include("/pc/include/index/banner.html"){}%>
+			<!--head,nav,banner -->
+		</div>
+		<!-- new -->
+		<%include("/pc/include/index/news.html"){}%> 
+		
+		<%include("/pc/common/footer.html"){}%>
+		<!--footed-->
+	</div> 
+	<div id="elem-FrontPublic_wisher01-2014"></div>
+	<script  src='${static_ctx}/portal/js/visittrack_1.js' type='text/javascript'></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!-- banner -->
+<div id="box_top_sub3">
+	<div class="columnSpace"
+		id="elem-FrontPublic_slideShow01-1441866455619">
+		<script language="javascript">
+	//<![CDATA[
+		FrontPublic_slideShow01['FrontPublic_slideShow01-1441866455619_init'] = function (){
+		 FrontPublic_slideShow01['FrontPublic_slideShow01-1441866455619_init'] = new FrontPublic_slideShow01();
+		 FrontPublic_slideShow01['FrontPublic_slideShow01-1441866455619_init'].d5_slide("960","");
+		}
+		$( FrontPublic_slideShow01['FrontPublic_slideShow01-1441866455619_init']);
+	// ]]>
+</script>
+		<script type="text/javascript" src="${ctxPath}/portal/js/superslide.2.1_1.js"></script>
+		<div id="FrontPublic_slideShow01-1441866455619"
+			class="FrontPublic_slideShow01-d6_c1">
+			<div class="fullSlide"> 
+				<div class="bd">
+					<ul>
+					<#cms_banner type="indexbanner" rows="3";bans>
+  						 <%for(ban in bans){var pic=strutil.replace(ban.big_picurl,'\\','/');%>
+						<li>
+						<a href="javascript:void(0)" class="f_pic"> <img src="${pic}" /></a> 
+						<a href="javascript:void(0)" class="f_title"> </a>
+						</li>
+    					 <%}%>
+ 					</#cms_banner>
+					</ul>
+				</div>
+				<div class="hd">
+					<ul></ul>
+				</div>
+				<span class="prev"></span> <span class="next"></span>
+			</div>
+			<script type="text/javascript">
+$(".fullSlide").hover(function(){
+    $(this).find(".prev,.next").stop(true, true).fadeTo("show", 0.5)
+},
+function(){
+    $(this).find(".prev,.next").fadeOut()
+});
+$(".fullSlide").slide({
+    titCell: ".hd ul",
+    mainCell: ".bd ul",
+    effect: "fold",
+    autoPlay: true,
+    autoPage: true,
+    trigger: "click",
+	interTime:"5"*1000,
+    startFun: function(i) {
+        var curLi = jQuery(".fullSlide .bd li").eq(i);
+        if ( !! curLi.attr("_src")) {
+            curLi.css("background-image", curLi.attr("_src")).removeAttr("_src")
+        }
+    }
+});
+</script>
+		</div>
+	</div>
+</div>

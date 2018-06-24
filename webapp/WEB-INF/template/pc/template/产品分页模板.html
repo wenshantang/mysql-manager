@@ -1,0 +1,64 @@
+ <#pro_Lists  rows="3" type="${type}" ;pageRecord>
+<div class="comptitle_03">
+	<strong class="titlestyle_03"><%if(type=='1'){%>自组网产品<%}%><%if(type=='2'){%>有中心产品<%}%><%if(type=='3'){%>自组网+有中心双网合一产品<%}%></strong>
+</div>
+<div class="type">
+	<span class="sort"> </span>
+</div>
+<ul class="mainul productlist-02">
+	<%if(pageRecord.dataList.~size>0){%> 
+		<%for(p in pageRecord.dataList){%>
+	<li class="content column-num1">
+		<div class="pic-module">
+			<div class="pic">
+				<a href="${ctxPath}/proone_detail?proId=${p.code}" title="${p.name}"
+					target="_self"> <img src="${p.img_small}"
+					id="FrontProducts_list01-1443168517235001001_321" alt=""
+					title="${p.name}" /></a>
+			</div>
+			<%if(p.isHot=='1'){%> <span class="lab"> <img
+				src="${static_ctx}/portal/picture/404d8fd2-e92d-4f24-8e6a-59e6975bd460_1.png" /></span>
+			<%}%>
+		</div>
+		<div class="pro-module">
+			<ul class="basic"> 
+				<li class="code">
+					<h1>
+						<span>产品名称：</span> <strong> <a
+							href="${ctxPath}/proone_detail?proId=${p.code}" title="${p.name}"
+							target="_self"> ${p.name}</a>
+						</strong>
+					</h1>
+				</li>
+				<li class="number2"><span>产品编号：</span> <em class="focustext" style="top: 0px;">
+						<a href="${ctxPath}/proone_detail?proId=${p.code}" title="${p.code}"
+						target="_self"> ${p.code}</a>
+				</em></li>
+			</ul>
+			<p class="buttonP"></p>
+			<div class="introduction">
+				<span> 产品概要：</span> ${p.item}
+			</div>
+		</div>
+	</li>
+	<li class="clearBoth"></li> <%}}else{%>
+	暂无相关信息
+	<%}%>
+</ul>
+<div class="skip-pages">
+	<div class="bottom">
+		<div class="pageJump">
+			<div class="totalcount">共${pageRecord.totalCount}条</div>
+			<div class="number">
+			<%if(pageRecord.page==1){%>
+				<span class="disabled">首页</span>
+				<span class="disabled">上一页</span>
+				<a  href="#" onclick="return jump_a4ce0e06549349cc8c029990aecf9808(2,10);">下一页</a>
+				<a  href="#" onclick="return jump_a4ce0e06549349cc8c029990aecf9808(23,10);">末页</a>
+			<%}%>
+			</div>
+			<div class="total">当前为第${pageRecord.page}页/共${pageRecord.totalPage}页</div>
+		</div>
+	</div>
+</div>
+</#pro_Lists>

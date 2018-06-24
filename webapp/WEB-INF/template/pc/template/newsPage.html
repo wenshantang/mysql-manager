@@ -1,0 +1,71 @@
+<style>
+ .newstitle li h3 {
+    display: inline;
+    background: url(${static_ctx}/portal/images/xwtb.gif) 0 5px no-repeat;
+    padding-left: 20px;
+    color: #000;
+    font-size: 13px;
+    font-family: "微软雅黑";
+    }
+     .newstitle .date {
+    float: right;
+    text-align: right;
+    padding-right: 20px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 13px;
+    }
+    .newstitle .title {
+    text-align: left;
+    height: 36px;
+    line-height: 36px;
+    }
+    .newstitle li { 
+    float: left;
+	}
+	
+	.newstitle li span { 
+    color: #999;
+    display: none;
+    }
+</style>
+<div class="comptitle_03">
+	<strong class="titlestyle_03"><%if(topicCode=='qyxw'){%>公司新闻<%}%>
+		<%if(topicCode=='gszx'){%>行业新闻<%}%>
+		<%if(topicCode=='jjfa'){%>解决方案<%}%></strong>
+</div>
+<ul class="comstyle newslist-01">
+	<#topic_article topicCode="${topicCode!}" page="${p!}" rows="2"
+	;pageRecord> <%for (article in pageRecord.dataList){%>
+	<li class="content column-num1">
+		<div class="newstitle">
+			<ul>
+				<li class="title">
+					<h3>
+						<a href="${ctxPath}/articledetail?id=${article.id}&topicCode=${topicCode!}" title="${article.title}"
+							target="_self"> ${article.title}</a>
+					</h3>
+				</li>
+				<li class="date"><span>发布时间：</span>${strutil.subStringTo
+					(article.publish_time,0,10)}</li>
+			</ul>
+		</div>
+	</li>
+	<li class="clearBoth"></li> <%}%>
+
+</ul>
+<% var p = pageRecord.page; //当前页
+ var totalPage = pageRecord.totalPage;//总页数 %>
+<div class="pageJump">
+	<div class="pageJump">
+		<!-- 	<div class="totalcount">当前显示1-10条共148条</div> -->
+		<div class="number">
+			<a href="javascript:void(0);" onclick="gotoPage(1);">首页</a> <a
+				href="javascript:void(0);" onclick="gotoPage(${p-1});">上一页</a> <a
+				href="javascript:void(0);" onclick="gotoPage(${p+1});">下一页</a> <a
+				href="javascript:void(0);" onclick="gotoPage(${totalPage});">末页</a>
+		</div>
+		<div class="total">当前为第${p}页/共${totalPage}页</div>
+	</div>
+</div>
+</#topic_article>

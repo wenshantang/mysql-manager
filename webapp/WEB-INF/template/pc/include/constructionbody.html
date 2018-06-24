@@ -1,0 +1,311 @@
+<style type="text/css">
+	.FrontMessages_customizeEmit01-d1_c1 {
+    width: 100%;
+    margin: 0 auto;
+    font-size: 14px;
+    font-family: "微软雅黑";
+    clear: both;
+    overflow: hidden;
+    text-align: left;
+	}
+</style>
+<div id="box_main">
+	<!--InstanceBeginEditable name="box_main"-->
+	<div id="box_main_sub1">
+		<div id="box_main_sub1_sub1">
+			<div id="box_main_sub1_sub1_sub1">
+				<div class="clearBoth"></div>
+				<div class="columnSpace"
+					id="elem-FrontNewsCategory_tree01-1443059485775">
+					<!-- 装饰器样式开始 -->
+					<div class="border_02">
+						<div class="border_02-topr">
+							<div class="border_02-topl"></div>
+						</div>
+						<div class="border_02-mid">
+							<div class="borderContent">
+								<div id="FrontNewsCategory_tree01-1443059485775"
+									class="FrontNewsCategory_tree01-d1_c1">
+									<div class="comptitle_02">
+										<strong class="titlestyle_02">招聘咨询</strong>
+									</div>
+									<div class="menu-first">
+										<ul>
+											<li class="menu-none"><a
+												onclick="getnewsinfo('zhaopinxinxi')" class="menu-text1 hover" id="zhaopinxinxi_class">
+													招聘信息</a>
+											<li class="menu-none"><a
+												onclick="getnewsinfo('woyaoyingpin')" class="menu-text1"  id="woyaoyingpin_class">
+													我要应聘</a>
+										</ul>
+									</div>
+								</div>
+								<div class="clearBoth"></div>
+							</div>
+						</div>
+					</div> 
+					<script>
+						function getnewsinfo(id) { 
+							$("#zhaopinxinxi").hide();  
+							$("#woyaoyingpin").hide();
+							$("#" + id).show();
+							$(".menu-text1").removeClass();
+							$("#"+id+"_class").addClass("menu-text1 hover");  
+						}
+					</script>
+					<!-- 装饰器样式结束 -->
+				</div>
+			</div>
+			<div id="box_main_sub1_sub1_sub2">
+				<div class="columnSpace"
+					id="elem-FrontSpecifies_show01-1442222513547">
+					<div id="FrontSpecifies_show01-1442222513547"
+						class="FrontSpecifies_show01-d3_c1">
+						<div class="describe htmledit">
+							<p></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="box_main_sub1_sub2">
+			<div class="columnSpace" id="elem-FrontNews_list01-1443144624302">
+				<!-- 装饰器样式开始 -->
+				<div class="border_03" id="zhaopinxinxi">
+					<div class="border_03-topr">
+						<div class="border_03-topl"></div>
+					</div>
+					<div class="border_03-mid">
+						<div class="borderContent" style="min-height: 500px;">
+							<div id="FrontNews_list01-1443144624301"
+								class="FrontNews_list01-d1_c1_01"></div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+					<div class="border_03-footerr">
+						<div class="border_03-footerl"></div>
+					</div>
+				</div>
+
+
+				<div class="border_03" id="woyaoyingpin" style="display: none;">
+					<div class="border_03-topr">
+						<div class="border_03-topl"></div>
+					</div>
+					<div class="border_03-mid">
+						<div class="borderContent" style="min-height: 500px;">
+							<div id="FrontNews_list01-1443144624302"
+								class="FrontNews_list01-d1_c1_01">
+
+								<div class="FrontMessages_customizeEmit01-d1_c1">
+									 <input type="hidden" id="token"
+											name="token" value="f15114c7db1e466ed1afff19e4b8dbdf">
+										<table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tbody>
+												<tr class="title">
+													<th>应聘岗位：</th>
+													<td><input type="hidden" id="isDisplayMessagesTitle"
+														value="0">
+														<div class="text-oper">
+														<span class="fontred">*</span>
+															<input
+																class="input input-gray" type="text" id="messagesTitle"
+																name="messagesTitle" value="" maxlength="255">
+														</div>
+													</td>
+												</tr>
+												<tr class="info">
+													<th valign="top">申请描述：</th>
+													<td><input type="hidden" name="maxContent"
+														id="maxContent" value="500">
+														<div class="text-oper">
+															<span class="fontred">*</span>
+															<textarea class="textarea input-gray" name="content" id="content" ></textarea>
+														</div>
+														<div class="text-tip">
+														</div>
+													</td>
+												</tr>
+												<tr class="name">
+													<th valign="top">申请人：</th>
+													<td><input type="hidden" id="isDisplayAuthor"
+														value="0">
+														<div class="text-oper">
+														<span class="fontred">*</span>
+														<input class="input"
+																type="text" id="author" name="author" value=""
+																maxlength="20">
+														</div>
+													</td>
+												</tr>
+												<tr class="sex">
+													<th>性别：</th>
+													<td><div class="text-oper">
+															<span class="fontnone">&nbsp;</span> <input type="radio"
+																value="0" id="sex1" name="sex" checked="checked">
+															男<input type="radio" value="1" id="sex2" name="sex">
+															女
+														</div>
+												   </td>
+												</tr>
+												<tr class="tel2">
+													<th>联系电话：</th>
+													<td><input type="hidden" id="isDisplayPhone" value="0">
+														<div class="text-oper">
+														<span class="fontred">*</span>
+															<span class="fontnone">&nbsp;</span> <input
+																class="input input-gray" type="text" id="phone"
+																name="phone" value="" maxlength="32">
+
+														</div>
+														<div class="text-tip">
+															<span class="tip-default"
+																id="FrontMessages_customizeEmit01-1445321935284_infophone">
+																联系电话应包括0-9、-、（、）、顿号，请重新填写 联系电话为必填项，请填写</span> 
+														</div></td>
+												</tr>
+												<tr class="address">
+													<th>联系地址：</th>
+													<td><input type="hidden" id="isDisplayAddress"
+														value="0">
+														<div class="text-oper">
+														<span class="fontred">*</span>
+															<span class="fontnone">&nbsp;</span> <textarea
+																class="input input-gray"  id="address" style="width: 500px;height: 30px;"
+																name="address"  maxlength="200"></textarea>
+														</div>
+													</td>
+												</tr>
+												
+												<tr class="address">
+													<th>简历附件：</th>
+													<td><span class="fontred">*</span> 
+													<span class="fontnone">&nbsp;</span>
+													<textarea name="file_url" rows="3" cols="20" id="file_url" class="input" style="width: 500px;height: 30px;line-height: 30px;"></textarea>
+															<div id="file_url_upload-img" class="upload-box upload-img" ></div>
+														</td>
+												</tr>
+												
+												<tr class="button-position">
+													<th></th>
+													<td><span class="fontnone">&nbsp;</span> <input
+														id="FrontMessages_customizeEmit01-1445321935284_submit"
+														title="申请" class="btn btn-com-01" type="button"
+														value="申请"
+														onclick="sumityingpin()">
+													</td>
+												</tr>
+											</tbody> 
+										</table>
+								</div>
+
+
+							</div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+					<div class="border_03-footerr">
+						<div class="border_03-footerl"></div>
+					</div>
+				</div>
+				<!-- 装饰器样式结束 -->
+			</div>
+		</div>
+		<div class="clearBoth"></div>
+	</div> 
+	<div id="box_main_sub2"></div>
+	<!--InstanceEndEditable-->
+</div>
+<link href="${static_ctx}/portal/webuploader/style.css?version=${version}" rel="stylesheet" type="text/css" />
+<script type="text/javascript" charset="utf-8" src="${static_ctx}/portal/webuploader/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${static_ctx}/portal/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="${static_ctx}/portal/webuploader/upload.js"></script>
+<script type="text/javascript">
+function loadimg(paramkey){ 
+	var imgid = "#"+paramkey+"_upload-img";
+	$(imgid).InitUploader({btntext:'选择文件...',sendurl: "${ctxPath}/portal/recruit/upload", swf: "${static_ctx}/portal/webuploader/Uploader.swf",paramkeyname:paramkey});
+}
+function uploadError(data){
+	alert(data.message);
+} 
+function uploadSuccess(data,paramkey){
+	$("#file_url").html(data.url);
+
+}
+</script>
+<script type="text/javascript">
+function sumityingpin(){ 
+	   var messagesTitle=$("#messagesTitle").val();//应聘岗位
+	   var content=$("#content").val();//申请描述
+	   var author=$("#author").val();//申请人
+	   var phone=$("#phone").val();//联系电话
+	   var address=$("#address").val();//联系地址
+	   var sex=$('input:radio:checked').val();//性别
+	   var file_url=$("#file_url").val();//文件附件
+	   var reg_m=/1[3-8]\d{9}/;
+	   if(messagesTitle==""||messagesTitle==null){
+		  alert("请填写应聘岗位!");
+		   return false;
+	   }
+	   if(content==""||content==null){
+			  alert("请填写申请描述!");
+			   return false;
+		}
+	   if(author==""||author==null){
+			  alert("请填写申请人!");
+			   return false;
+		}
+	   if(phone==""||phone==null){
+			  alert("请填写联系电话!");
+			   return false;
+		}
+	   if(address==""||address==null){
+			  alert("请填写联系地址!");
+			   return false;
+		}
+	   if(sex==""||sex==null){
+			  alert("请选择性别!");
+			   return false;
+		}
+	   if(!reg_m.test(phone) || phone.length != 11){
+		   alert("手机号码格式错误!");
+		   return false;
+	   }
+	   if(file_url==""||file_url==null){
+		   alert("请上传附件!");
+		   return false;
+	   }
+	  $.ajax({
+		  	url : '${ctxPath}/portal/recruit/add',
+	        type : "POST",
+	        data:{"messagesTitle":messagesTitle,"content":content,"author":author,"phone":phone,"address":address,"sex":sex,"file_url":file_url},
+	        success : function(result) {
+	        	if (result.code == '0000') {
+	        		alert("添加成功!");
+	        		$(".button-position").hide();
+	        	}else{
+	        		alert(result.msg);
+	        	}
+	        }
+	  });   
+}
+function uploadfile(){
+	  $.ajax({
+		  url : '${ctxPath}/portal/recruit/upload',
+	        type : "POST",
+	        data:$('#upload-form').serialize(),
+	        success : function(result) {
+	        	console.log(result);
+	        	alert("ddsds");
+	        }
+	  }); 
+}
+
+$(function(){
+	gotoPage1("1","consult");
+	loadimg("file_url");
+});
+function gotoPage1(p1,topicCode){ 
+	$("#FrontNews_list01-1443144624301").load("${ctxPath}/newsPage2?topicCode="+topicCode+"&p="+p1);
+}
+</script>
